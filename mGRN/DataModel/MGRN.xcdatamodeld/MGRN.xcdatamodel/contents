@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="MGRN" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="11G63" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Company" representedClassName="Company" syncable="YES">
+        <attribute name="kco" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="contracts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="company" inverseEntity="Contract" syncable="YES"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="companies" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="Contract" representedClassName="Contract" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="useWBS" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="company" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Company" inverseName="contracts" inverseEntity="Company" syncable="YES"/>
+        <relationship name="purchaseOrders" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PurchaseOrder" inverseName="contract" inverseEntity="PurchaseOrder" syncable="YES"/>
+        <relationship name="wbsCodes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="WBS" inverseName="contract" inverseEntity="WBS" syncable="YES"/>
+    </entity>
+    <entity name="GRN" representedClassName="GRN" syncable="YES">
+        <attribute name="deliveryDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="orderNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photo1URI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photo2URI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photo3URI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="signatureURI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="supplierReference" optional="YES" attributeType="String" maxValueString="10" syncable="YES"/>
+        <relationship name="lineItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="GRNItem" inverseName="grn" inverseEntity="GRNItem" syncable="YES"/>
+        <relationship name="purchaseOrder" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="PurchaseOrder" inverseName="grns" inverseEntity="PurchaseOrder" syncable="YES"/>
+    </entity>
+    <entity name="GRNItem" representedClassName="GRNItem" syncable="YES">
+        <attribute name="exception" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="itemNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="quantityDelivered" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="quantityRejected" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="serialNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uoq" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="wbsCode" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="grn" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="GRN" inverseName="lineItems" inverseEntity="GRN" syncable="YES"/>
+        <relationship name="purchaseOrderItem" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="PurchaseOrderItem" inverseName="grnItems" inverseEntity="PurchaseOrderItem" syncable="YES"/>
+    </entity>
+    <entity name="PurchaseOrder" representedClassName="PurchaseOrder" syncable="YES">
+        <attribute name="attention" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attentionPhone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mpo" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="orderDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="orderName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="orderNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="quantityError" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="contract" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="purchaseOrders" inverseEntity="Contract" syncable="YES"/>
+        <relationship name="grns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GRN" inverseName="purchaseOrder" inverseEntity="GRN" syncable="YES"/>
+        <relationship name="lineItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PurchaseOrderItem" inverseName="purchaseOrder" inverseEntity="PurchaseOrderItem" syncable="YES"/>
+    </entity>
+    <entity name="PurchaseOrderItem" representedClassName="PurchaseOrderItem" syncable="YES">
+        <attribute name="dueDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dueDateSpecified" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="extraDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="itemDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="itemNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="plant" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="quantityBalance" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="uoq" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="wbsCode" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="grnItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GRNItem" inverseName="purchaseOrderItem" inverseEntity="GRNItem" syncable="YES"/>
+        <relationship name="purchaseOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PurchaseOrder" inverseName="lineItems" inverseEntity="PurchaseOrder" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="kcoString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="m1xDomain" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="m1xPassword" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="m1xSessionEndDT" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="m1xSessionKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="m1xUserId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="companies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Company" inverseName="users" inverseEntity="Company" syncable="YES"/>
+    </entity>
+    <entity name="WBS" representedClassName="WBS" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="codeDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="suspense" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="contract" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="wbsCodes" inverseEntity="Contract" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Company" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Contract" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="GRN" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="GRNItem" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="PurchaseOrder" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="PurchaseOrderItem" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="User" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="WBS" positionX="0" positionY="0" width="0" height="0"/>
+    </elements>
+</model>
