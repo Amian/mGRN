@@ -13,3 +13,21 @@
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
 #endif
+
+
+#define GRNLightBlueColour [UIColor colorWithRed:20.0/255 green:168.0/255 blue:254.0/255 alpha:1.0]
+#define GRNDarkBlueColour [UIColor colorWithRed:13.0/255 green:44.0/255 blue:75.0/255 alpha:1.0]
+
+#define KeyUserID @"userid"
+#define KeyPassword @"password"
+#define KeyDomainName @"domain"
+#define KeyRole @"Role"
+#define KeyKCO @"kco"
+#define KeyTransactionID @"transactionid"
+#define KeySessionEndDate @"sessionenddate"
+
+
+
+#define GRNDomainName @"m1xdev"
+#define GRNRole @""
+#define GRNAppName @"mgrn"
