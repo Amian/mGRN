@@ -93,10 +93,8 @@ state = _state;
 
 -(void)reloadData
 {
-    self.reloading = YES;
 //    //TODO: Display error if no data found
     [super reloadData];
-    [self scrollsToTop];
     self.hidden = NO;
     self.alpha = 1.0;
 }

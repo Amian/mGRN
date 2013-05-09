@@ -122,8 +122,6 @@
             self.purchaseOrderTableView.hidden = NO;
             self.orderDetailView.hidden = YES;
             
-            self.purchaseOrderTableView.state = TableStateNormal;
-            [self.purchaseOrderTableView reloadData];
             [self moveContainerToTheRight];
             break;
         case ViewOrder:
@@ -203,13 +201,15 @@
 {
     if ([tableView isKindOfClass:[GRNContractTableView class]])
     {
-        self.purchaseOrderTableView.contract = nil;
+        self.purchaseOrderTableView.state = TableStateNormal;
+//        self.purchaseOrderTableView.contract = nil; //To clear the table
         self.loadingView.hidden = NO;
         self.purchaseOrderTableView.contract = [self.contractsTableView selectedObject];
         [self.contractsTableView rowSelected];
     }
     else if ([tableView isKindOfClass:[GRNPurchaseOrderTableView class]])
     {
+//        self.orderItemTableView.purchaseOrder = nil; //To clear the table
         self.loadingView.hidden = NO;
         self.orderItemTableView.purchaseOrder = [self.purchaseOrderTableView selectedObject];
         [self.purchaseOrderTableView rowSelected];
@@ -298,6 +298,7 @@
         [self tablecontainerDelegateChangedStatusTo:ViewOrder];
     }
     self.loadingView.hidden = YES;
+    [tableView setContentOffset:CGPointMake(0, 0) animated:NO];
 }
 
 -(void)tableWillGetDataFromAPI

@@ -16,46 +16,28 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *MyIdentifier = [NSString stringWithFormat:@"MyIdentifier %i", indexPath.row];
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-    if (cell == nil || self.reloading)
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell.indentationLevel = 1;
+    cell.textLabel.textColor = [UIColor whiteColor];
+    if (indexPath.row == 0)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MyIdentifier];
-        //TODO: Get data from API
-        cell.indentationLevel = 1;
-        
-        //        if (indexPath.row != 0 && [self indexPathForSelectedRow].row == indexPath.row)
-        //        {
-        cell.textLabel.textColor = [UIColor whiteColor];
-        //            cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
-        //        }
-        //        else
-        //        {
-        //            cell.textLabel.textColor = [UIColor lightGrayColor];
-        //        }
-        //
-        
-        if (indexPath.row == 0)
-        {
-            cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
-            cell.textLabel.text = @"Order Items";
-        }
-        else
-        {
-            PurchaseOrderItem *item = [self.dataArray objectAtIndex:indexPath.row -1];
-            cell.textLabel.font = [UIFont systemFontOfSize:15.0];
-            cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i %@]",item.itemNumber, item.itemDescription, [item.quantityBalance intValue],item.uoq];
-        }
+        cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
+        cell.textLabel.text = @"Order Items";
     }
-    if (indexPath.section == self.dataArray.count - 1)
-        self.reloading = NO;
+    else
+    {
+        PurchaseOrderItem *item = [self.dataArray objectAtIndex:indexPath.row -1];
+        cell.textLabel.font = [UIFont systemFontOfSize:15.0];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i %@]",item.itemNumber, item.itemDescription, [item.quantityBalance intValue],item.uoq];
+    }
     return cell;
 }
 
 -(NSArray*)getDataArray
 {
     NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
-                                                               inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+                                                                         inMOC:[CoreDataManager sharedInstance].managedObjectContext];
     [self.myDelegate tableDidEndLoadingData:self];
     return array;
 }

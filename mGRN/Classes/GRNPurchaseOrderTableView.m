@@ -33,7 +33,7 @@
         
         valueArray = [NSArray arrayWithObjects:order.orderNumber,order.orderDescription,order.orderName,order.attention, nil];
         labelArray = [NSArray arrayWithObjects:@"PO:",@"Description:",@"Supplier:",@"Attention:", nil];
-
+        
     }
     CGFloat y = 15.0;
     for (NSString* text in labelArray)
@@ -56,7 +56,7 @@
         [contentView addSubview:label2];
         
         y += 25.0;
-
+        
         if ([text hasPrefix:@"Attention"])
         {
             CALayer *bottomBorder = [CALayer layer];
@@ -66,7 +66,7 @@
         }
         
     }
-
+    
     return contentView;
 }
 
@@ -74,48 +74,20 @@
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *MyIdentifier = [NSString stringWithFormat:@"MyIdentifier %i", indexPath.section];
-    
-    UITableViewCell *cell = (UITableViewCell *)[tableView dequeueReusableCellWithIdentifier:MyIdentifier];
-    
-    if ((cell == nil || self.reloading) && self.dataArray.count)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MyIdentifier];
-        //TODO: Get data from API
-        cell.indentationLevel = 1;
-
-        //        @try {
-            [cell.contentView addSubview:[self cellContentViewWithFrame:cell.contentView.frame purchaseOrder:[self.dataArray objectAtIndex:indexPath.section] indexPath:indexPath]];
-//        }
-//        @catch (NSException *exception)
-//        {
-//            [NSException raise:NSInvalidArgumentException format:@"could not load cell"];
-//        }
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        //if selection is on and the row is now selected reduce alpha
-//        if (self.state == TableStateSelected && indexPath.section != [tableView indexPathForSelectedRow].section)
-//        {
-//            cell.alpha = 0.6;
-//        }
-    }
-    if (indexPath.section == self.dataArray.count - 1)
-        self.reloading = NO;
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    cell.indentationLevel = 1;
+    [cell.contentView addSubview:[self cellContentViewWithFrame:cell.contentView.frame purchaseOrder:[self.dataArray objectAtIndex:indexPath.section] indexPath:indexPath]];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
-
-//-(float)rowHeight
-//{
-//    if ()
-//    return self.frame.size.height/6;
-//}
-
 
 -(NSArray*)getDataArray
 {
     self.state = TableStateNormal;
     NSArray *array = [PurchaseOrder fetchPurchaseOrdersForContractNumber:self.contract.number
-                               inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+                                                                   inMOC:[CoreDataManager sharedInstance].managedObjectContext];
     [self.myDelegate tableDidEndLoadingData:self];
     return array;
 }
@@ -142,9 +114,9 @@
 {
     [super getDataFromAPI];
     [self.service GetPurchaseOrdersWithHeader:[GRNM1XHeader GetHeader]
-                      contractNumber:self.contract.number
-                                 kco:self.kco
-                    includeLineItems:NO];
+                               contractNumber:self.contract.number
+                                          kco:self.kco
+                             includeLineItems:NO];
 }
 
 -(void)onGetContractsSuccess:(NSDictionary *)orderData
