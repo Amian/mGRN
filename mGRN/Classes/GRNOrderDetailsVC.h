@@ -18,9 +18,7 @@
 @property (strong, nonatomic) IBOutlet GRNContractTableView *contractsTableView;
 @property (strong, nonatomic) IBOutlet GRNOrderItemsTableView *orderItemTableView;
 @property (strong, nonatomic) IBOutlet GRNPurchaseOrderTableView *purchaseOrderTableView;
-@property (strong, nonatomic) IBOutlet UIView *createGrnView;
 @property (strong, nonatomic) IBOutlet UIView *tablesView;
-@property (strong, nonatomic) IBOutlet UITextField *sdnTextField;
 -(void)reloadContracts;
 @property (strong, nonatomic) IBOutlet UIView *loadingView;
 

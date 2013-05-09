@@ -28,16 +28,6 @@
 @implementation GRNOrderDetailsVC
 @synthesize service = _service;
 
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -78,9 +68,7 @@
     [self setContainerView:nil];
     [self setOrderDetailView:nil];
     [self setPurchaseOrderTableView:nil];
-    [self setCreateGrnView:nil];
     [self setTablesView:nil];
-    [self setSdnTextField:nil];
     [self setContractsTableView:nil];
     [self setOrderItemTableView:nil];
     [self setLoadingView:nil];
@@ -190,35 +178,6 @@
     }
 }
 
-//-(void)displayPurchaseOrders:(int)OrderID
-//{
-//    //Ensure purchase order table is visible
-//    if (self.purchaseOrderTableView.alpha == 0.0 || self.purchaseOrderTableView.hidden)
-//    {
-//        self.purchaseOrderTableView.alpha = 0.0;
-//        self.purchaseOrderTableView.hidden = NO;
-//        
-//        [UIView beginAnimations:nil context:nil];
-//        [UIView setAnimationDuration:0.5];
-//        self.purchaseOrderTableView.alpha = 1.0;
-//        [UIView commitAnimations];
-//    }
-//}
-//
-//-(void)displayOrderDetails:(int)OrderID
-//{
-//    if (self.orderDetailView.alpha == 0.0 || self.orderDetailView.hidden)
-//    {
-//        self.orderDetailView.alpha = 0.0;
-//        self.orderDetailView.hidden = NO;
-//        
-//        [UIView beginAnimations:nil context:nil];
-//        [UIView setAnimationDuration:0.5];
-//        self.orderDetailView.alpha = 1.0;
-//        [UIView commitAnimations];
-//    }
-//}
-
 #pragma mark - Table View Delegate
 
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
@@ -281,18 +240,6 @@
 
 #pragma mark - IBActions
 
-- (IBAction)createGRNButtonPressed:(id)sender
-{
-    //TODO:Do this
-    self.createGrnView.frame = self.view.bounds;
-    [self.view addSubview:self.createGrnView];
-}
-
-- (IBAction)closeCreateGrnView:(id)sender
-{
-    [self.createGrnView removeFromSuperview];
-}
-
 - (IBAction)contract:(id)sender
 {
     [self tablecontainerDelegateChangedStatusTo:Contracts];
@@ -319,47 +266,19 @@
     [self tablecontainerDelegateChangedStatusTo:Contracts];
 }
 
+#pragma mark - Segues
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"createGRN"])
     {
-        GRN *grn = [GRN grnWithSDNRef:self.sdnTextField.text
-                     forPurchaseOrder:self.orderItemTableView.purchaseOrder
+        GRN *grn = [GRN grnForPurchaseOrder:self.orderItemTableView.purchaseOrder
                inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext
                                 error:nil];
             GRNLineItemVC *vc = segue.destinationViewController;
             vc.grn = grn;
 
     }
-}
-
--(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
-{
-    //TODO:Display error
-    if ([identifier isEqualToString:@"createGRN"] && !self.sdnTextField.text.length)
-    {
-        //TODO: trim text
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                        message:@"Please enter a supplier Delivery Number"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        return NO;
-    }
-    else if ([identifier isEqualToString:@"createGRN"] &&
-        [GRN grnExistsWithSDNRef:self.sdnTextField.text
-          inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext])
-    {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                        message:@"SDN already used."
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        return NO;
-    }
-    return YES;
 }
 
 #pragma mark - MyTableDelegate

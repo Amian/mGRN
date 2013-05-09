@@ -21,11 +21,6 @@
 @implementation GRNLineItemVC
 @synthesize grn = _grn, selectedItem, pvc;
 
--(void)setGrn:(GRN *)grn
-{
-    _grn = grn;
-}
-
 -(void)viewDidLoad
 {
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -49,6 +44,7 @@
     [self setNote:nil];
     [self setExpected:nil];
     [self setWbsButton:nil];
+    [self setSdnTextField:nil];
     [super viewDidUnload];
 }
 
@@ -106,6 +102,11 @@
     else if ([textField isEqual:self.quantityRecieved])
     {
         //TODO: needs to be done
+    }
+    else if ([textField isEqual:self.sdnTextField])
+    {
+        //TODO: Check if it is valid
+        self.grn.supplierReference = textField.text;
     }
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];
 }

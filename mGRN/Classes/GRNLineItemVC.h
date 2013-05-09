@@ -20,4 +20,5 @@
 @property (strong, nonatomic) IBOutlet UITextField *note;
 @property (strong, nonatomic) IBOutlet UILabel *expected;
 @property (strong, nonatomic) IBOutlet UIButton *wbsButton;
+@property (strong, nonatomic) IBOutlet UITextField *sdnTextField;
 @end

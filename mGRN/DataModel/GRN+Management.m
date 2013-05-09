@@ -17,17 +17,17 @@
     GRN *grn = nil;
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRN"];
-
     
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"supplierReference" ascending:YES]];
+    
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"supplierReference" ascending:YES]];
     request.predicate = [NSPredicate predicateWithFormat:@"supplierReference = %@", sdnRef];
-
-
+    
+    
     NSError *fetchError = nil;
     NSArray *matches = [context executeFetchRequest:request error:&fetchError];
     
     if (!matches || [matches count] > 0) {
-// TODO: set values for error
+        // TODO: set values for error
         if (error != NULL) {
             if (!matches){
                 *error = [NSError errorWithDomain:@"fetcherror" code:0 userInfo:@{@"error":fetchError}];
@@ -50,6 +50,23 @@
         [context save:nil];
     }
     
+    return grn;
+}
+
++ (GRN *)grnForPurchaseOrder:(PurchaseOrder *)purchaseOrder inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error
+{
+    GRN *grn = nil;
+    
+    grn = [NSEntityDescription insertNewObjectForEntityForName:@"GRN" inManagedObjectContext:context];
+    grn.orderNumber = purchaseOrder.orderNumber;
+    grn.deliveryDate = [[NSDate alloc] init];
+    grn.notes = @"";
+    
+    [purchaseOrder addGrnsObject:grn];
+    for (PurchaseOrderItem *poi in purchaseOrder.lineItems) {
+        [GRNItem grnItemForGRN:grn withDataFromPurchaseOrderItem:poi inManagedObjectContext:context error:nil];
+    }
+    [context save:nil];
     return grn;
 }
 

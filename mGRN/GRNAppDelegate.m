@@ -8,7 +8,6 @@
 
 #import "GRNAppDelegate.h"
 
-#import "GRNMasterViewController.h"
 #import "CoreDataManager.h"
 
 @implementation GRNAppDelegate
