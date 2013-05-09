@@ -19,7 +19,6 @@
 @property (strong, nonatomic) IBOutlet GRNOrderItemsTableView *orderItemTableView;
 @property (strong, nonatomic) IBOutlet GRNPurchaseOrderTableView *purchaseOrderTableView;
 @property (strong, nonatomic) IBOutlet UIView *tablesView;
--(void)reloadContracts;
 @property (strong, nonatomic) IBOutlet UIView *loadingView;
 
 

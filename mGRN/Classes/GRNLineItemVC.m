@@ -13,7 +13,7 @@
 #import "GRNCompleteGRNVC.h"
 #import "GRNWbsTableView.h"
 
-@interface GRNLineItemVC() <UITableViewDelegate>
+@interface GRNLineItemVC() <UITableViewDelegate, UIAlertViewDelegate>
 @property (nonatomic, weak) UIPopoverController *pvc;
 @property (readonly) GRNItem *selectedItem;
 @end
@@ -21,9 +21,12 @@
 @implementation GRNLineItemVC
 @synthesize grn = _grn, selectedItem, pvc;
 
+static float KeyboardHeight;
+
 -(void)viewDidLoad
 {
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [super viewDidLoad];
     self.itemTableView.purchaseOrder = self.grn.purchaseOrder;
 }
@@ -78,10 +81,10 @@
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if (self.view.frame.origin.y == 0)
+    if (self.view.frame.origin.y == 0 && ![textField isEqual:self.sdnTextField])
     {
         CGRect frame = self.view.frame;
-        frame.origin.y = -264; //height of keyboard
+        frame.origin.y = -KeyboardHeight; //height of keyboard
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.3];
         self.view.frame = frame;
@@ -113,18 +116,14 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"back"])
-    {
-        //TODO: remove GRN
-        [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
-        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
-    }
-    else if ([segue.identifier isEqualToString:@"next"])
+    if ([segue.identifier isEqualToString:@"next"])
     {
         GRNCompleteGRNVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
     }
 }
+
+#pragma mark - Keyboard Notifications
 
 -(void)onKeyboardHide:(NSNotification *)notification
 {
@@ -137,6 +136,11 @@
         self.view.frame = frame;
         [UIView commitAnimations];
     }
+}
+
+-(void)onKeyboardShow:(NSNotification *)notification
+{
+    KeyboardHeight = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height; //height of keyboard
 }
 
 #pragma mark - IBActions
@@ -156,6 +160,27 @@
 - (IBAction)Reason:(id)sender
 {
     
+}
+- (IBAction)back:(id)sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Discard GRN"
+                                                        message:@"Are you sure you want to discard this GRN?"
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"OK",nil];
+        [alert show];
+
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != alertView.cancelButtonIndex)
+    {
+        [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
+        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+
+        [self performSegueWithIdentifier:@"back" sender:self];
+    }
 }
 
 @end

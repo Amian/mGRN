@@ -19,7 +19,7 @@
 #import "GRNBaseTable.h"
 #import "GRN+Management.h"
 
-@interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate>
+@interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate>
 {
 }
 @property (nonatomic, strong) M1XmGRNService *service;
@@ -252,18 +252,34 @@
 {
     [self tablecontainerDelegateChangedStatusTo:ViewOrder];
 }
-
-#pragma mark - Get Contracts
-
--(void)reloadContracts
+- (IBAction)reload:(id)sender
 {
-    //TODO:Do this
-//    self.purchaseOrderTableView.contract = nil;
-//    self.orderItemTableView.purchaseOrder = nil;
     [self.contractsTableView getDataFromAPI];
     self.purchaseOrderTableView.alpha = 0.0;
     self.orderDetailView.alpha = 0.0;
     [self tablecontainerDelegateChangedStatusTo:Contracts];
+}
+- (IBAction)search:(id)sender {
+}
+- (IBAction)logout:(id)sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout"
+                                                        message:@"Are you sure you want to log out?"
+                                                       delegate:self
+                                              cancelButtonTitle:@"NO"
+                                              otherButtonTitles:@"YES",nil];
+    [alert show];
+
+}
+
+#pragma mark - Alert View Delegate
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != alertView.cancelButtonIndex)
+    {
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 #pragma mark - Segues
