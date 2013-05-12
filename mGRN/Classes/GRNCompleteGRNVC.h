@@ -13,9 +13,14 @@
 @property (nonatomic, strong) GRN *grn;
 @property (strong, nonatomic) IBOutlet UITextView *comments;
 
-@property (strong, nonatomic) IBOutlet UITextField *delivery;
 @property (strong, nonatomic) IBOutlet DrawView *signatureView;
 @property (strong, nonatomic) IBOutlet UIView *photoView;
 @property (strong, nonatomic) IBOutlet UILabel *photoLabel;
 @property (strong, nonatomic) IBOutlet UIButton *takePhotoButton;
+@property (strong, nonatomic) IBOutlet UIButton *dateButton;
+
+@property (nonatomic, strong) UIImage *signatureImage;
+@property (strong, nonatomic) IBOutlet UIButton *signButton;
+
+@property (nonatomic, strong) NSDictionary *grnDict;
 @end

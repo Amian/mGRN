@@ -15,48 +15,107 @@
 #import "CoreDataManager.h"
 #import "PhotoPreviewVC.h"
 #import "UIImage+fixOrientation.h"
+#import "GRNLineItemVC.h"
+#import <QuartzCore/QuartzCore.h>
 
-@interface GRNCompleteGRNVC()<UIImagePickerControllerDelegate, M1XmGRNDelegate, UIAlertViewDelegate>
+#define SignTagSave 0
+#define SignTagSignAgain 1
+
+@interface GRNCompleteGRNVC()<UIImagePickerControllerDelegate, M1XmGRNDelegate,DrawViewDelegate, UIAlertViewDelegate, UIPopoverControllerDelegate, UITextViewDelegate>
 @property (nonatomic, strong) UIImage *image1;
 @property (nonatomic, strong) UIImage *image2;
 @property (nonatomic, strong) UIImage *image3;
 @property (nonatomic, strong) UIImage *selectedImage;
+@property (nonatomic, strong) UIPopoverController *popVC;
+@property (nonatomic, strong) UIImageView *fakeSignature;
 @end
 
 @implementation GRNCompleteGRNVC
-@synthesize grn = _grn, image1, image2, image3;
+@synthesize grn = _grn, image1, image2, image3, popVC = _popVC, grnDict, fakeSignature;
 
 -(void)viewDidLoad
 {
     [super viewDidLoad];
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self displayGRN];
+}
+
 - (void)viewDidUnload {
-    [self setDelivery:nil];
     [self setComments:nil];
     [self setSignatureView:nil];
     [self setPhotoView:nil];
     [self setPhotoLabel:nil];
     [self setTakePhotoButton:nil];
+    [self setDateButton:nil];
+    [self setSignButton:nil];
     [super viewDidUnload];
 }
-- (IBAction)clearSignatureView:(id)sender
-{
-    [self.signatureView clearView];
-}
 
+-(void)displayGRN
+{
+    if (self.grn.deliveryDate)
+    {
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        formatter.dateFormat = @"dd/MM/yyyy";
+        NSString *date = [formatter stringFromDate:self.grn.deliveryDate];
+        [self.dateButton setTitle:date forState:UIControlStateNormal];
+    }
+    NSLog(@"dict recieved = %@",self.grnDict);
+
+    if (self.grnDict.count)
+    {
+        
+    }
+    
+//    
+//    if (self.signatureImage)
+//    {
+//        self.fakeSignature = [[UIImageView alloc] initWithFrame:self.signatureView.frame];
+//        self.fakeSignature.image = self.signatureImage;
+//        [self.view addSubview:self.fakeSignature];
+//    }
+//    
+    
+//    if (self.grn.signatureURI.length)
+//    {
+//    [self performSelector:@selector(disableUserInteractionForSignatureView) withObject:nil afterDelay:0.2];
+//        self.signatureView.path = (CGMutablePathRef)[self.signaturePath CGPath];
+//        [self.signatureView setNeedsDisplay];
+//        self.signButton.tag = SignTagSignAgain;
+//        [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
+//        self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+//        self.signaturePath = [UIBezierPath bezierPath];
+//    }
+//    else
+//    {
+//        self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
+//    }
+    self.comments.text = self.grn.notes;
+}
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSLog(@"id = %@",segue.identifier);
     if ([segue.identifier isEqualToString:@"submitGRN"])
     {
         //TODO: submit GRN
+        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
         [self submit];
     }
     else if ([segue.identifier isEqualToString:@"back"])
     {
-        GRNCompleteGRNVC *vc = segue.destinationViewController;
+        self.grn.notes  = self.comments.text;
+        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+        GRNLineItemVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
+        
+//        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:self.image1,@"image1",self.image2,@"image2",self.image3,@"image3",[self.signatureView makeImage],@"signature", nil];
+        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[self.signatureView makeImage],@"signature", nil];
+        vc.grnDict = dict;
+        NSLog(@"dict sent = %@",dict);
     }
     else if ([segue.identifier isEqualToString:@"preview"])
     {
@@ -73,9 +132,12 @@
     kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
     
     M1XGRN *grn = [[M1XGRN alloc] init];
-    if (self.delivery.text.length)
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"dd/MM/yyyy";
+    NSString *date = [formatter stringFromDate:self.grn.deliveryDate];
+    if (date.length)
     {
-        grn.deliveryDate = [NSString stringWithFormat:@"\/Date(%@)\/",[self.delivery.text stringByReplacingOccurrencesOfString:@"/" withString:@""]];
+        grn.deliveryDate = [NSString stringWithFormat:@"\/Date(%@)\/",[date stringByReplacingOccurrencesOfString:@"/" withString:@""]];
     }
     else
     {
@@ -230,32 +292,6 @@
     self.selectedImage = sender.tag == 1? self.image1 : sender.tag == 2? self.image2 : self.image3;
     [self performSegueWithIdentifier:@"preview"
                               sender:self];
-//    UIButton *imagePreview = [UIButton buttonWithType:UIButtonTypeCustom];
-//    imagePreview.frame = self.view.bounds;
-//    switch (sender.tag) {
-//        case 1:
-//            [imagePreview setImage:self.image1 forState:UIControlStateNormal && UIControlStateHighlighted];
-//            break;
-//        case 2:
-//            [imagePreview setImage:self.image2 forState:UIControlStateNormal && UIControlStateHighlighted];
-//            break;
-//        case 3:
-//            [imagePreview setImage:self.image3 forState:UIControlStateNormal && UIControlStateHighlighted];
-//            break;
-//        default:
-//            break;
-//    }
-//    imagePreview.backgroundColor = GRNDarkBlueColour;
-//    [imagePreview addTarget:self
-//                     action:@selector(removePreview:)
-//           forControlEvents:UIControlEventTouchUpInside];
-//    imagePreview.alpha = 0.0;
-//    [self.view addSubview:imagePreview];
-//    
-//    [UIView beginAnimations:nil context:nil];
-//    [UIView setAnimationDuration:0.3];
-//    imagePreview.alpha = 1.0;
-//    [UIView commitAnimations];
 }
 
 -(void)removePreview:(UIButton*)button
@@ -335,4 +371,107 @@
     
     return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 }
+
+#pragma  mark - IBActions
+
+- (IBAction)signOrSave:(id)sender
+{
+    switch (self.signButton.tag)
+    {
+        case 0:
+            self.signatureView.userInteractionEnabled = NO;
+            [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
+            self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            self.signButton.tag = 1;
+            break;
+        case 1:
+            [self.signatureView clearView];
+            self.signatureView.userInteractionEnabled = YES;
+            [self.signButton setTitle:@"Save Signature" forState:UIControlStateNormal];
+            self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
+            self.signButton.tag = 0;
+            self.grn.signatureURI = nil;
+            break;
+        default:
+            break;
+    }
+}
+
+- (IBAction)showDatePicker:(UIButton*)button
+{
+    UIViewController* popoverContent = [[UIViewController alloc] init]; //ViewController
+    
+    UIView *popoverView = [[UIView alloc] init];   //view
+    popoverView.backgroundColor = [UIColor blackColor];
+    
+    UIDatePicker *datePicker=[[UIDatePicker alloc]init];//Date picker
+    datePicker.frame=CGRectMake(0,44,320, 216);
+    datePicker.datePickerMode = UIDatePickerModeDate;
+    [datePicker setMinuteInterval:5];
+    [datePicker setTag:10];
+    [datePicker addTarget:self action:@selector(donePickingDate:) forControlEvents:UIControlEventValueChanged];
+    [popoverView addSubview:datePicker];
+    
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0, 0.0, datePicker.frame.size.width, 44.0)];
+    toolbar.tintColor = [UIColor blackColor];
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                             style:UIBarButtonItemStyleDone
+                                                            target:self
+                                                            action:@selector(removeDatePicker)];
+    toolbar.items = [NSArray arrayWithObject:done];
+    [popoverView addSubview:toolbar];
+    
+    popoverContent.view = popoverView;
+    self.popVC = [[UIPopoverController alloc] initWithContentViewController:popoverContent];
+    self.popVC.delegate=self;
+    
+    [self.popVC setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
+    [self.popVC presentPopoverFromRect:button.superview.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+    
+    self.dateButton.superview.layer.borderColor = GRNLightBlueColour.CGColor;
+    [self.comments resignFirstResponder];
+}
+
+-(void)donePickingDate:(UIDatePicker*)picker
+{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"dd/MM/yyyy";
+    NSString *date = [formatter stringFromDate:picker.date];
+    [self.dateButton setTitle:date forState:UIControlStateNormal];
+    self.grn.deliveryDate = picker.date;
+}
+
+-(void)removeDatePicker
+{
+    self.dateButton.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    [self.popVC dismissPopoverAnimated:YES];
+}
+
+-(void)textViewDidBeginEditing:(UITextView *)textView
+{
+    textView.superview.layer.borderColor = GRNLightBlueColour.CGColor;
+}
+
+-(void)textViewDidEndEditing:(UITextView *)textView
+{
+    textView.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
+}
+
+-(void)disableUserInteractionForSignatureView
+{
+    self.signatureView.userInteractionEnabled = NO;
+}
+
+//-(void)drawViewDidBeginDrawing
+//{
+//    self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
+//    [self.comments resignFirstResponder];
+//}
+//
+-(void)drawViewDidEndDrawing
+{
+    //    self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.grn.signatureURI = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
+}
+
 @end

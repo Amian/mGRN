@@ -27,4 +27,6 @@
 - (IBAction)back:(id)sender;
 @property (strong, nonatomic) IBOutlet UIButton *reasonButton;
 @property (strong, nonatomic) IBOutlet GRNWbsTableView *wbsTable;
+
+@property (nonatomic,strong) NSDictionary *grnDict;
 @end

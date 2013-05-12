@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol DrawViewDelegate
+@optional
 -(void)drawViewDidBeginDrawing;
 -(void)drawViewDidEndDrawing;
 @end
@@ -17,7 +18,8 @@
 {
     id <DrawViewDelegate> delegate;
 }
-@property (retain) id delegate;
+@property CGMutablePathRef path;
+@property (retain) IBOutlet id delegate;
 @property (nonatomic, retain) UILabel *placeholder;
 -(void)clearView;
 - (UIImage *)makeImage;

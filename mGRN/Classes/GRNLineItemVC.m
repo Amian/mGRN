@@ -21,11 +21,11 @@
 
 @implementation GRNLineItemVC
 @synthesize grn = _grn, selectedItem, pvc;
-
 static float KeyboardHeight;
 
 -(void)viewDidLoad
 {
+    self.grnDict = [NSDictionary dictionary];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [super viewDidLoad];
@@ -34,6 +34,7 @@ static float KeyboardHeight;
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"dict in lvc = %@",self.grnDict);
     [self displaySelectedItem];
     [super viewDidAppear:animated];
 }
@@ -144,6 +145,7 @@ static float KeyboardHeight;
         [[CoreDataManager sharedInstance].managedObjectContext save:nil];
         GRNCompleteGRNVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
+        vc.grnDict = self.grnDict;
     }
 }
 

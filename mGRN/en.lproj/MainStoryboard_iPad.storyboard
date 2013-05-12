@@ -140,7 +140,7 @@
             <objects>
                 <viewController storyboardIdentifier="OrderDetailVC" id="yBb-kj-pff" customClass="GRNOrderDetailsVC" sceneMemberID="viewController">
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U29-q2-3sq">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1004"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="rWl-cJ-9sr" userLabel="Container">
@@ -430,6 +430,9 @@
                                         <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="showDatePicker:" destination="bKe-ir-2w6" eventType="touchUpInside" id="59b-C0-UIW"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -459,6 +462,9 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="bKe-ir-2w6" id="TjZ-IN-E1b"/>
+                                        </connections>
                                     </textView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -500,6 +506,9 @@
                                 <rect key="frame" x="221" y="596" width="412" height="272"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="delegate" destination="bKe-ir-2w6" id="e4z-F7-ABa"/>
+                                </connections>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="klM-L6-Pkf">
                                 <rect key="frame" x="72" y="742" width="133" height="126"/>
@@ -507,7 +516,7 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <inset key="titleEdgeInsets" minX="-165" minY="110" maxX="0.0" maxY="0.0"/>
                                 <inset key="imageEdgeInsets" minX="40" minY="40" maxX="40" maxY="40"/>
-                                <state key="normal" title="Sign Again" image="icon_sign.png">
+                                <state key="normal" title="Save Signature" image="icon_sign.png">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -515,7 +524,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="clearSignatureView:" destination="bKe-ir-2w6" eventType="touchUpInside" id="eLK-R7-HzR"/>
+                                    <action selector="signOrSave:" destination="bKe-ir-2w6" eventType="touchUpInside" id="Hgx-Iy-0ph"/>
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" id="30i-5n-NHd">
@@ -555,8 +564,10 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="comments" destination="NrH-zm-ThA" id="OKX-vb-vHm"/>
+                        <outlet property="dateButton" destination="Ope-2X-RPk" id="XOL-26-QgV"/>
                         <outlet property="photoLabel" destination="gMi-aq-Dwe" id="83X-qk-T4W"/>
                         <outlet property="photoView" destination="30i-5n-NHd" id="dvw-yP-CSv"/>
+                        <outlet property="signButton" destination="klM-L6-Pkf" id="lsA-g3-HHd"/>
                         <outlet property="signatureView" destination="uLl-cB-CgN" id="0Jp-Lc-OrY"/>
                         <outlet property="takePhotoButton" destination="vW2-Y6-Vlb" id="ftI-SJ-ic2"/>
                         <segue destination="k98-Pw-VTF" kind="modal" identifier="preview" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="ZSY-ct-3bo"/>
@@ -965,124 +976,6 @@
         <image name="logo_mgrn.png" width="148" height="50"/>
         <image name="logo_mgrn_hat.png" width="256" height="50"/>
     </resources>
-    <classes>
-        <class className="BorderedBlackView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/BorderedBlackView.h"/>
-        </class>
-        <class className="BorderedTextField" superclassName="UITextField">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/BorderedTextField.h"/>
-        </class>
-        <class className="DrawView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/DrawView.h"/>
-        </class>
-        <class className="GRNBaseTable" superclassName="UITableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNBaseTable.h"/>
-            <relationships>
-                <relationship kind="outlet" name="myDelegate"/>
-            </relationships>
-        </class>
-        <class className="GRNBaseVC" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNBaseVC.h"/>
-        </class>
-        <class className="GRNCompleteGRNVC" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNCompleteGRNVC.h"/>
-            <relationships>
-                <relationship kind="action" name="clearSignatureView:"/>
-                <relationship kind="action" name="takePhoto:"/>
-                <relationship kind="outlet" name="comments" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="delivery" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="photoLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="photoView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="signatureView" candidateClass="DrawView"/>
-                <relationship kind="outlet" name="takePhotoButton" candidateClass="UIButton"/>
-            </relationships>
-        </class>
-        <class className="GRNContractTableView" superclassName="GRNBaseTable">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNContractTableView.h"/>
-        </class>
-        <class className="GRNLineItemVC" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNLineItemVC.h"/>
-            <relationships>
-                <relationship kind="action" name="Reason:" candidateClass="UIButton"/>
-                <relationship kind="action" name="back:"/>
-                <relationship kind="action" name="dismissReason:"/>
-                <relationship kind="action" name="dismissWBS:"/>
-                <relationship kind="action" name="wbsCodes:" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="descriptionLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="expected" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="itemLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="itemTableView" candidateClass="GRNOrderItemsTableView"/>
-                <relationship kind="outlet" name="note" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="quantityDelivered" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="quantityRejected" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="reasonButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="resonView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="sdnTextField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="wbsButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="wbsTable" candidateClass="GRNWbsTableView"/>
-                <relationship kind="outlet" name="wbsView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="GRNLoginVC" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNLoginVC.h"/>
-            <relationships>
-                <relationship kind="outlet" name="appTitleLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="coinsLogoView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="companyLogo" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="errorLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="loginContainer" candidateClass="UIView"/>
-                <relationship kind="outlet" name="password" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="poweredByPervasicLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="username" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="GRNOrderDetailsVC" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNOrderDetailsVC.h"/>
-            <relationships>
-                <relationship kind="action" name="contract:"/>
-                <relationship kind="action" name="logout:"/>
-                <relationship kind="action" name="purchaseOrders:"/>
-                <relationship kind="action" name="reload:"/>
-                <relationship kind="action" name="search:"/>
-                <relationship kind="action" name="viewDetails:"/>
-                <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="contractsTableView" candidateClass="GRNContractTableView"/>
-                <relationship kind="outlet" name="loadingView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="navContract" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="navPurchaseOrders" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="navViewOrder" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="orderDetailView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="orderItemTableView" candidateClass="GRNOrderItemsTableView"/>
-                <relationship kind="outlet" name="purchaseOrderTableView" candidateClass="GRNPurchaseOrderTableView"/>
-                <relationship kind="outlet" name="tablesView" candidateClass="UIView"/>
-            </relationships>
-        </class>
-        <class className="GRNOrderItemsTableView" superclassName="GRNBaseTable">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNOrderItemsTableView.h"/>
-        </class>
-        <class className="GRNPurchaseOrderTableView" superclassName="GRNBaseTable">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNPurchaseOrderTableView.h"/>
-        </class>
-        <class className="GRNReasonTableVC" superclassName="UITableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNReasonTableVC.h"/>
-        </class>
-        <class className="GRNWbsTableView" superclassName="UITableView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNWbsTableView.h"/>
-        </class>
-        <class className="PhotoPreviewVC" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PhotoPreviewVC.h"/>
-            <relationships>
-                <relationship kind="action" name="close:"/>
-                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="RoundCorneredView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/RoundCorneredView.h"/>
-        </class>
-        <class className="UnderlinedView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/UnderlinedView.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>
@@ -1091,6 +984,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="klj-eJ-dMA"/>
         <segue reference="y6h-bZ-zD3"/>
-        <segue reference="Hq8-6i-vvq"/>
+        <segue reference="mpr-vN-HVu"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface DrawView()
-@property CGMutablePathRef path;
 @property CGPoint previousPoint1, previousPoint2, currentPoint;
 @end
 
@@ -69,7 +68,8 @@
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     self.placeholder.hidden = YES;
-    [[self delegate] drawViewDidBeginDrawing];
+    if ([self.delegate respondsToSelector:@selector(drawViewDidBeginDrawing)])
+        [[self delegate] drawViewDidBeginDrawing];
     UITouch *touch = [touches anyObject];
     
     self.previousPoint1 = [touch previousLocationInView:self];
@@ -98,12 +98,14 @@
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [[self delegate] drawViewDidEndDrawing];
+    if ([self.delegate respondsToSelector:@selector(drawViewDidEndDrawing)])
+        [[self delegate] drawViewDidEndDrawing];
 }
 
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [[self delegate] drawViewDidEndDrawing];
+    if ([self.delegate respondsToSelector:@selector(drawViewDidEndDrawing)])
+        [[self delegate] drawViewDidEndDrawing];
 }
 
 #pragma mark - Public Methods
