@@ -88,7 +88,7 @@
     self.state = TableStateNormal;
     NSArray *array = [PurchaseOrder fetchPurchaseOrdersForContractNumber:self.contract.number
                                                                    inMOC:[CoreDataManager sharedInstance].managedObjectContext];
-    [self.myDelegate tableDidEndLoadingData:self];
+//    [self.myDelegate tableDidEndLoadingData:self];
     return array;
 }
 
@@ -106,7 +106,12 @@
         else
         {
             [self reloadData];
+            [self.myDelegate tableDidEndLoadingData:self];
         }
+    }
+    else
+    {
+        [self.myDelegate tableDidEndLoadingData:self];
     }
 }
 
@@ -134,6 +139,7 @@
     }
     self.dataArray = [self getDataArray];
     [self reloadData];
+    [self.myDelegate tableDidEndLoadingData:self];
 }
 
 @end

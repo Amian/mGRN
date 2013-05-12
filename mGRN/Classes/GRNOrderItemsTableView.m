@@ -57,6 +57,10 @@
             [self reloadData];
         }
     }
+    else
+    {
+        [self.myDelegate tableDidEndLoadingData:self];
+    }
 }
 
 -(void)getDataFromAPI
