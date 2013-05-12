@@ -40,36 +40,14 @@
                                         <rect key="frame" x="86" y="71" width="596" height="205"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" id="lKX-ME-eig" customClass="BorderedBlackView">
-                                                <rect key="frame" x="56" y="50" width="483" height="50"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <subviews>
-                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="wilho2" placeholder="Username" minimumFontSize="17" id="fie-sP-iDu">
-                                                        <rect key="frame" x="8" y="9" width="466" height="31"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                        <textInputTraits key="textInputTraits" autocorrectionType="no"/>
-                                                    </textField>
-                                                </subviews>
-                                                <color key="backgroundColor" white="0.0" alpha="0.75" colorSpace="calibratedWhite"/>
-                                            </view>
-                                            <view contentMode="scaleToFill" id="CCx-ai-y7Q" customClass="BorderedBlackView">
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="wilho2" placeholder="Password" minimumFontSize="17" id="m8W-9s-3JK" customClass="BorderedTextField">
                                                 <rect key="frame" x="56" y="106" width="483" height="50"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <subviews>
-                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="wilho2" placeholder="Password" minimumFontSize="17" id="m8W-9s-3JK">
-                                                        <rect key="frame" x="8" y="9" width="466" height="31"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" secureTextEntry="YES"/>
-                                                    </textField>
-                                                </subviews>
-                                                <color key="backgroundColor" white="0.0" alpha="0.75" colorSpace="calibratedWhite"/>
-                                            </view>
+                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                <textInputTraits key="textInputTraits" autocorrectionType="no" secureTextEntry="YES"/>
+                                            </textField>
                                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Invalid username or password!" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="MrW-4O-99A">
                                                 <rect key="frame" x="175" y="172" width="245" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -77,6 +55,14 @@
                                                 <color key="textColor" red="0.98979591836734693" green="0.0" blue="0.010740281782697279" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="wilho2" placeholder="Username" minimumFontSize="17" id="fie-sP-iDu" customClass="BorderedTextField">
+                                                <rect key="frame" x="56" y="50" width="483" height="50"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                                            </textField>
                                         </subviews>
                                         <color key="backgroundColor" white="0.59999999999999998" alpha="0.10000000000000001" colorSpace="calibratedWhite"/>
                                     </view>
@@ -310,7 +296,7 @@
                 <view opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="R7K-6R-QAs" userLabel="TablesView">
                     <rect key="frame" x="0.0" y="0.0" width="1125" height="883"/>
                     <subviews>
-                        <view opaque="NO" autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="vCU-J5-5Lt" userLabel="Order Detail View">
+                        <view autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="vCU-J5-5Lt" userLabel="Order Detail View">
                             <rect key="frame" x="759" y="13" width="350" height="870"/>
                             <subviews>
                                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="h7c-yF-fIj" userLabel="Order Detail table View" customClass="GRNOrderItemsTableView">
@@ -619,7 +605,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S4r-fe-NAD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3190" y="2494"/>
+            <point key="canvasLocation" x="4478" y="449"/>
         </scene>
         <!--Line ItemVC-->
         <scene sceneID="wdD-Mt-6ih">
@@ -688,23 +674,17 @@
                                     <segue destination="bKe-ir-2w6" kind="push" identifier="next" id="B4X-9R-O18"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" id="Quw-u5-GEV" customClass="BorderedBlackView">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Supplier Delivery Number (SDN)" textAlignment="center" minimumFontSize="17" id="V5Q-Sx-vUc" customClass="BorderedTextField">
                                 <rect key="frame" x="169" y="136" width="430" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Supplier Delivery Number (SDN)" textAlignment="center" minimumFontSize="17" id="V5Q-Sx-vUc">
-                                        <rect key="frame" x="10" y="10" width="413" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <outlet property="delegate" destination="heY-hr-AD0" id="h54-Ol-pps"/>
-                                        </connections>
-                                    </textField>
-                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="heY-hr-AD0" id="h54-Ol-pps"/>
+                                </connections>
+                            </textField>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="WuI-af-YZf" customClass="GRNOrderItemsTableView">
                                 <rect key="frame" x="169" y="194" width="430" height="317"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -734,7 +714,7 @@
                                 <color key="textColor" white="0.70460766423357668" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Quantity Received" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="erm-bB-DAI">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Quantity Rejected" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="erm-bB-DAI">
                                 <rect key="frame" x="67" y="722" width="195" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -762,47 +742,35 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Sand Silica" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="zzB-Pn-b3c">
-                                <rect key="frame" x="296" y="622" width="405" height="27"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Sand Silica" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsLetterSpacingToFitWidth="YES" id="zzB-Pn-b3c">
+                                <rect key="frame" x="296" y="607" width="405" height="57"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" id="WEY-9Y-5rO" customClass="BorderedBlackView">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0" minimumFontSize="17" id="iC7-zr-Weu" customClass="BorderedTextField">
                                 <rect key="frame" x="296" y="665" width="200" height="41"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0" minimumFontSize="17" id="iC7-zr-Weu">
-                                        <rect key="frame" x="12" y="6" width="181" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numberPad" enablesReturnKeyAutomatically="YES"/>
-                                        <connections>
-                                            <outlet property="delegate" destination="heY-hr-AD0" id="iul-iX-uV5"/>
-                                        </connections>
-                                    </textField>
-                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                            <view contentMode="scaleToFill" id="3ru-dG-drD" customClass="BorderedBlackView">
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                <connections>
+                                    <outlet property="delegate" destination="heY-hr-AD0" id="iul-iX-uV5"/>
+                                </connections>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0" minimumFontSize="17" id="ni9-NU-czV" customClass="BorderedTextField">
                                 <rect key="frame" x="296" y="715" width="200" height="41"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0" minimumFontSize="17" id="ni9-NU-czV">
-                                        <rect key="frame" x="12" y="6" width="181" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
-                                        <connections>
-                                            <outlet property="delegate" destination="heY-hr-AD0" id="63P-12-d02"/>
-                                        </connections>
-                                    </textField>
-                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                <connections>
+                                    <outlet property="delegate" destination="heY-hr-AD0" id="63P-12-d02"/>
+                                </connections>
+                            </textField>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="M3 (0 expected)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bwC-Wq-olR">
                                 <rect key="frame" x="508" y="672" width="162" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -810,14 +778,6 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" id="zqP-yf-1dJ" customClass="UIButton">
-                                <rect key="frame" x="504" y="715" width="197" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <action selector="Reason:" destination="heY-hr-AD0" eventType="valueChanged" id="5BQ-cZ-Bcy"/>
-                                </connections>
-                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="6Uf-LO-daJ">
                                 <rect key="frame" x="296" y="764" width="405" height="43"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -834,23 +794,17 @@
                                     <action selector="wbsCodes:" destination="heY-hr-AD0" eventType="touchUpInside" id="nb7-FT-lU0"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" id="Tnd-bS-GyB" customClass="BorderedBlackView">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" id="QaO-Tg-Fgc" customClass="BorderedTextField">
                                 <rect key="frame" x="296" y="815" width="405" height="41"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" minimumFontSize="17" id="QaO-Tg-Fgc">
-                                        <rect key="frame" x="12" y="6" width="387" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <outlet property="delegate" destination="heY-hr-AD0" id="6NV-4I-70u"/>
-                                        </connections>
-                                    </textField>
-                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="heY-hr-AD0" id="6NV-4I-70u"/>
+                                </connections>
+                            </textField>
                             <view tag="100" contentMode="scaleToFill" id="0Yf-qJ-VGY" userLabel="TopBar" customClass="UnderlinedView">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="47"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
@@ -889,6 +843,32 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
+                            <view contentMode="scaleToFill" id="nKw-Ig-yhi" customClass="BorderedBlackView">
+                                <rect key="frame" x="504" y="715" width="197" height="41"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="eDw-Gf-Em8">
+                                        <rect key="frame" x="0.0" y="0.0" width="197" height="41"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <inset key="titleEdgeInsets" minX="-50" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <inset key="imageEdgeInsets" minX="150" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" title="No Reason" image="down_icon.png">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="Reason:" destination="heY-hr-AD0" eventType="touchUpInside" id="9pH-Bz-bKr"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
@@ -902,12 +882,52 @@
                         <outlet property="itemTableView" destination="WuI-af-YZf" id="3YY-9m-AMY"/>
                         <outlet property="note" destination="QaO-Tg-Fgc" id="fh5-H2-EJR"/>
                         <outlet property="quantityDelivered" destination="iC7-zr-Weu" id="bGO-Mg-b15"/>
-                        <outlet property="quantityRecieved" destination="ni9-NU-czV" id="GzR-qK-nes"/>
+                        <outlet property="quantityRejected" destination="ni9-NU-czV" id="u2p-3j-6J6"/>
+                        <outlet property="reasonButton" destination="eDw-Gf-Em8" id="pYD-zc-zpl"/>
+                        <outlet property="resonView" destination="9Hl-FH-0id" id="bac-OI-Y1f"/>
                         <outlet property="sdnTextField" destination="V5Q-Sx-vUc" id="Ziq-Xa-z37"/>
-                        <outlet property="wbsButton" destination="6Uf-LO-daJ" id="pz5-ko-S92"/>
+                        <outlet property="wbsButton" destination="6Uf-LO-daJ" id="B4v-SG-VVN"/>
+                        <outlet property="wbsTable" destination="P4U-nK-zYp" id="TjF-3h-Is9"/>
+                        <outlet property="wbsView" destination="hM1-t3-wEg" id="5Qk-Wv-Phe"/>
                         <segue destination="yBb-kj-pff" kind="custom" identifier="back" customClass="PopVCSegue" id="Hq8-6i-vvq"/>
                     </connections>
                 </viewController>
+                <view contentMode="scaleToFill" id="9Hl-FH-0id" userLabel="ReasonView" customClass="UIButton">
+                    <rect key="frame" x="0.0" y="0.0" width="768" height="1004"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="55" sectionHeaderHeight="22" sectionFooterHeight="22" id="pbo-2H-mqU" customClass="GRNReasonTableVC">
+                            <rect key="frame" x="134" y="362" width="500" height="281"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <outlet property="delegate" destination="heY-hr-AD0" id="CLf-8P-g3S"/>
+                            </connections>
+                        </tableView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.51000000000000001" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <action selector="dismissReason:" destination="heY-hr-AD0" eventType="touchUpInside" id="dVM-kH-4cj"/>
+                    </connections>
+                </view>
+                <view contentMode="scaleToFill" id="hM1-t3-wEg" userLabel="WBSView" customClass="UIButton">
+                    <rect key="frame" x="0.0" y="0.0" width="768" height="1004"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="P4U-nK-zYp" customClass="GRNWbsTableView">
+                            <rect key="frame" x="134" y="362" width="500" height="281"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <outlet property="delegate" destination="heY-hr-AD0" id="c29-Ly-kt7"/>
+                            </connections>
+                        </tableView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.51000000000000001" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <action selector="dismissWBS:" destination="heY-hr-AD0" eventType="touchUpInside" id="NaX-dq-cRy"/>
+                    </connections>
+                </view>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vRU-Xm-x5Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2350" y="449"/>
@@ -935,6 +955,7 @@
         <image name="11-x@2x.png" width="28" height="28"/>
         <image name="Kier_Logo.png" width="147" height="55"/>
         <image name="bg_mgrn.jpg" width="675" height="1004"/>
+        <image name="down_icon.png" width="50" height="40"/>
         <image name="icon_add.png" width="33" height="33"/>
         <image name="icon_main_camera.png" width="74" height="50"/>
         <image name="icon_reload.png" width="49" height="50"/>
@@ -947,6 +968,9 @@
     <classes>
         <class className="BorderedBlackView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/BorderedBlackView.h"/>
+        </class>
+        <class className="BorderedTextField" superclassName="UITextField">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/BorderedTextField.h"/>
         </class>
         <class className="DrawView" superclassName="UIView">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/DrawView.h"/>
@@ -963,6 +987,8 @@
         <class className="GRNCompleteGRNVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNCompleteGRNVC.h"/>
             <relationships>
+                <relationship kind="action" name="clearSignatureView:"/>
+                <relationship kind="action" name="takePhoto:"/>
                 <relationship kind="outlet" name="comments" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="delivery" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="photoLabel" candidateClass="UILabel"/>
@@ -977,17 +1003,24 @@
         <class className="GRNLineItemVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNLineItemVC.h"/>
             <relationships>
-                <relationship kind="action" name="Reason:"/>
+                <relationship kind="action" name="Reason:" candidateClass="UIButton"/>
                 <relationship kind="action" name="back:"/>
+                <relationship kind="action" name="dismissReason:"/>
+                <relationship kind="action" name="dismissWBS:"/>
+                <relationship kind="action" name="wbsCodes:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="descriptionLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="expected" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="itemLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="itemTableView" candidateClass="GRNOrderItemsTableView"/>
                 <relationship kind="outlet" name="note" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="quantityDelivered" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="quantityRecieved" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="quantityRejected" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="reasonButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="resonView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="sdnTextField" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="wbsButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="wbsTable" candidateClass="GRNWbsTableView"/>
+                <relationship kind="outlet" name="wbsView" candidateClass="UIView"/>
             </relationships>
         </class>
         <class className="GRNLoginVC" superclassName="UIViewController">
@@ -1006,6 +1039,12 @@
         <class className="GRNOrderDetailsVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNOrderDetailsVC.h"/>
             <relationships>
+                <relationship kind="action" name="contract:"/>
+                <relationship kind="action" name="logout:"/>
+                <relationship kind="action" name="purchaseOrders:"/>
+                <relationship kind="action" name="reload:"/>
+                <relationship kind="action" name="search:"/>
+                <relationship kind="action" name="viewDetails:"/>
                 <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="contractsTableView" candidateClass="GRNContractTableView"/>
                 <relationship kind="outlet" name="loadingView" candidateClass="UIView"/>
@@ -1024,9 +1063,16 @@
         <class className="GRNPurchaseOrderTableView" superclassName="GRNBaseTable">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNPurchaseOrderTableView.h"/>
         </class>
+        <class className="GRNReasonTableVC" superclassName="UITableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNReasonTableVC.h"/>
+        </class>
+        <class className="GRNWbsTableView" superclassName="UITableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNWbsTableView.h"/>
+        </class>
         <class className="PhotoPreviewVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/PhotoPreviewVC.h"/>
             <relationships>
+                <relationship kind="action" name="close:"/>
                 <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
             </relationships>
         </class>
@@ -1043,8 +1089,8 @@
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="y6h-bZ-zD3"/>
         <segue reference="klj-eJ-dMA"/>
+        <segue reference="y6h-bZ-zD3"/>
         <segue reference="Hq8-6i-vvq"/>
     </inferredMetricsTieBreakers>
 </document>

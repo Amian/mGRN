@@ -35,6 +35,17 @@
     
 }
 
++(WBS*)fetchWBSWithCode:(NSString*)code inMOC:(NSManagedObjectContext*)moc
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"WBS"];
+    request.predicate = [NSPredicate predicateWithFormat:@"code = %@", code];
+    
+    NSError *fetchError = nil;
+    NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
+    return [matches lastObject];
+    
+}
+
 + (WBS *)insertWBSCodesWithData:(NSDictionary *)wbsData forContract:(Contract *)contract inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
 {
     WBS *wbsCode = nil;

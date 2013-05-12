@@ -15,4 +15,5 @@
 +(void)removeAllWBSInManagedObjectContext:(NSManagedObjectContext*)context;
 +(NSArray*)fetchWBSCodesForContractNumber:(NSString*)contractNumber inMOC:(NSManagedObjectContext*)moc;
 + (WBS *)insertWBSCodesWithData:(NSDictionary *)wbsData forContract:(Contract *)contract inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
++(WBS*)fetchWBSWithCode:(NSString*)code inMOC:(NSManagedObjectContext*)moc;
 @end

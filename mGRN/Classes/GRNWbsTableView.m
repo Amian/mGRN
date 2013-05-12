@@ -14,19 +14,26 @@
 #import "Contract.h"
 
 @interface GRNWbsTableView()<M1XmGRNDelegate>
-@property (nonatomic, strong) Contract *contract;
 @end
 
 @implementation GRNWbsTableView
 @synthesize contract = _contract;
 
--(id)initWithFrame:(CGRect)frame contract:(Contract*)contract
+-(id)initWithCoder:(NSCoder *)aDecoder
 {
-    self = [super init];
+    self = [super initWithCoder:aDecoder];
     if (self) {
-        self.contract = contract;
-        self.clearsSelectionOnViewWillAppear = NO;
-        self.contentSizeForViewInPopover = CGSizeMake(108,400);
+        
+        self.dataSource = self;
+    }
+    return self;
+}
+
+-(void)setContract:(Contract *)contract
+{
+    if (_contract != contract)
+    {
+        _contract = contract;
         self.dataArray = [WBS fetchWBSCodesForContractNumber:contract.number inMOC:[CoreDataManager sharedInstance].managedObjectContext];
         if (!self.dataArray.count)
         {
@@ -38,10 +45,11 @@
                        contractNumber:contract.number
                                   kco:kco];
         }
-        self.tableView.dataSource = self;
-        self.view.backgroundColor = [UIColor blackColor];
+        else
+        {
+            [self reloadData];
+        }
     }
-    return self;
 }
 
 #pragma mark - Table Data Source
@@ -55,15 +63,11 @@
     if (cell == nil)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MyIdentifier];
-        cell.indentationLevel = 1;
+        cell.indentationLevel = 1;        
+        WBS *wbs = [self.dataArray objectAtIndex:indexPath.row];
         
-        cell.textLabel.textColor = [UIColor whiteColor];
-        cell.detailTextLabel.textColor = [UIColor whiteColor];
-        
-        WBS *wbs = [self.dataArray objectAtIndex:indexPath.section];
-        
-        cell.textLabel.text = wbs.code;
-        cell.detailTextLabel.text = wbs.codeDescription;
+//        cell.textLabel.text = wbs.code;
+        cell.textLabel.text = wbs.codeDescription;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
     }
@@ -92,12 +96,12 @@
     for (NSDictionary *wbs in wbsData)
     {
         [result addObject:[WBS insertWBSCodesWithData:wbs
-                        forContract:self.contract
-             inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext
-                              error:nil]];
+                                          forContract:self.contract
+                               inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext
+                                                error:nil]];
     }
     self.dataArray = [result copy];
-    [self.tableView reloadData];
+    [self reloadData];
 }
 
 @end

@@ -12,8 +12,9 @@
 #import "CoreDataManager.h"
 #import "GRNCompleteGRNVC.h"
 #import "GRNWbsTableView.h"
+#import "GRNReasonTableVC.h"
 
-@interface GRNLineItemVC() <UITableViewDelegate, UIAlertViewDelegate>
+@interface GRNLineItemVC() <UITableViewDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 @property (nonatomic, weak) UIPopoverController *pvc;
 @property (readonly) GRNItem *selectedItem;
 @end
@@ -43,11 +44,16 @@ static float KeyboardHeight;
     [self setItemLabel:nil];
     [self setDescriptionLabel:nil];
     [self setQuantityDelivered:nil];
-    [self setQuantityRecieved:nil];
+    [self setQuantityRejected:nil];
     [self setNote:nil];
     [self setExpected:nil];
     [self setWbsButton:nil];
     [self setSdnTextField:nil];
+    [self setResonView:nil];
+    [self setWbsView:nil];
+    [self setReasonButton:nil];
+    [self setWbsButton:nil];
+    [self setWbsTable:nil];
     [super viewDidUnload];
 }
 
@@ -59,17 +65,33 @@ static float KeyboardHeight;
     }
     else if ([tableView isKindOfClass:[GRNWbsTableView class]])
     {
-        [self.pvc dismissPopoverAnimated:YES];
+        [self.wbsView removeFromSuperview];
         WBS *wbs = [((GRNWbsTableView*)tableView).dataArray objectAtIndex:indexPath.row];
-        [self.wbsButton setTitle:wbs.code forState:UIControlStateNormal];
+        [self.wbsButton setTitle:wbs.codeDescription forState:UIControlStateNormal];
+        self.selectedItem.wbsCode = wbs.code;
+    }
+    else if ([tableView isKindOfClass:[GRNReasonTableVC class]])
+    {
+        GRNReasonTableVC *rtv = (GRNReasonTableVC*)tableView;
+        [self.resonView removeFromSuperview];
+        [self.reasonButton setTitle:[rtv selectedReason] forState:UIControlStateNormal];
+        self.selectedItem.exception = [rtv selectedCode]; //TODO: Confirm this is the right place to put it
     }
 }
+
 -(void)displaySelectedItem
 {
     PurchaseOrderItem *item = self.itemTableView.selectedObject;
     self.itemLabel.text = item.itemNumber;
     self.descriptionLabel.text = item.itemDescription;
     self.expected.text = [NSString stringWithFormat:@"%@ (%i expected)",item.uoq,[item.quantityBalance intValue]];
+    [self.reasonButton setTitle:[GRNReasonTableVC ReasonForCode:self.selectedItem.exception] forState:UIControlStateNormal];
+    WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    NSLog(@"%@,%@",self.selectedItem.wbsCode, wbs.codeDescription);
+    [self.wbsButton setTitle:wbs.codeDescription.length? wbs.codeDescription : @"Select WBS Code" forState:UIControlStateNormal];
+    self.quantityDelivered.text = [NSString stringWithFormat:@"%i",[self.selectedItem.quantityDelivered intValue] ];
+    self.quantityRejected.text = [NSString stringWithFormat:@"%i",[self.selectedItem.quantityRejected intValue]];
+    self.note.text = self.selectedItem.notes;
 }
 
 -(GRNItem*)selectedItem
@@ -92,32 +114,34 @@ static float KeyboardHeight;
     }
 }
 
--(void)textFieldDidEndEditing:(UITextField *)textField
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     if ([textField isEqual:self.note])
     {
-        self.selectedItem.notes = textField.text;
+        self.selectedItem.notes = newString;
     }
     else if ([textField isEqual:self.quantityDelivered])
     {
-        self.selectedItem.quantityDelivered = [NSNumber numberWithInt:[textField.text intValue]];
+        self.selectedItem.quantityDelivered = [NSNumber numberWithInt:[newString intValue]];
     }
-    else if ([textField isEqual:self.quantityRecieved])
+    else if ([textField isEqual:self.quantityRejected])
     {
-        //TODO: needs to be done
+        self.selectedItem.quantityRejected = [NSNumber numberWithInt:[newString intValue]];
     }
     else if ([textField isEqual:self.sdnTextField])
     {
         //TODO: Check if it is valid
-        self.grn.supplierReference = textField.text;
+        self.grn.supplierReference = newString;
     }
-    [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+    return YES;
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"next"])
     {
+        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
         GRNCompleteGRNVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
     }
@@ -147,20 +171,24 @@ static float KeyboardHeight;
 
 - (IBAction)wbsCodes:(UIButton*)button
 {
-    GRNWbsTableView *vc = [[GRNWbsTableView alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 500.0)
-                                                  contract:self.grn.purchaseOrder.contract];
-    vc.tableView.delegate = self;
-    self.pvc = [[UIPopoverController alloc] initWithContentViewController:vc];
-    [self.pvc presentPopoverFromRect:CGRectMake(button.frame.size.width / 2, button.frame.size.height / 1, 1, 1)
-                              inView:self.view
-            permittedArrowDirections:UIPopoverArrowDirectionAny
-                            animated:YES];
+    self.wbsTable.contract = self.grn.purchaseOrder.contract;
+    [self.view addSubview:self.wbsView];
 }
 
-- (IBAction)Reason:(id)sender
+- (IBAction)Reason:(UIButton*)button
 {
-    
+    [self.view addSubview:self.resonView];
 }
+
+- (IBAction)dismissReason:(id)sender
+{
+    [self.resonView removeFromSuperview];
+}
+- (IBAction)dismissWBS:(id)sender
+{
+    [self.wbsView removeFromSuperview];
+}
+    
 - (IBAction)back:(id)sender
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Discard GRN"
@@ -176,9 +204,15 @@ static float KeyboardHeight;
 {
     if (buttonIndex != alertView.cancelButtonIndex)
     {
-        [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
-        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
-
+        NSManagedObjectContext *moc = [CoreDataManager sharedInstance].managedObjectContext;
+        for (GRNItem *i in self.grn.lineItems)
+        {
+            [moc deleteObject:i];
+        }
+        [moc deleteObject:self.grn];
+        [moc save:nil];
+        [GRNItem removeAllObjectsInManagedObjectContext:moc];
+        [GRN removeAllObjectsInManagedObjectContext:moc];//TODO:Remove
         [self performSegueWithIdentifier:@"back" sender:self];
     }
 }

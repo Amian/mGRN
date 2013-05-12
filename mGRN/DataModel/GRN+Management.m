@@ -88,4 +88,16 @@
         return NO;
     }
 }
+
++(void)removeAllObjectsInManagedObjectContext:(NSManagedObjectContext*)context
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRN"];
+    NSError *fetchError = nil;
+    NSArray *matches = [context executeFetchRequest:request error:&fetchError];
+    for (id o in matches)
+    {
+        [context deleteObject:o];
+    }
+    [context save:nil];
+}
 @end

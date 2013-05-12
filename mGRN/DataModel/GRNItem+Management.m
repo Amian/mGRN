@@ -77,4 +77,17 @@
     return [matches lastObject];
 }
 
+
++(void)removeAllObjectsInManagedObjectContext:(NSManagedObjectContext*)context
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRNItem"];
+    NSError *fetchError = nil;
+    NSArray *matches = [context executeFetchRequest:request error:&fetchError];
+    for (id o in matches)
+    {
+        [context deleteObject:o];
+    }
+    [context save:nil];
+}
+
 @end

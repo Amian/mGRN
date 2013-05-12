@@ -14,5 +14,6 @@
 
 + (GRNItem *)grnItemForGRN:(GRN *)grn withDataFromPurchaseOrderItem:(PurchaseOrderItem *)purchaseOrderItem inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
 +(GRNItem*)fetchItemWithNumber:(NSString*)number moc:(NSManagedObjectContext*)context error:(NSError**)error;
++(void)removeAllObjectsInManagedObjectContext:(NSManagedObjectContext*)context;
 
 @end

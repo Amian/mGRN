@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GRNReasonTableVC : UITableViewController
+@interface GRNReasonTableVC : UITableView <UITableViewDataSource>
 @property (nonatomic, retain) NSArray *dataArray;
+-(NSString*)selectedReason;
+-(NSString*)selectedCode;
++(NSString*)CodeForReason:(NSString*)reason;
++(NSString*)ReasonForCode:(NSString*)code;
 @end

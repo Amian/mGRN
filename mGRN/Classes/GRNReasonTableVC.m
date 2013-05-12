@@ -10,14 +10,13 @@
 
 @implementation GRNReasonTableVC
 
--(id)init
+-(id)initWithCoder:(NSCoder *)aDecoder
 {
-    self = [super init];
+    self = [super initWithCoder:aDecoder];
     if (self)
     {
-        self.dataArray = [NSArray arrayWithObjects:@"No Reason",@"Reason 1",@"Reason 2", @"Reason 3", @"Reason 4", nil];
-        self.tableView.delegate = self;
-        self.tableView.dataSource = self;
+        self.dataArray = [NSArray arrayWithObjects:@"No Reason",@"Damaged",@"Fragmented", @"Expect QA Details", @"Query", nil];
+        self.dataSource = self;
     }
     return self;
 }
@@ -51,4 +50,51 @@
     return self.dataArray.count;
 }
 
+-(float)rowHeight
+{
+    return self.frame.size.height/5;
+}
+
+-(NSString*)selectedReason
+{
+    return [self.dataArray objectAtIndex:[self indexPathForSelectedRow].row];
+}
+
+-(NSString*)selectedCode
+{
+    NSArray *codes = [NSArray arrayWithObjects:@"", @"DA", @"FR", @"QA", @"QR", nil];
+    return [codes objectAtIndex:[self indexPathForSelectedRow].row];
+}
+
++(NSString*)ReasonForCode:(NSString*)code
+{
+    NSArray *array = [NSArray arrayWithObjects:@"No Reason",@"Damaged",@"Fragmented", @"Expect QA Details", @"Query", nil];
+    NSArray *codes = [NSArray arrayWithObjects:@"", @"DA", @"FR", @"QA", @"QR", nil];
+    int index = 0;
+    for (NSString *c in codes)
+    {
+        if ([code isEqualToString:c])
+        {
+            return [array objectAtIndex:index];
+        }
+        index++;
+    }
+    return @"No Reason";
+}
+
++(NSString*)CodeForReason:(NSString*)reason
+{
+    NSArray *array = [NSArray arrayWithObjects:@"No Reason",@"Damaged",@"Fragmented", @"Expect QA Details", @"Query", nil];
+    NSArray *codes = [NSArray arrayWithObjects:@"", @"DA", @"FR", @"QA", @"QR", nil];
+    int index = 0;
+    for (NSString *c in array)
+    {
+        if ([reason isEqualToString:c])
+        {
+            return [codes objectAtIndex:index];
+        }
+        index++;
+    }
+    return @"";
+}
 @end

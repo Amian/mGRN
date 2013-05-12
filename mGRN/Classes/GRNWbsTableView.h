@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @class Contract;
-@interface GRNWbsTableView : UITableViewController <UITableViewDataSource>
--(id)initWithFrame:(CGRect)frame contract:(Contract*)contract;
+@interface GRNWbsTableView : UITableView <UITableViewDataSource>
+@property (nonatomic, strong) Contract *contract;
 @property (nonatomic, strong) NSArray *dataArray;
 @end

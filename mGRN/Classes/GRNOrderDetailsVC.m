@@ -255,12 +255,15 @@
 - (IBAction)reload:(id)sender
 {
     [self.contractsTableView getDataFromAPI];
-    self.purchaseOrderTableView.alpha = 0.0;
-    self.orderDetailView.alpha = 0.0;
+    self.purchaseOrderTableView.hidden = YES;
+    self.orderDetailView.hidden = YES;
     [self tablecontainerDelegateChangedStatusTo:Contracts];
 }
-- (IBAction)search:(id)sender {
+- (IBAction)search:(id)sender
+{
+    
 }
+
 - (IBAction)logout:(id)sender
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout"
