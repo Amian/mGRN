@@ -215,7 +215,6 @@
                                             </connections>
                                         </textField>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="UZZ-u6-3dU"/>
                                     <barButtonItem title="Done" width="117" id="qvc-Kc-WJF">
                                         <connections>
                                             <action selector="doneSearching:" destination="yBb-kj-pff" id="fi2-b9-vh6"/>
@@ -846,7 +845,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="tsc-3s-GSK">
-                                        <rect key="frame" x="706" y="2" width="45" height="44"/>
+                                        <rect key="frame" x="650" y="2" width="45" height="44"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                         <state key="normal" image="icon_search.png">
@@ -857,8 +856,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="search:" destination="SYl-j8-JrI" eventType="touchUpInside" id="MMX-8O-tHL"/>
-                                            <action selector="search:" destination="yBb-kj-pff" eventType="touchUpInside" id="Shu-BG-cxa"/>
+                                            <action selector="search:" destination="heY-hr-AD0" eventType="touchUpInside" id="pWu-1C-jVK"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="IVB-ep-LDF">
@@ -874,6 +872,23 @@
                                         </state>
                                         <connections>
                                             <action selector="back:" destination="heY-hr-AD0" eventType="touchUpInside" id="Zkh-Jm-Emo"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="slL-c9-izm">
+                                        <rect key="frame" x="703" y="2" width="45" height="44"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="icon_reload.png">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="refresh:" destination="heY-hr-AD0" eventType="touchUpInside" id="hIs-j6-efr"/>
+                                            <action selector="reload:" destination="yBb-kj-pff" eventType="touchUpInside" id="60R-vV-Cr6"/>
+                                            <action selector="reload:" destination="SYl-j8-JrI" eventType="touchUpInside" id="dUv-qj-OaA"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -905,6 +920,28 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="8Fg-fV-Dha">
+                                <rect key="frame" x="0.0" y="960" width="769" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem style="plain" id="UIq-xI-JYi">
+                                        <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search" minimumFontSize="17" clearButtonMode="always" id="ZaC-LW-hc4">
+                                            <rect key="frame" x="12" y="7" width="619" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="heY-hr-AD0" id="dSk-0I-yh3"/>
+                                            </connections>
+                                        </textField>
+                                    </barButtonItem>
+                                    <barButtonItem title="Done" width="117" id="Zdl-fy-XjU">
+                                        <connections>
+                                            <action selector="doneSearching:" destination="heY-hr-AD0" id="WtR-ql-O9G"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
@@ -922,6 +959,8 @@
                         <outlet property="reasonButton" destination="eDw-Gf-Em8" id="pYD-zc-zpl"/>
                         <outlet property="resonView" destination="9Hl-FH-0id" id="bac-OI-Y1f"/>
                         <outlet property="sdnTextField" destination="V5Q-Sx-vUc" id="Ziq-Xa-z37"/>
+                        <outlet property="searchBar" destination="8Fg-fV-Dha" id="ajw-47-x57"/>
+                        <outlet property="searchTextField" destination="ZaC-LW-hc4" id="Dod-Sl-422"/>
                         <outlet property="wbsButton" destination="6Uf-LO-daJ" id="B4v-SG-VVN"/>
                         <outlet property="wbsTable" destination="P4U-nK-zYp" id="TjF-3h-Is9"/>
                         <outlet property="wbsView" destination="hM1-t3-wEg" id="5Qk-Wv-Phe"/>

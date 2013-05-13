@@ -25,9 +25,8 @@ static float KeyboardHeight;
 
 -(void)viewDidLoad
 {
+    self.searchBar.hidden = YES;
     self.grnDict = [NSDictionary dictionary];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [super viewDidLoad];
     self.itemTableView.purchaseOrder = self.grn.purchaseOrder;
 }
@@ -37,6 +36,15 @@ static float KeyboardHeight;
     NSLog(@"dict in lvc = %@",self.grnDict);
     [self displaySelectedItem];
     [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -55,6 +63,8 @@ static float KeyboardHeight;
     [self setReasonButton:nil];
     [self setWbsButton:nil];
     [self setWbsTable:nil];
+    [self setSearchBar:nil];
+    [self setSearchTextField:nil];
     [super viewDidUnload];
 }
 
@@ -106,7 +116,7 @@ static float KeyboardHeight;
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if (self.view.frame.origin.y == 0 && ![textField isEqual:self.sdnTextField])
+    if (self.view.frame.origin.y == 0 && ![textField isEqual:self.sdnTextField] && ![textField isEqual:self.searchTextField])
     {
         CGRect frame = self.view.frame;
         frame.origin.y = -KeyboardHeight; //height of keyboard
@@ -136,6 +146,10 @@ static float KeyboardHeight;
     {
         //TODO: Check if it is valid
         self.grn.supplierReference = newString;
+    }
+    else if ([textField isEqual:self.searchTextField])
+    {
+        [self.itemTableView searchForString:newString];
     }
     return YES;
 }
@@ -192,16 +206,52 @@ static float KeyboardHeight;
 {
     [self.wbsView removeFromSuperview];
 }
-    
+
 - (IBAction)back:(id)sender
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Discard GRN"
-                                                        message:@"Are you sure you want to discard this GRN?"
-                                                       delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                              otherButtonTitles:@"OK",nil];
-        [alert show];
+                                                    message:@"Are you sure you want to discard this GRN?"
+                                                   delegate:self
+                                          cancelButtonTitle:@"Cancel"
+                                          otherButtonTitles:@"OK",nil];
+    [alert show];
+    
+}
 
+- (IBAction)doneSearching:(id)sender
+{
+    self.searchTextField.text = @"";
+    [self.searchTextField resignFirstResponder];
+    self.searchBar.hidden = YES;
+}
+- (IBAction)search:(id)sender
+{
+    if (self.searchBar.hidden)
+    {
+        self.searchBar.hidden = NO;
+        [self.searchTextField becomeFirstResponder];
+        
+        CGRect frame = self.searchBar.frame;
+        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height;
+        self.searchBar.frame = frame;
+        
+        //animate
+        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height - KeyboardHeight;
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.3];
+        self.searchBar.frame = frame;
+        [UIView commitAnimations];
+    }
+    else
+    {
+        self.searchTextField.text = @"";
+        self.searchBar.hidden = YES;
+        [self.searchTextField resignFirstResponder];
+    }
+}
+- (IBAction)refresh:(id)sender
+{
+    [self.itemTableView doneSearching];
 }
 
 -(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex

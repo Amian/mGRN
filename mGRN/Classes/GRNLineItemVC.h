@@ -29,4 +29,8 @@
 @property (strong, nonatomic) IBOutlet GRNWbsTableView *wbsTable;
 
 @property (nonatomic,strong) NSDictionary *grnDict;
+
+@property (strong, nonatomic) IBOutlet UIToolbar *searchBar;
+@property (strong, nonatomic) IBOutlet UITextField *searchTextField;
+
 @end

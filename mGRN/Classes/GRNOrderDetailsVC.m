@@ -47,9 +47,6 @@
     [self.navViewOrder setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
 
     self.navContract.selected = YES;
-    
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -60,6 +57,15 @@
         self.tablesView.frame = self.containerView.bounds;
         [self.containerView addSubview:self.tablesView];
     }
+//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:UIKeyboardWillHideNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -352,20 +358,20 @@
     self.loadingView.hidden = NO;
 }
 
-#pragma mark - Search
+#pragma mark - Keyboard Notifications
 
--(void)onKeyboardHide:(NSNotification *)notification
-{
-//    if (self.searchBar.frame.origin.y != 0)
-//    {
-        CGRect frame = self.searchBar.frame;
-        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        self.searchBar.frame = frame;
-        [UIView commitAnimations];
-//    }
-}
+//-(void)onKeyboardHide:(NSNotification *)notification
+//{
+////    if (self.searchBar.frame.origin.y != 0)
+////    {
+//        CGRect frame = self.searchBar.frame;
+//        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height;
+//        [UIView beginAnimations:nil context:nil];
+//        [UIView setAnimationDuration:0.3];
+//        self.searchBar.frame = frame;
+//        [UIView commitAnimations];
+////    }
+//}
 
 -(void)onKeyboardShow:(NSNotification *)notification
 {
