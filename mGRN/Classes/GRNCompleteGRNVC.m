@@ -17,7 +17,7 @@
 #import "UIImage+fixOrientation.h"
 #import "GRNLineItemVC.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "LoadingView.h"
 #define SignTagSave 0
 #define SignTagSignAgain 1
 
@@ -28,10 +28,11 @@
 @property (nonatomic, strong) UIImage *selectedImage;
 @property (nonatomic, strong) UIPopoverController *popVC;
 @property (nonatomic, strong) UIImageView *fakeSignature;
+@property (nonatomic, strong) UIView *loadingView;
 @end
 
 @implementation GRNCompleteGRNVC
-@synthesize grn = _grn, image1, image2, image3, popVC = _popVC, grnDict, fakeSignature;
+@synthesize grn = _grn, image1, image2, image3, popVC = _popVC, grnDict, fakeSignature, loadingView;
 
 -(void)viewDidLoad
 {
@@ -99,13 +100,7 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSLog(@"id = %@",segue.identifier);
-    if ([segue.identifier isEqualToString:@"submitGRN"])
-    {
-        //TODO: submit GRN
-        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
-        [self submit];
-    }
-    else if ([segue.identifier isEqualToString:@"back"])
+    if ([segue.identifier isEqualToString:@"back"])
     {
         self.grn.notes  = self.comments.text;
         [[CoreDataManager sharedInstance].managedObjectContext save:nil];
@@ -123,9 +118,11 @@
         vc.image = self.selectedImage;
     }
 }
+- (IBAction)submit:(id)sender {
 
--(void)submit
-{
+    [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+    self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
+    [self.view addSubview:self.loadingView];
     M1XmGRNService *service = [[M1XmGRNService alloc] init];
     service.delegate = self;
     NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
@@ -144,7 +141,7 @@
         grn.deliveryDate = @"\/Date(121212)\/"; //TODO:
     }
     
-    grn.ID = self.grn.orderNumber; //TODO: whats this?
+//    grn.ID = self.grn.orderNumber; //TODO: whats this?
     grn.kco = kco;
     grn.notes = self.grn.notes;
     grn.orderNumber = self.grn.purchaseOrder.orderNumber;
@@ -178,7 +175,8 @@
 
 -(void)onGetContractsFailure:(M1XResponse *)response
 {
-    //If communication failed, use cached data
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    //TODO:put it in a queue
     NSLog(@"submit response = %@",response);
 }
 
@@ -186,6 +184,7 @@
 {
     [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+    [self.navigationController popToRootViewControllerAnimated:YES];
     NSLog(@"submit response = %@",orderData);
 }
 

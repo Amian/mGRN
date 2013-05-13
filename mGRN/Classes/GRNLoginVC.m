@@ -9,7 +9,7 @@
 #import "GRNBaseVC.h"
 #import "GRNAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "LoadingView.h"
 #import "M1X.h"
 #import "M1XRequestHeader.h"
 
@@ -18,6 +18,7 @@
     BOOL animationInProgress;
     CGPoint originalCenter;
 }
+@property (nonatomic, strong) UIView *loadingView;
 @end
 
 @implementation GRNLoginVC
@@ -53,6 +54,8 @@
 
 -(IBAction)login
 {
+    self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
+    [self.view addSubview:self.loadingView];
     [self createNewSession];
 }
 
@@ -187,6 +190,7 @@
 
 -(void)onNewSessionSuccess:(M1XSession *)session
 {
+    [self.loadingView removeFromSuperview];
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault setValue:session.userId forKey:KeyUserID];
     [userDefault setValue:session.sessionEndDT forKey:KeySessionEndDate];
@@ -198,6 +202,7 @@
 
 -(void)onNewSessionFailure:(M1XResponse *)response
 {
+    [self.loadingView removeFromSuperview];
     [self earthquake:self.loginContainer];
     self.errorLabel.hidden = NO;
 }

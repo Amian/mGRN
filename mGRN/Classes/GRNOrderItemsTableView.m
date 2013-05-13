@@ -38,7 +38,7 @@
 {
     NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
                                                                          inMOC:[CoreDataManager sharedInstance].managedObjectContext];
-    [self.myDelegate tableDidEndLoadingData:self];
+//    [self.myDelegate tableDidEndLoadingData:self];
     return array;
 }
 
@@ -55,6 +55,7 @@
         else
         {
             [self reloadData];
+            [self.myDelegate tableDidEndLoadingData:self];
         }
     }
     else
@@ -87,6 +88,7 @@
     }
     self.dataArray = [self getDataArray];
     [self reloadData];
+    [self.myDelegate tableDidEndLoadingData:self];
 }
 
 -(int)numberOfSectionsInTableView:(UITableView *)tableView
