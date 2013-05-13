@@ -59,7 +59,6 @@
 {
     self.state = TableStateNormal;
     NSArray *array = [Contract fetchAllContractsInManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext];
-    [self.myDelegate tableDidEndLoadingData:self];
     return array;
 }
 
@@ -69,7 +68,7 @@
     [self.service GetContractsWithHeader:[GRNM1XHeader GetHeader] kco:self.kco includeWBS:NO];
 }
 
--(void)onGetContractsSuccess:(NSDictionary *)contractData
+-(void)onAPIRequestSuccess:(NSDictionary *)contractData
 {
     NSLog(@"response = %@",contractData);
     NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
@@ -88,6 +87,20 @@
         [contractObjectArray addObject:c];
     }
     self.dataArray = [self getDataArray];
+    [self reloadData];
+}
+
+-(void)searchForString:(NSString*)searchString
+{
+    if (searchString.length)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"number CONTAINS[c] %@ OR name CONTAINS[c] %@",searchString,searchString];
+        self.dataArray = [[self getDataArray] filteredArrayUsingPredicate:predicate];
+    }
+    else
+    {
+        self.dataArray = [self getDataArray];
+    }
     [self reloadData];
 }
 

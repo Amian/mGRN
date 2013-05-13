@@ -73,7 +73,7 @@
                                  purchaseOrderNumber:self.purchaseOrder.orderNumber];
 }
 
--(void)onGetContractsSuccess:(NSDictionary *)orderData
+-(void)onAPIRequestSuccess:(NSDictionary *)orderData
 {
     NSLog(@"response = %@",orderData);
     NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
@@ -123,6 +123,21 @@
                           animated:NO
                     scrollPosition:NO];
     }
+}
+
+
+-(void)searchForString:(NSString*)searchString
+{
+    if (searchString.length)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemNumber CONTAINS[c] %@ OR itemDescription CONTAINS[c] %@ OR  uoq CONTAINS[c] %@",searchString,searchString, searchString];
+        self.dataArray = [[self getDataArray] filteredArrayUsingPredicate:predicate];
+    }
+    else
+    {
+        self.dataArray = [self getDataArray];
+    }
+    [self reloadData];
 }
 
 @end

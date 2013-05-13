@@ -7,7 +7,6 @@
 //
 
 #import "GRNOrderDetailsVC.h"
-#import "Enums.h"
 #import "GRNContractTableView.h"
 #import "GRNPurchaseOrderTableView.h"
 #import "M1XmGRNService.h"
@@ -19,18 +18,20 @@
 #import "GRNBaseTable.h"
 #import "GRN+Management.h"
 
-@interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate>
+@interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 {
 }
 @property (nonatomic, strong) M1XmGRNService *service;
 @end
 
 @implementation GRNOrderDetailsVC
-@synthesize service = _service;
+@synthesize service = _service, status = _status;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.searchBar.hidden = YES;
+    self.status = Contracts;
     [self.view addSubview:self.loadingView];
     self.loadingView.hidden = YES;
 
@@ -46,6 +47,9 @@
     [self.navViewOrder setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
 
     self.navContract.selected = YES;
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -75,6 +79,8 @@
     [self setNavContract:nil];
     [self setNavPurchaseOrders:nil];
     [self setNavViewOrder:nil];
+    [self setSearchTextField:nil];
+    [self setSearchBar:nil];
     [super viewDidUnload];
 }
 
@@ -82,6 +88,8 @@
 
 -(void)tablecontainerDelegateChangedStatusTo:(TableNavigationStatus)newStatus
 {
+    self.status = newStatus;
+    [self doneSearching:nil];
     switch (newStatus)
     {
         case Contracts:
@@ -102,7 +110,7 @@
             self.orderDetailView.hidden = YES;
             
             self.contractsTableView.state = TableStateNormal;
-            [self.contractsTableView reloadData];
+            [self.contractsTableView doneSearching];
             [self moveContainerToTheRight];
             break;
         case PurchaseOrders:
@@ -122,6 +130,7 @@
             self.purchaseOrderTableView.hidden = NO;
             self.orderDetailView.hidden = YES;
             
+            [self.purchaseOrderTableView doneSearching];
             [self moveContainerToTheRight];
             break;
         case ViewOrder:
@@ -141,6 +150,7 @@
             self.purchaseOrderTableView.hidden = NO;
             self.orderDetailView.hidden = NO;
 
+            [self.orderItemTableView doneSearching];
             [self moveContainerToTheLeft];
             break;
         default:
@@ -261,7 +271,17 @@
 }
 - (IBAction)search:(id)sender
 {
-    
+    if (self.searchBar.hidden)
+    {
+    self.searchBar.hidden = NO;
+    [self.searchTextField becomeFirstResponder];
+    }
+    else
+    {
+        self.searchTextField.text = @"";
+        self.searchBar.hidden = YES;
+        [self.searchTextField resignFirstResponder];
+    }
 }
 
 - (IBAction)logout:(id)sender
@@ -273,6 +293,13 @@
                                               otherButtonTitles:@"YES",nil];
     [alert show];
 
+}
+
+- (IBAction)doneSearching:(id)sender
+{
+    self.searchTextField.text = @"";
+    [self.searchTextField resignFirstResponder];
+    self.searchBar.hidden = YES;
 }
 
 #pragma mark - Alert View Delegate
@@ -325,7 +352,54 @@
     self.loadingView.hidden = NO;
 }
 
+#pragma mark - Search
+
+-(void)onKeyboardHide:(NSNotification *)notification
+{
+//    if (self.searchBar.frame.origin.y != 0)
+//    {
+        CGRect frame = self.searchBar.frame;
+        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height;
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.3];
+        self.searchBar.frame = frame;
+        [UIView commitAnimations];
+//    }
+}
+
+-(void)onKeyboardShow:(NSNotification *)notification
+{
+    CGFloat keyboardHeight = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height; //height of keyboard
+    CGRect frame = self.searchBar.frame;
+    frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height - keyboardHeight;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    self.searchBar.frame = frame;
+    [UIView commitAnimations];
+}
 
 
+#pragma  mark - Text Field Delegate
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    //TODO:search
+    switch (self.status)
+    {
+        case Contracts:
+            [self.contractsTableView searchForString:newString];
+            break;
+        case PurchaseOrders:
+            [self.purchaseOrderTableView searchForString:newString];
+            break;
+        case ViewOrder:
+            [self.orderItemTableView searchForString:newString];
+            break;
+        default:
+            break;
+    }
+    return YES;
+}
 
 @end

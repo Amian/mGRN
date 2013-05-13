@@ -173,14 +173,14 @@
     
 }
 
--(void)onGetContractsFailure:(M1XResponse *)response
+-(void)onAPIRequestFailure:(M1XResponse *)response
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
     //TODO:put it in a queue
     NSLog(@"submit response = %@",response);
 }
 
--(void)onGetContractsSuccess:(NSDictionary *)orderData
+-(void)onAPIRequestSuccess:(NSDictionary *)orderData
 {
     [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];

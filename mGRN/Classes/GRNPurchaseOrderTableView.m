@@ -124,7 +124,7 @@
                              includeLineItems:NO];
 }
 
--(void)onGetContractsSuccess:(NSDictionary *)orderData
+-(void)onAPIRequestSuccess:(NSDictionary *)orderData
 {
     NSLog(@"response = %@",orderData);
     NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
@@ -142,4 +142,17 @@
     [self.myDelegate tableDidEndLoadingData:self];
 }
 
+-(void)searchForString:(NSString*)searchString
+{
+    if (searchString.length)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"orderNumber CONTAINS[c] %@ OR orderDescription CONTAINS[c] %@ OR  orderName CONTAINS[c] %@ OR attention CONTAINS[c] %@",searchString,searchString, searchString, searchString];
+        self.dataArray = [[self getDataArray] filteredArrayUsingPredicate:predicate];
+    }
+    else
+    {
+        self.dataArray = [self getDataArray];
+    }
+    [self reloadData];
+}
 @end

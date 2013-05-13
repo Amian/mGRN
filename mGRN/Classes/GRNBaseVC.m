@@ -9,8 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "GRNBaseVC.h"
 
-#define BGImageViewTag 100
-
 @interface GRNBaseVC ()
 @end
 

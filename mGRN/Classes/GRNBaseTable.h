@@ -35,4 +35,6 @@ typedef enum
 -(void)getDataFromAPI;
 -(id)selectedObject;
 -(void)rowSelected;
+-(void)searchForString:(NSString*)searchString;
+-(void)doneSearching;
 @end

@@ -102,6 +102,8 @@ static float KeyboardHeight;
     return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
 }
 
+#pragma mark - Text Field Delegate
+
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
     if (self.view.frame.origin.y == 0 && ![textField isEqual:self.sdnTextField])

@@ -57,8 +57,8 @@
     if (self.delegate) {
         if (response.header.success) {
             if ([[response.header valueForKey:@"success"] boolValue]) {
-                if ([self.delegate respondsToSelector:@selector(onGetContractsSuccess:)]) {
-                    [self.delegate onGetContractsSuccess:response.body];
+                if ([self.delegate respondsToSelector:@selector(onAPIRequestSuccess:)]) {
+                    [self.delegate onAPIRequestSuccess:response.body];
                 }
             } else {
                 failed = YES;
@@ -67,8 +67,8 @@
             failed = YES;
         }
         if (failed) {
-            if ([self.delegate respondsToSelector:@selector(onGetContractsFailure:)]) {
-                [self.delegate onGetContractsFailure:response];
+            if ([self.delegate respondsToSelector:@selector(onAPIRequestFailure:)]) {
+                [self.delegate onAPIRequestFailure:response];
             }
         }
     }

@@ -84,12 +84,12 @@
     return self.dataArray.count;
 }
 
--(void)onGetContractsFailure:(M1XResponse *)response
+-(void)onAPIRequestFailure:(M1XResponse *)response
 {
     
 }
 
--(void)onGetContractsSuccess:(NSDictionary *)contracts
+-(void)onAPIRequestSuccess:(NSDictionary *)contracts
 {
     NSArray *wbsData = [contracts objectForKey:@"wbsCodes"];
     NSMutableArray *result = [NSMutableArray array];

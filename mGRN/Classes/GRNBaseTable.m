@@ -58,7 +58,7 @@ state = _state;
     return [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
 }
 
--(void)onGetContractsFailure:(M1XResponse *)response
+-(void)onAPIRequestFailure:(M1XResponse *)response
 {
     //If communication failed, use cached data
     self.dataArray = [self getDataArray];
@@ -115,4 +115,14 @@ state = _state;
     }
 }
 
+-(void)searchForString:(NSString*)searchString
+{
+    //Overrride method
+}
+
+-(void)doneSearching
+{
+    self.dataArray = [self getDataArray];
+    [self reloadData];
+}
 @end

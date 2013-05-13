@@ -41,8 +41,8 @@
 
 @optional
 
-- (void)onGetContractsSuccess:(NSDictionary *)contracts;
-- (void)onGetContractsFailure:(M1XResponse *)response;
+- (void)onAPIRequestSuccess:(NSDictionary *)contracts;
+- (void)onAPIRequestFailure:(M1XResponse *)response;
 
 @end
 
