@@ -15,7 +15,7 @@
 
 @implementation DrawView
 @synthesize path = _path, previousPoint1 = _previousPoint1, previousPoint2 = _previousPoint2, currentPoint = _currentPoint;
-@synthesize delegate, placeholder;
+@synthesize delegate, placeholder, hasSigned;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -100,6 +100,7 @@
 {
     if ([self.delegate respondsToSelector:@selector(drawViewDidEndDrawing)])
         [[self delegate] drawViewDidEndDrawing];
+    self.hasSigned = YES;
 }
 
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
@@ -114,6 +115,7 @@
 {
     self.placeholder.hidden = NO;
     self.path = Nil;
+    self.hasSigned = NO;
     [self setNeedsDisplay];
 }
 

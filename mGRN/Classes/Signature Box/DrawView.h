@@ -18,6 +18,7 @@
 {
     id <DrawViewDelegate> delegate;
 }
+@property BOOL hasSigned;
 @property CGMutablePathRef path;
 @property (retain) IBOutlet id delegate;
 @property (nonatomic, retain) UILabel *placeholder;
