@@ -34,6 +34,7 @@
     self.status = Contracts;
     [self.view addSubview:self.loadingView];
     self.loadingView.hidden = YES;
+    self.orderDetailView.hidden = YES;
 
     [self.navContract setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [self.navContract setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -88,6 +89,12 @@
     [self setSearchTextField:nil];
     [self setSearchBar:nil];
     [super viewDidUnload];
+}
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    NSLog(@"new y = %f, new height = %f",[self.view viewWithTag:109].frame.origin.y, self.orderItemTableView.frame.size.height);
+    [self tablecontainerDelegateChangedStatusTo:self.status];
 }
 
 #pragma mark - Table Container Delegate
@@ -168,15 +175,15 @@
 
 -(void)moveContainerToTheLeft
 {
-    if (self.tablesView.frame.origin.x == 0) {
+//    if (self.tablesView.frame.origin.x == 0) {
         CGRect newFrame = self.tablesView.frame;
-        newFrame.origin.x -= (self.tablesView.frame.size.width - self.view.frame.size.width);
+        newFrame.origin.x = -(self.tablesView.frame.size.width - self.view.frame.size.width);
         
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.3];
         self.tablesView.frame = newFrame;
         [UIView commitAnimations];
-    }
+//    }
 }
 
 -(void)moveContainerToTheRight
@@ -240,16 +247,16 @@
         GRNPurchaseOrderTableView *table = (GRNPurchaseOrderTableView*)tableView;
         if (table.state == TableStateSelected && table.selectedIndex.section == indexPath.section)
         {
-            height = table.frame.size.height/5.8;
+            height = 215.0;
         }
         else
         {
-            height = table.frame.size.height/6.4;
+            height = 170.0;
         }
     }
     else if ([tableView isKindOfClass:[GRNContractTableView class]])
     {
-        height = tableView.frame.size.height/8;
+        height = 110.0;
     }
     return height;
 }

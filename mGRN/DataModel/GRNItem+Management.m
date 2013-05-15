@@ -22,39 +22,34 @@
     
     
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"itemNumber" ascending:YES]];
-    request.predicate = [NSPredicate predicateWithFormat:@"grn.supplierReference = %@ AND itemNumber = %@", grn.supplierReference, purchaseOrderItem.itemNumber];
+    request.predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@ AND grn.purchaseOrder.orderNumber = %@", purchaseOrderItem.itemNumber, purchaseOrderItem.purchaseOrder.orderNumber];
     
     
     NSError *fetchError = nil;
     NSArray *matches = [context executeFetchRequest:request error:&fetchError];
     
-    if (!matches || [matches count] > 1) {
-// TODO: set values for error
-        if (error != NULL) {
-            *error = [NSError errorWithDomain:@"" code:0 userInfo:nil];;
-        }
-        return nil;
-    } else {
-        if ([matches count] == 1) {
-            grnItem = [matches objectAtIndex:0];
-//            NSLog(@"Match found for GRN %@ for %@", grn.supplierReference, purchaseOrderItem.purchaseOrder.orderNumber);
-        } else {
-            grnItem = [NSEntityDescription insertNewObjectForEntityForName:@"GRNItem" inManagedObjectContext:context];
-            grnItem.itemNumber = purchaseOrderItem.itemNumber;
-            grnItem.notes = nil;
-            grnItem.exception = nil;
-            grnItem.quantityDelivered = purchaseOrderItem.quantityBalance;
-            grnItem.quantityRejected = [NSNumber numberWithInt:0];
-            grnItem.serialNumber = nil;
-            grnItem.uoq = purchaseOrderItem.uoq;
-            grnItem.wbsCode = purchaseOrderItem.wbsCode;
-            grnItem.exception = @"";
-
-            [grn addLineItemsObject:grnItem];
-            [context save:nil];
-//            NSLog(@"Created GRN %@ for %@", grn.supplierReference, purchaseOrderItem.purchaseOrder.orderNumber);
-        }
+    if ([matches count] > 0)
+    {
+        //TODO: Do we need to do anything about this?
+//        for (id item in matches)
+//        {
+//            [context deleteObject:item];
+//        }
     }
+    grnItem = [NSEntityDescription insertNewObjectForEntityForName:@"GRNItem" inManagedObjectContext:context];
+    grnItem.itemNumber = purchaseOrderItem.itemNumber;
+    grnItem.notes = nil;
+    grnItem.exception = nil;
+    grnItem.quantityDelivered = purchaseOrderItem.quantityBalance;
+    grnItem.quantityRejected = [NSNumber numberWithInt:0];
+    grnItem.serialNumber = nil;
+    grnItem.uoq = purchaseOrderItem.uoq;
+    grnItem.wbsCode = purchaseOrderItem.wbsCode;
+    grnItem.exception = @"";
+    
+    [grn addLineItemsObject:grnItem];
+    [context save:nil];
+    //            NSLog(@"Created GRN %@ for %@", grn.supplierReference, purchaseOrderItem.purchaseOrder.orderNumber);
     return grnItem;
 }
 
@@ -67,7 +62,7 @@
     request.predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", number];
     NSError *fetchError = nil;
     NSArray *matches = [context executeFetchRequest:request error:&fetchError];
-
+    
     if (!matches || [matches count] > 1) {
         // TODO: set values for error
         if (error != NULL) {

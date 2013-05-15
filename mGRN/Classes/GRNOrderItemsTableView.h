@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "GRNBaseTable.h"
+#import "GRNItem.h"
 #import "PurchaseOrder.h"
-@interface GRNOrderItemsTableView : GRNBaseTable
+@interface GRNOrderItemsTableView : GRNBaseTable <UITableViewDelegate>
 @property (nonatomic, strong) PurchaseOrder *purchaseOrder;
+@property (nonatomic, strong) NSArray *grnItems;
 @end

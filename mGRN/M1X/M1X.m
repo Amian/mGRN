@@ -47,8 +47,12 @@
 -(NSString *)systemURL
 {
     if (!_systemURL) {
-// TODO:: set this default from settings bundle?
-        _systemURL = @"https://m1xdev.pervasic.com:29999";
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _systemURL = [defaults objectForKey:KeySystemURI];
+        if (!_systemURL || !_systemURL.length)
+        {
+            _systemURL = DefaultSystemURI;
+        }
     }
     return _systemURL;
 }

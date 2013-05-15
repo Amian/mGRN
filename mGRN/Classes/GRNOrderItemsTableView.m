@@ -10,7 +10,17 @@
 #import "PurchaseOrderItem+Management.h"
 
 @implementation GRNOrderItemsTableView
-@synthesize purchaseOrder = _purchaseOrder;
+@synthesize purchaseOrder = _purchaseOrder, grnItems = _grnItems;
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.delegate = self;
+        self.grnItems = NULL;
+    }
+    return self;
+}
 
 #pragma mark - Table Data Source
 
@@ -20,25 +30,33 @@
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     cell.indentationLevel = 1;
     cell.textLabel.textColor = [UIColor whiteColor];
-    if (indexPath.row == 0)
+    
+    PurchaseOrderItem *item = [self.dataArray objectAtIndex:indexPath.row];
+    cell.textLabel.font = [UIFont systemFontOfSize:20.0];
+    if (self.grnItems.count)
     {
-        cell.textLabel.font = [UIFont boldSystemFontOfSize:15.0];
-        cell.textLabel.text = @"Order Items";
+        GRNItem *grnItem = [self getGRNItemForPOItem:item];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i of %i %@]",item.itemNumber, item.itemDescription, [grnItem.quantityDelivered intValue] ,[item.quantityBalance intValue],item.uoq];
     }
     else
     {
-        PurchaseOrderItem *item = [self.dataArray objectAtIndex:indexPath.row -1];
-        cell.textLabel.font = [UIFont systemFontOfSize:15.0];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i %@]",item.itemNumber, item.itemDescription, [item.quantityBalance intValue],item.uoq];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i %@]",item.itemNumber, item.itemDescription ,[item.quantityBalance intValue],item.uoq];
     }
     return cell;
+    
+}
+
+-(GRNItem*)getGRNItemForPOItem:(PurchaseOrderItem*)item
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", item.itemNumber];
+    return [[self.grnItems filteredArrayUsingPredicate:predicate] lastObject];
 }
 
 -(NSArray*)getDataArray
 {
     NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
                                                                          inMOC:[CoreDataManager sharedInstance].managedObjectContext];
-//    [self.myDelegate tableDidEndLoadingData:self];
+    //    [self.myDelegate tableDidEndLoadingData:self];
     return array;
 }
 
@@ -98,14 +116,14 @@
 
 -(int)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.dataArray.count + 1;
+    return self.dataArray.count;
 }
 
 -(id)selectedObject
 {
     @try
     {
-        return [self.dataArray objectAtIndex:self.indexPathForSelectedRow.row - 1];
+        return [self.dataArray objectAtIndex:self.indexPathForSelectedRow.row];
     }
     @catch (NSException *ex)
     {
@@ -119,7 +137,7 @@
     if (self.dataArray.count > 0)
     {
         //Select first row
-        [self selectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]
+        [self selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                           animated:NO
                     scrollPosition:NO];
     }
@@ -140,4 +158,26 @@
     [self reloadData];
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    // Create label with section title
+    UILabel *label = [[UILabel alloc] init] ;
+    label.frame = CGRectMake(0, 0, self.frame.size.width, 50);
+    label.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1];
+    label.textColor = [UIColor whiteColor];
+    label.shadowOffset = CGSizeMake(0.0, 1.0);
+    label.font = [UIFont boldSystemFontOfSize:20.0];
+    label.text = @"     Order Items";
+    
+    // Create header view and add label as a subview
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
+    [view addSubview:label];
+    
+    return view;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 50.0;
+}
 @end

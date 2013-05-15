@@ -31,3 +31,9 @@
 #define GRNDomainName @"m1xdev"
 #define GRNRole @""
 #define GRNAppName @"mgrn"
+
+#define KeySystemURI @"KeySystemURI"
+#define KeymGRNURI @"KeymGRNURI"
+
+#define DefaultSystemURI @"https://m1xdev.pervasic.com:29999"
+#define DefaultmGRNURI @"https://m1xdev.pervasic.com:29991"

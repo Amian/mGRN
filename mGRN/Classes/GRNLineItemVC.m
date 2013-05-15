@@ -14,6 +14,8 @@
 #import "GRNWbsTableView.h"
 #import "GRNReasonTableVC.h"
 
+#define WBSCodeText @"Select WBS Code"
+
 @interface GRNLineItemVC() <UITableViewDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 @property (nonatomic, weak) UIPopoverController *pvc;
 @property (readonly) GRNItem *selectedItem;
@@ -25,14 +27,28 @@ static float KeyboardHeight;
 
 -(void)viewDidLoad
 {
+    if ([self.grn.purchaseOrder.contract.useWBS boolValue])
+    {
+        self.wbsTable.contract = self.grn.purchaseOrder.contract;
+    }
+    
     self.searchBar.hidden = YES;
     self.grnDict = [NSDictionary dictionary];
     [super viewDidLoad];
+    self.itemTableView.grnItems = [self.grn.lineItems allObjects];
     self.itemTableView.purchaseOrder = self.grn.purchaseOrder;
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    if (![self.grn.purchaseOrder.contract.useWBS boolValue] && !self.wbsButton.hidden)
+    {
+        self.wbsButton.hidden = YES;
+        CGRect frame = self.viewBelowWbsCode.frame;
+        frame.origin = self.wbsCodeLabel.frame.origin;
+        self.viewBelowWbsCode.frame = frame;
+    }
+    
     NSLog(@"dict in lvc = %@",self.grnDict);
     [self displaySelectedItem];
     [super viewDidAppear:animated];
@@ -65,13 +81,55 @@ static float KeyboardHeight;
     [self setWbsTable:nil];
     [self setSearchBar:nil];
     [self setSearchTextField:nil];
+    [self setSerialNumber:nil];
+    [self setSerialNumberLabel:nil];
+    [self setWbsCodeLabel:nil];
+    [self setViewBelowWbsCode:nil];
     [super viewDidUnload];
+}
+
+#pragma mark - Table View Delegate
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    UIView *headerView = NULL;
+    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
+    {
+        // Create label with section title
+        UILabel *label = [[UILabel alloc] init] ;
+        label.frame = CGRectMake(0, 0, self.itemTableView.frame.size.width, 50);
+        label.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1];
+        label.textColor = [UIColor whiteColor];
+        label.shadowOffset = CGSizeMake(0.0, 1.0);
+        label.font = [UIFont boldSystemFontOfSize:20.0];
+        label.text = @"     Order Items";
+        
+        // Create header view and add label as a subview
+        headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
+        [headerView addSubview:label];
+    }
+    return headerView;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
+    {
+        return 50.0;
+    }
+    return 0.0;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
     {
+        [tableView reloadData];
+        [tableView selectRowAtIndexPath:indexPath
+                               animated:NO
+                         scrollPosition:UITableViewScrollPositionNone];
+        [tableView scrollToRowAtIndexPath:indexPath
+                         atScrollPosition:UITableViewScrollPositionNone
+                                 animated:NO];
         [self displaySelectedItem];
     }
     else if ([tableView isKindOfClass:[GRNWbsTableView class]])
@@ -90,6 +148,33 @@ static float KeyboardHeight;
     }
 }
 
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
+    {
+        NSString *error = [self checkItem];
+        if (error.length)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:error
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [self performSelector:@selector(selectRow:) withObject:indexPath afterDelay:0.1];
+            
+        }
+    }
+}
+
+-(void)selectRow:(NSIndexPath*)indexPath
+{
+    [self.itemTableView selectRowAtIndexPath:indexPath
+                           animated:YES
+                     scrollPosition:UITableViewScrollPositionNone];
+    [self displaySelectedItem];
+}
+
 -(void)displaySelectedItem
 {
     PurchaseOrderItem *item = self.itemTableView.selectedObject;
@@ -99,15 +184,31 @@ static float KeyboardHeight;
     [self.reasonButton setTitle:[GRNReasonTableVC ReasonForCode:self.selectedItem.exception] forState:UIControlStateNormal];
     WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode inMOC:[CoreDataManager sharedInstance].managedObjectContext];
     NSLog(@"%@,%@",self.selectedItem.wbsCode, wbs.codeDescription);
-    [self.wbsButton setTitle:wbs.codeDescription.length? wbs.codeDescription : @"Select WBS Code" forState:UIControlStateNormal];
+    [self.wbsButton setTitle:wbs.codeDescription.length? wbs.codeDescription : WBSCodeText forState:UIControlStateNormal];
     self.quantityDelivered.text = [NSString stringWithFormat:@"%i",[self.selectedItem.quantityDelivered intValue] ];
     self.quantityRejected.text = [NSString stringWithFormat:@"%i",[self.selectedItem.quantityRejected intValue]];
     self.note.text = self.selectedItem.notes;
+    if ([item.plant boolValue])
+    {
+        self.serialNumber.hidden = NO;
+        self.serialNumberLabel.hidden = NO;
+    }
+    else
+    {
+        self.serialNumber.hidden = YES;
+        self.serialNumberLabel.hidden = YES;
+    }
 }
 
 -(GRNItem*)selectedItem
 {
     PurchaseOrderItem *item = self.itemTableView.selectedObject;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", item.itemNumber];
+    return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
+}
+
+-(GRNItem*)itemForPurchaseOrderItem:(PurchaseOrderItem*)item
+{
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", item.itemNumber];
     return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
 }
@@ -151,6 +252,31 @@ static float KeyboardHeight;
     {
         [self.itemTableView searchForString:newString];
     }
+    else if ([textField isEqual:self.serialNumber])
+    {
+        self.selectedItem.serialNumber = textField.text;
+    }
+    return YES;
+}
+
+#pragma mark - Segue
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ([identifier isEqualToString:@"next"])
+    {
+        NSString *error = [self checkAllData];
+        if (error.length)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:error
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            return NO;
+        }
+    }
     return YES;
 }
 
@@ -189,7 +315,6 @@ static float KeyboardHeight;
 
 - (IBAction)wbsCodes:(UIButton*)button
 {
-    self.wbsTable.contract = self.grn.purchaseOrder.contract;
     [self.view addSubview:self.wbsView];
 }
 
@@ -265,10 +390,56 @@ static float KeyboardHeight;
         }
         [moc deleteObject:self.grn];
         [moc save:nil];
-        [GRNItem removeAllObjectsInManagedObjectContext:moc];
-        [GRN removeAllObjectsInManagedObjectContext:moc];//TODO:Remove
+        
+        //Remove data from nsuserdefaults
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults removeObjectForKey:KeyImage1];
+        [defaults removeObjectForKey:KeyImage2];
+        [defaults removeObjectForKey:KeyImage3];
+        [defaults removeObjectForKey:KeySignature];
+        [defaults synchronize];
         [self performSegueWithIdentifier:@"back" sender:self];
     }
 }
 
+-(NSString*)checkAllData
+{
+    NSMutableString *errorString = [NSMutableString string];
+    
+    if (![self stripedTextLength:self.sdnTextField.text])
+    {
+        [errorString appendFormat:@"Please enter a valid Supplier Reference Number (SDN).\n"];
+    }
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"quantityDelivered > 0"];
+    NSArray *itemsAdded = [[self.grn.lineItems filteredSetUsingPredicate:predicate] allObjects];
+    
+    if (!itemsAdded.count)
+    {
+        [errorString appendFormat:@"Please specify quantity delivered for atleast one order item.\n"];
+    }
+    return errorString;
+}
+
+-(int)stripedTextLength:(NSString*)text
+{
+    return [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
+}
+
+-(NSString*)checkItem
+{
+    NSMutableString *errorString = [NSMutableString string];
+    if ([self stripedTextLength:self.quantityDelivered.text] && [self.quantityDelivered.text intValue] != 0)
+    {
+        if (!self.wbsButton.hidden && [self.wbsButton.titleLabel.text isEqualToString:WBSCodeText])
+        {
+            [errorString appendFormat:@"Please enter WBS Code.\n"];
+        }
+        if (!self.serialNumber.hidden && ![self stripedTextLength:self.serialNumber.text])
+        {
+            [errorString appendFormat:@"Please enter serial number.\n"];
+        }
+    }
+    return errorString;
+}
 @end

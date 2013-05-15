@@ -19,6 +19,7 @@
 {
     UIView *contentView = [[UIView alloc] initWithFrame:frame];
     contentView.backgroundColor = [UIColor clearColor];
+    CGFloat x = 0.0;
     
     NSArray *valueArray = [NSArray array];
     NSArray *labelArray = [NSArray array];
@@ -27,19 +28,20 @@
         
         valueArray = [NSArray arrayWithObjects:order.contract.name,order.contract.number,order.orderNumber,order.orderDescription,order.orderName, nil];
         labelArray = [NSArray arrayWithObjects:@"Contract Number:",@"Contract Name:",@"PO:",@"Description:",@"Supplier", nil];
+        x = 130.0;
     }
     else
     {
         
         valueArray = [NSArray arrayWithObjects:order.orderNumber,order.orderDescription,order.orderName,order.attention, nil];
         labelArray = [NSArray arrayWithObjects:@"PO:",@"Description:",@"Supplier:",@"Attention:", nil];
-        
+        x = 90.0;
     }
     CGFloat y = 15.0;
     for (NSString* text in labelArray)
     {
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(15.0, y, 107.0, 18.0);
+        label.frame = CGRectMake(15.0, y, 107.0, 35.0);
         label.text = text;
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor whiteColor];
@@ -47,24 +49,27 @@
         [contentView addSubview:label];
         
         UILabel *label2 = [[UILabel alloc] init];
-        label2.frame = CGRectMake(130.0, y, 210.0, 18.0);
         label2.text = [valueArray objectAtIndex:[labelArray indexOfObject:text]];
         label2.backgroundColor = [UIColor clearColor];
         label2.textColor = [UIColor whiteColor];
-        label2.font = [UIFont boldSystemFontOfSize:14.0];
-        [label2 sizeToFit];
-        [contentView addSubview:label2];
-        
-        y += 25.0;
-        
+        label2.font = [UIFont boldSystemFontOfSize:16.0];
+        label2.minimumFontSize = 10.0;
+        label2.numberOfLines = 2;
+        label2.minimumScaleFactor = 0.5f;
+                
         if ([text hasPrefix:@"Attention"])
         {
+            [label2 sizeToFit];
             CALayer *bottomBorder = [CALayer layer];
-            bottomBorder.frame = CGRectMake(130.0, y, label2.frame.size.width, 2.0f);
+            bottomBorder.frame = CGRectMake(x, y + 30, label2.frame.size.width, 2.0f);
             bottomBorder.backgroundColor = [UIColor whiteColor].CGColor;
             [contentView.layer addSublayer:bottomBorder];
         }
         
+        label2.frame = CGRectMake(x, y, 200.0 + ( x > 100? 0 : 40.0), 40.0);
+        [contentView addSubview:label2];
+
+        y += 35.0;
     }
     
     return contentView;

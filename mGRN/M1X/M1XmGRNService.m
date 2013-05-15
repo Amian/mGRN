@@ -37,8 +37,12 @@
 -(NSString *)systemURL
 {
     if (!_systemURL) {
-        // TODO:: set this default from settings bundle?
-        _systemURL = @"https://m1xdev.pervasic.com:29991";
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _systemURL = [defaults objectForKey:KeymGRNURI];
+        if (!_systemURL.length)
+        {
+            _systemURL = DefaultmGRNURI;
+        }
     }
     return _systemURL;
 }

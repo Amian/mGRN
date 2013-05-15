@@ -34,7 +34,7 @@
     [super viewWillAppear:animated];
     originalCenter = self.loginContainer.center;
     self.errorLabel.hidden = YES;
-    [self runAnimation];
+    [self animationPartOne];
 }
 
 - (void)viewDidUnload {
@@ -46,6 +46,7 @@
     [self setPoweredByPervasicLabel:nil];
     [self setErrorLabel:nil];
     [self setAppTitleLabel:nil];
+    [self setMgrnLogo:nil];
     [super viewDidUnload];
 }
 
@@ -85,75 +86,114 @@
 
 #pragma mark - Animation
 
-
--(void)runAnimation
+-(void)animationPartOne
 {
+    self.coinsLogoView.alpha = 0.0;
     self.loginContainer.alpha = 0.0;
-    self.poweredByPervasicLabel.alpha = 0.0;
-    [self.username resignFirstResponder];
-    [self.password resignFirstResponder];
-    self.coinsLogoView.clipsToBounds = NO;
-    self.coinsLogoView.center = CGPointMake(self.view.bounds.size.width/2,
-                                               self.view.bounds.size.height/2);
+    self.mgrnLogo.alpha = 1.0;
     
-    [self performSelector:@selector(animationStageOne) withObject:nil afterDelay:0.2];
+    originalCenter = self.mgrnLogo.center;
+    self.mgrnLogo.center = self.loginContainer.center;
+    [self performSelector:@selector(animationPartTwo) withObject:nil afterDelay:0.7];
 }
 
--(void)animationStageOne
-
+-(void)animationPartTwo
 {
-    self.coinsLogoView.center = CGPointMake(self.view.bounds.size.width/2,
-                                               self.view.bounds.size.height/2);
-    CABasicAnimation* rotationAnimation;
-    rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0 * 1];
-    rotationAnimation.duration = 1.0;
-    rotationAnimation.timingFunction =
-    [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [self.coinsLogoView.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
-    [self performSelector:@selector(animationStageTwo) withObject:nil afterDelay:1.0];
-}
-
-- (void)animationStageTwo
-{
-    animationInProgress = YES;
-    CGRect pervasicFrame = self.poweredByPervasicLabel.frame;
-    pervasicFrame.origin.y += 20.0;
-    self.poweredByPervasicLabel.frame = pervasicFrame;
-    
-    pervasicFrame.origin.y -= 20.0;
-    
     [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:1.0];
-    self.poweredByPervasicLabel.frame = pervasicFrame;
-    self.poweredByPervasicLabel.alpha = 1.0;
+    [UIView setAnimationDuration:0.3];
+    self.mgrnLogo.alpha = 0.0;
     [UIView commitAnimations];
-    [self performSelector:@selector(animationStageThree) withObject:nil afterDelay:1.0];
+    [self performSelector:@selector(animationPartThree) withObject:nil afterDelay:0.3];
 }
 
--(void)animationStageThree
-{
-    CGRect logoFrame = self.coinsLogoView.frame;
-    logoFrame.origin.y = self.view.bounds.size.height - self.coinsLogoView.bounds.size.height - 30.0;
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:1.0];
-    self.coinsLogoView.frame = logoFrame;
-    [UIView commitAnimations];
-    [self performSelector:@selector(animationStageFour) withObject:nil afterDelay:1.0];
-}
-
--(void)animationStageFour
+-(void)animationPartThree
 {
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:1.0];
     self.loginContainer.alpha = 1.0;
-    self.companyLogo.alpha = 1.0;
+    self.coinsLogoView.alpha = 1.0;
     [UIView commitAnimations];
-    animationInProgress = NO;
-    [self.username performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:1.0];
-    
+    [self performSelector:@selector(animationPartFour) withObject:nil afterDelay:1.0];
 }
 
+-(void)animationPartFour
+{
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:1.0];
+    self.mgrnLogo.alpha = 1.0;
+    self.mgrnLogo.center = originalCenter;
+    [UIView commitAnimations];
+}
+//
+//
+//-(void)runAnimation
+//{
+//    self.loginContainer.alpha = 0.0;
+//    self.poweredByPervasicLabel.alpha = 0.0;
+//    [self.username resignFirstResponder];
+//    [self.password resignFirstResponder];
+//    self.coinsLogoView.clipsToBounds = NO;
+//    self.coinsLogoView.center = CGPointMake(self.view.bounds.size.width/2,
+//                                               self.view.bounds.size.height/2);
+//    
+//    [self performSelector:@selector(animationStageOne) withObject:nil afterDelay:0.2];
+//}
+//
+//-(void)animationStageOne
+//
+//{
+//    self.coinsLogoView.center = CGPointMake(self.view.bounds.size.width/2,
+//                                               self.view.bounds.size.height/2);
+//    CABasicAnimation* rotationAnimation;
+//    rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+//    rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0 * 1];
+//    rotationAnimation.duration = 1.0;
+//    rotationAnimation.timingFunction =
+//    [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+//    [self.coinsLogoView.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
+//    [self performSelector:@selector(animationStageTwo) withObject:nil afterDelay:1.0];
+//}
+//
+//- (void)animationStageTwo
+//{
+//    animationInProgress = YES;
+//    CGRect pervasicFrame = self.poweredByPervasicLabel.frame;
+//    pervasicFrame.origin.y += 20.0;
+//    self.poweredByPervasicLabel.frame = pervasicFrame;
+//    
+//    pervasicFrame.origin.y -= 20.0;
+//    
+//    [UIView beginAnimations:nil context:nil];
+//    [UIView setAnimationDuration:1.0];
+//    self.poweredByPervasicLabel.frame = pervasicFrame;
+//    self.poweredByPervasicLabel.alpha = 1.0;
+//    [UIView commitAnimations];
+//    [self performSelector:@selector(animationStageThree) withObject:nil afterDelay:1.0];
+//}
+//
+//-(void)animationStageThree
+//{
+//    CGRect logoFrame = self.coinsLogoView.frame;
+//    logoFrame.origin.y = self.view.bounds.size.height - self.coinsLogoView.bounds.size.height - 30.0;
+//    [UIView beginAnimations:nil context:nil];
+//    [UIView setAnimationDuration:1.0];
+//    self.coinsLogoView.frame = logoFrame;
+//    [UIView commitAnimations];
+//    [self performSelector:@selector(animationStageFour) withObject:nil afterDelay:1.0];
+//}
+//
+//-(void)animationStageFour
+//{
+//    [UIView beginAnimations:nil context:nil];
+//    [UIView setAnimationDuration:1.0];
+//    self.loginContainer.alpha = 1.0;
+//    self.companyLogo.alpha = 1.0;
+//    [UIView commitAnimations];
+//    animationInProgress = NO;
+//    [self.username performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:1.0];
+//    
+//}
+//
 #pragma mark - Earthquake
 
 - (void)earthquake:(UIView*)itemView

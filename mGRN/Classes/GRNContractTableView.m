@@ -41,6 +41,9 @@
     
     Contract *contract = [self.dataArray objectAtIndex:indexPath.section];
     
+    cell.textLabel.font = [UIFont boldSystemFontOfSize:20.0];
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:18.0];
+    
     cell.textLabel.text = contract.number;
     cell.detailTextLabel.text = contract.name;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -87,6 +90,7 @@
         [contractObjectArray addObject:c];
     }
     self.dataArray = [self getDataArray];
+    [self.myDelegate tableDidEndLoadingData:self];
     [self reloadData];
 }
 

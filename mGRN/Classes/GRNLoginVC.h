@@ -19,4 +19,5 @@
 @property (strong, nonatomic) IBOutlet UIView *coinsLogoView;
 @property (strong, nonatomic) IBOutlet UILabel *poweredByPervasicLabel;
 @property (strong, nonatomic) IBOutlet UILabel *appTitleLabel;
+@property (strong, nonatomic) IBOutlet UIImageView *mgrnLogo;
 @end

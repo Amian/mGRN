@@ -28,6 +28,7 @@
         self.horizontalPadding = 15.0;
         self.font = [UIFont systemFontOfSize:20.0];
         self.textColor = [UIColor whiteColor];
+        self.autocorrectionType = UITextAutocorrectionTypeNo;
     }
     return self;
 }

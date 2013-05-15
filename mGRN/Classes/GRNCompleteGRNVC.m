@@ -21,6 +21,7 @@
 #define SignTagSave 0
 #define SignTagSignAgain 1
 
+
 @interface GRNCompleteGRNVC()<UIImagePickerControllerDelegate, M1XmGRNDelegate,DrawViewDelegate, UIAlertViewDelegate, UIPopoverControllerDelegate, UITextViewDelegate>
 @property (nonatomic, strong) UIImage *image1;
 @property (nonatomic, strong) UIImage *image2;
@@ -66,36 +67,35 @@
         [self.dateButton setTitle:date forState:UIControlStateNormal];
     }
     NSLog(@"dict recieved = %@",self.grnDict);
-
-    if (self.grnDict.count)
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.image1 = [UIImage imageWithData:[defaults objectForKey:KeyImage1]];
+    self.image2 = [UIImage imageWithData:[defaults objectForKey:KeyImage2]];
+    self.image3 = [UIImage imageWithData:[defaults objectForKey:KeyImage3]];
+    [self refreshImageView];
+    UIImage *fakeImage = [UIImage imageWithData:[defaults objectForKey:KeySignature]];
+    if (fakeImage)
     {
-        
+        self.fakeSignature = [[UIImageView alloc] initWithFrame:self.signatureView.frame];
+        self.fakeSignature.image = fakeImage;
+        [self.view addSubview:self.fakeSignature];
+        self.signatureView.userInteractionEnabled = NO;
+        [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
+        self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        self.signButton.tag = 1;
     }
-    
-//    
-//    if (self.signatureImage)
-//    {
-//        self.fakeSignature = [[UIImageView alloc] initWithFrame:self.signatureView.frame];
-//        self.fakeSignature.image = self.signatureImage;
-//        [self.view addSubview:self.fakeSignature];
-//    }
-//    
-    
-//    if (self.grn.signatureURI.length)
-//    {
-//    [self performSelector:@selector(disableUserInteractionForSignatureView) withObject:nil afterDelay:0.2];
-//        self.signatureView.path = (CGMutablePathRef)[self.signaturePath CGPath];
-//        [self.signatureView setNeedsDisplay];
-//        self.signButton.tag = SignTagSignAgain;
-//        [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
-//        self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-//        self.signaturePath = [UIBezierPath bezierPath];
-//    }
-//    else
-//    {
-//        self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
-//    }
+    else
+    {
+        self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
+    }
     self.comments.text = self.grn.notes;
+    
+    //Remove data from nsuserdefaults
+    [defaults removeObjectForKey:KeyImage1];
+    [defaults removeObjectForKey:KeyImage2];
+    [defaults removeObjectForKey:KeyImage3];
+    [defaults removeObjectForKey:KeySignature];
+    [defaults synchronize];
 }
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -107,10 +107,20 @@
         GRNLineItemVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
         
-//        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:self.image1,@"image1",self.image2,@"image2",self.image3,@"image3",[self.signatureView makeImage],@"signature", nil];
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:[self.signatureView makeImage],@"signature", nil];
-        vc.grnDict = dict;
-        NSLog(@"dict sent = %@",dict);
+        //Saving pics
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setValue:UIImagePNGRepresentation(self.image1) forKey:KeyImage1];
+        [defaults setValue:UIImagePNGRepresentation(self.image2) forKey:KeyImage2];
+        [defaults setValue:UIImagePNGRepresentation(self.image3) forKey:KeyImage3];
+        if (self.signatureView.hasSigned)
+        {
+            [defaults setValue:UIImagePNGRepresentation([self.signatureView makeImage]) forKey:KeySignature];
+        }
+        else if (self.fakeSignature.window)
+        {
+            [defaults setValue:UIImagePNGRepresentation(self.fakeSignature.image) forKey:KeySignature];
+        }
+        [defaults synchronize];
     }
     else if ([segue.identifier isEqualToString:@"preview"])
     {
@@ -119,7 +129,19 @@
     }
 }
 - (IBAction)submit:(id)sender {
-
+    
+    if (!self.signatureView.hasSigned)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:@"Please sign the GRN"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];
     self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
     [self.view addSubview:self.loadingView];
@@ -130,18 +152,9 @@
     
     M1XGRN *grn = [[M1XGRN alloc] init];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"dd/MM/yyyy";
-    NSString *date = [formatter stringFromDate:self.grn.deliveryDate];
-    if (date.length)
-    {
-        grn.deliveryDate = [NSString stringWithFormat:@"\/Date(%@)\/",[date stringByReplacingOccurrencesOfString:@"/" withString:@""]];
-    }
-    else
-    {
-        grn.deliveryDate = @"\/Date(121212)\/"; //TODO:
-    }
+    formatter.dateFormat = @"yyyy-MM-dd'T'00:00:00";
+    grn.deliveryDate = [formatter stringFromDate:self.grn.deliveryDate];
     
-//    grn.ID = self.grn.orderNumber; //TODO: whats this?
     grn.kco = kco;
     grn.notes = self.grn.notes;
     grn.orderNumber = self.grn.purchaseOrder.orderNumber;
@@ -155,7 +168,6 @@
     {
         M1XLineItems *newItem = [[M1XLineItems alloc] init];
         newItem.exception = item.exception;
-        //        newItem.ID = item.itemNumber; //TODO: item description
         newItem.item = item.itemNumber;
         newItem.notes = item.notes;
         newItem.quantityDelivered = [NSString stringWithFormat:@"%i",[item.quantityDelivered intValue]];
@@ -184,6 +196,10 @@
 {
     [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+    
+    //Refresh Purchase orders
+    
+    
     [self.navigationController popToRootViewControllerAnimated:YES];
     NSLog(@"submit response = %@",orderData);
 }
@@ -384,6 +400,7 @@
             self.signButton.tag = 1;
             break;
         case 1:
+            [self.fakeSignature removeFromSuperview];
             [self.signatureView clearView];
             self.signatureView.userInteractionEnabled = YES;
             [self.signButton setTitle:@"Save Signature" forState:UIControlStateNormal];
@@ -469,7 +486,6 @@
 //
 -(void)drawViewDidEndDrawing
 {
-    //    self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.grn.signatureURI = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
 }
 

@@ -9,6 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "GRN+Management.h"
 #import "DrawView.h"
+
+#define KeyImage1 @"i1"
+#define KeyImage2 @"i2"
+#define KeyImage3 @"i3"
+#define KeySignature @"s1"
+
 @interface GRNCompleteGRNVC : UIViewController
 @property (nonatomic, strong) GRN *grn;
 @property (strong, nonatomic) IBOutlet UITextView *comments;
