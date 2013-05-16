@@ -35,6 +35,12 @@
 @implementation GRNCompleteGRNVC
 @synthesize grn = _grn, image1, image2, image3, popVC = _popVC, grnDict, fakeSignature, loadingView;
 
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self refreshImageView];
+    [self.signatureView setNeedsDisplay];
+}
+
 -(void)viewDidLoad
 {
     [super viewDidLoad];
@@ -76,9 +82,9 @@
     UIImage *fakeImage = [UIImage imageWithData:[defaults objectForKey:KeySignature]];
     if (fakeImage)
     {
-        self.fakeSignature = [[UIImageView alloc] initWithFrame:self.signatureView.frame];
+        self.fakeSignature = [[UIImageView alloc] initWithFrame:self.signatureView.bounds];
         self.fakeSignature.image = fakeImage;
-        [self.view addSubview:self.fakeSignature];
+        [self.signatureView addSubview:self.fakeSignature];
         self.signatureView.userInteractionEnabled = NO;
         [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
         self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
@@ -273,7 +279,7 @@
 -(void)displayImage:(UIImage*)image position:(int)position tag:(int)tag
 {
     UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    CGFloat width = 130.0;
+    CGFloat width = self.takePhotoButton.frame.size.height;
     int x = self.photoView.subviews.count/2;
     imageButton.frame = CGRectMake(width*position + 10.0*position, 0.0, width, width);
     [imageButton setImage:image forState:UIControlStateNormal];
@@ -283,6 +289,8 @@
     [imageButton addTarget:self
                     action:@selector(previewImage:)
           forControlEvents:UIControlEventTouchUpInside];
+    imageButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
     [self.photoView addSubview:imageButton];
     
     UIButton *delete = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -294,6 +302,7 @@
     [delete addTarget:self
                action:@selector(deletePhoto:)
      forControlEvents:UIControlEventTouchUpInside];
+    delete.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.photoView addSubview:delete];
 }
 
@@ -442,7 +451,7 @@
     self.popVC.delegate=self;
     
     [self.popVC setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
-    [self.popVC presentPopoverFromRect:button.superview.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+    [self.popVC presentPopoverFromRect:button.superview.frame inView:button.superview.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
     
     self.dateButton.superview.layer.borderColor = GRNLightBlueColour.CGColor;
     [self.comments resignFirstResponder];

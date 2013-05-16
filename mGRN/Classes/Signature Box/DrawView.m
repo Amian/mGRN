@@ -11,11 +11,12 @@
 
 @interface DrawView()
 @property CGPoint previousPoint1, previousPoint2, currentPoint;
+@property (nonatomic, strong) CALayer *dottedLayer;
 @end
 
 @implementation DrawView
 @synthesize path = _path, previousPoint1 = _previousPoint1, previousPoint2 = _previousPoint2, currentPoint = _currentPoint;
-@synthesize delegate, placeholder, hasSigned;
+@synthesize delegate, placeholder, hasSigned, dottedLayer;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -32,13 +33,7 @@
         
         self.layer.borderWidth = 1.0;
         self.layer.borderColor = [UIColor lightGrayColor].CGColor;
-        
-        CALayer *myLayer = [CALayer layer];
-        myLayer.backgroundColor = [UIColor clearColor].CGColor;
-        myLayer.borderColor = [[UIColor colorWithPatternImage:[UIImage imageNamed:@"dashed_white.png"]] CGColor];
-        myLayer.borderWidth = 1.0;
-        myLayer.frame = CGRectMake(0.0, self.frame.size.height*8.0/10.0, self.frame.size.width, 1.0);
-        [self.layer addSublayer:myLayer];
+        self.clipsToBounds = YES;
     }
     return self;
 }
@@ -56,6 +51,13 @@
     CGContextAddPath(context, self.path);
     CGContextDrawPath(context, kCGPathStroke);
     
+    [self.dottedLayer removeFromSuperlayer];
+    self.dottedLayer = [CALayer layer];
+    self.dottedLayer.backgroundColor = [UIColor clearColor].CGColor;
+    self.dottedLayer.borderColor = [[UIColor colorWithPatternImage:[UIImage imageNamed:@"dashed_white.png"]] CGColor];
+    self.dottedLayer.borderWidth = 1.0;
+    self.dottedLayer.frame = CGRectMake(0.0, self.bounds.size.height*8.0/10.0, self.bounds.size.width, 1.0);
+    [self.layer addSublayer:self.dottedLayer];
 
 }
 
