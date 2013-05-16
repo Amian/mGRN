@@ -26,15 +26,22 @@
 -(void)viewDidLoad
 {
     [super viewDidLoad];
+    self.errorLabel.hidden = YES;
     self.appTitleLabel.text = [NSString stringWithFormat:@"Version %@",[[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"]];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    originalCenter = self.loginContainer.center;
-    self.errorLabel.hidden = YES;
+    self.coinsLogoView.alpha = 0.0;
+    self.loginContainer.alpha = 0.0;
+    self.mgrnLogo.alpha = 1.0;
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
     [self animationPartOne];
+    [super viewDidAppear:animated];
 }
 
 - (void)viewDidUnload {
@@ -50,6 +57,10 @@
     [super viewDidUnload];
 }
 
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return !animationInProgress;
+}
 
 #pragma mark - Login
 
@@ -88,11 +99,6 @@
 
 -(void)animationPartOne
 {
-    self.coinsLogoView.alpha = 0.0;
-    self.loginContainer.alpha = 0.0;
-    self.mgrnLogo.alpha = 1.0;
-    
-    originalCenter = self.mgrnLogo.center;
     self.mgrnLogo.center = self.loginContainer.center;
     [self performSelector:@selector(animationPartTwo) withObject:nil afterDelay:0.7];
 }
@@ -118,10 +124,11 @@
 
 -(void)animationPartFour
 {
+    
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:1.0];
     self.mgrnLogo.alpha = 1.0;
-    self.mgrnLogo.center = originalCenter;
+    self.mgrnLogo.center = CGPointMake(self.loginContainer.center.x, self.loginContainer.frame.origin.y);
     [UIView commitAnimations];
 }
 //

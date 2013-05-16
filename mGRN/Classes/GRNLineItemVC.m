@@ -15,6 +15,8 @@
 #import "GRNReasonTableVC.h"
 
 #define WBSCodeText @"Select WBS Code"
+#define TableHeight 323.0
+#define DetailContainerOriginY 434.0
 
 @interface GRNLineItemVC() <UITableViewDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 @property (nonatomic, weak) UIPopoverController *pvc;
@@ -24,6 +26,28 @@
 @implementation GRNLineItemVC
 @synthesize grn = _grn, selectedItem, pvc;
 static float KeyboardHeight;
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    {
+        CGRect frame = self.itemTableView.frame;
+        frame.size.height = TableHeight/2;
+        self.itemTableView.frame = frame;
+        frame = self.detailContainer.frame;
+        frame.origin.y = DetailContainerOriginY - TableHeight/2;
+        self.detailContainer.frame = frame;
+    }
+    else
+    {
+        CGRect frame = self.itemTableView.frame;
+        frame.size.height = TableHeight;
+        self.itemTableView.frame = frame;
+        frame = self.detailContainer.frame;
+        frame.origin.y = DetailContainerOriginY;
+        self.detailContainer.frame = frame;
+    }
+}
 
 -(void)viewDidLoad
 {
@@ -37,6 +61,12 @@ static float KeyboardHeight;
     [super viewDidLoad];
     self.itemTableView.grnItems = [self.grn.lineItems allObjects];
     self.itemTableView.purchaseOrder = self.grn.purchaseOrder;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self didRotateFromInterfaceOrientation:0];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -85,6 +115,7 @@ static float KeyboardHeight;
     [self setSerialNumberLabel:nil];
     [self setWbsCodeLabel:nil];
     [self setViewBelowWbsCode:nil];
+    [self setDetailContainer:nil];
     [super viewDidUnload];
 }
 
@@ -170,8 +201,8 @@ static float KeyboardHeight;
 -(void)selectRow:(NSIndexPath*)indexPath
 {
     [self.itemTableView selectRowAtIndexPath:indexPath
-                           animated:YES
-                     scrollPosition:UITableViewScrollPositionNone];
+                                    animated:YES
+                              scrollPosition:UITableViewScrollPositionNone];
     [self displaySelectedItem];
 }
 
@@ -308,7 +339,9 @@ static float KeyboardHeight;
 
 -(void)onKeyboardShow:(NSNotification *)notification
 {
-    KeyboardHeight = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height; //height of keyboard
+    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
+    KeyboardHeight = UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])? 352.0 : 264.0;
+    
 }
 
 #pragma mark - IBActions

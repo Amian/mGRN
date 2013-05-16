@@ -35,18 +35,18 @@
     [self.view addSubview:self.loadingView];
     self.loadingView.hidden = YES;
     self.orderDetailView.hidden = YES;
-
+    
     [self.navContract setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     [self.navContract setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     
     [self.navPurchaseOrders setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     [self.navPurchaseOrders setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self.navPurchaseOrders setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-
+    
     [self.navViewOrder setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     [self.navViewOrder setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self.navViewOrder setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-
+    
     self.navContract.selected = YES;
 }
 
@@ -58,14 +58,15 @@
         self.tablesView.frame = self.containerView.bounds;
         [self.containerView addSubview:self.tablesView];
     }
-//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+    [self tablecontainerDelegateChangedStatusTo:self.status];
 }
 
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:UIKeyboardWillHideNotification];
+    //    [[NSNotificationCenter defaultCenter] removeObserver:self forKeyPath:UIKeyboardWillHideNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 }
 
@@ -127,7 +128,7 @@
             [self moveContainerToTheRight];
             break;
         case PurchaseOrders:
-                        
+            
             self.navPurchaseOrders.selected = YES;
             self.navContract.selected = NO;
             self.navViewOrder.selected = NO;
@@ -135,7 +136,7 @@
             self.navPurchaseOrders.titleLabel.font = [UIFont boldSystemFontOfSize:18.0];
             self.navContract.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
             self.navViewOrder.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
-
+            
             self.navPurchaseOrders.enabled = YES;
             self.navViewOrder.enabled = NO;
             
@@ -158,11 +159,11 @@
             
             self.navPurchaseOrders.enabled = YES;
             self.navViewOrder.enabled = YES;
-
+            
             self.contractsTableView.hidden = NO;
             self.purchaseOrderTableView.hidden = NO;
             self.orderDetailView.hidden = NO;
-
+            
             [self.orderItemTableView doneSearching];
             [self moveContainerToTheLeft];
             break;
@@ -175,15 +176,15 @@
 
 -(void)moveContainerToTheLeft
 {
-//    if (self.tablesView.frame.origin.x == 0) {
-        CGRect newFrame = self.tablesView.frame;
-        newFrame.origin.x = -(self.tablesView.frame.size.width - self.view.frame.size.width);
-        
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        self.tablesView.frame = newFrame;
-        [UIView commitAnimations];
-//    }
+    //    if (self.tablesView.frame.origin.x == 0) {
+    CGRect newFrame = self.tablesView.frame;
+    newFrame.origin.x = -(self.tablesView.frame.size.width - self.view.frame.size.width);
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    self.tablesView.frame = newFrame;
+    [UIView commitAnimations];
+    //    }
 }
 
 -(void)moveContainerToTheRight
@@ -225,14 +226,14 @@
     if ([tableView isKindOfClass:[GRNContractTableView class]])
     {
         self.purchaseOrderTableView.state = TableStateNormal;
-//        self.purchaseOrderTableView.contract = nil; //To clear the table
+        //        self.purchaseOrderTableView.contract = nil; //To clear the table
         self.loadingView.hidden = NO;
         self.purchaseOrderTableView.contract = [self.contractsTableView selectedObject];
         [self.contractsTableView rowSelected];
     }
     else if ([tableView isKindOfClass:[GRNPurchaseOrderTableView class]])
     {
-//        self.orderItemTableView.purchaseOrder = nil; //To clear the table
+        //        self.orderItemTableView.purchaseOrder = nil; //To clear the table
         self.loadingView.hidden = NO;
         self.orderItemTableView.purchaseOrder = [self.purchaseOrderTableView selectedObject];
         [self.purchaseOrderTableView rowSelected];
@@ -286,8 +287,8 @@
 {
     if (self.searchBar.hidden)
     {
-    self.searchBar.hidden = NO;
-    [self.searchTextField becomeFirstResponder];
+        self.searchBar.hidden = NO;
+        [self.searchTextField becomeFirstResponder];
     }
     else
     {
@@ -300,12 +301,12 @@
 - (IBAction)logout:(id)sender
 {
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout"
-                                                        message:@"Are you sure you want to log out?"
-                                                       delegate:self
-                                              cancelButtonTitle:@"NO"
-                                              otherButtonTitles:@"YES",nil];
+                                                    message:@"Are you sure you want to log out?"
+                                                   delegate:self
+                                          cancelButtonTitle:@"NO"
+                                          otherButtonTitles:@"YES",nil];
     [alert show];
-
+    
 }
 
 - (IBAction)doneSearching:(id)sender
@@ -332,11 +333,11 @@
     if ([segue.identifier isEqualToString:@"createGRN"])
     {
         GRN *grn = [GRN grnForPurchaseOrder:self.orderItemTableView.purchaseOrder
-               inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext
-                                error:nil];
-            GRNLineItemVC *vc = segue.destinationViewController;
-            vc.grn = grn;
-
+                     inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext
+                                      error:nil];
+        GRNLineItemVC *vc = segue.destinationViewController;
+        vc.grn = grn;
+        
     }
 }
 
@@ -382,9 +383,9 @@
 
 -(void)onKeyboardShow:(NSNotification *)notification
 {
-    CGFloat keyboardHeight = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height; //height of keyboard
+    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
     CGRect frame = self.searchBar.frame;
-    frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height - keyboardHeight;
+    frame.origin.y = self.view.bounds.size.height - self.searchBar.frame.size.height - ( UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])? 352.0 : 264.0);
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.3];
     self.searchBar.frame = frame;
