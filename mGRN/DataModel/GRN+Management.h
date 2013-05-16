@@ -17,5 +17,6 @@
 + (BOOL)grnExistsWithSDNRef:(NSString *)sdnRef inManagedObjectContext:(NSManagedObjectContext *)context;
 + (GRN *)grnForPurchaseOrder:(PurchaseOrder *)purchaseOrder inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
 +(void)removeAllObjectsInManagedObjectContext:(NSManagedObjectContext*)context;
++(NSArray*)fetchSubmittedGRNInMOC:(NSManagedObjectContext*)moc;
 
 @end

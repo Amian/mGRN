@@ -31,8 +31,8 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         
-        self.layer.borderWidth = 1.0;
-        self.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        self.superview.layer.borderWidth = 1.0;
+        self.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
         self.clipsToBounds = YES;
     }
     return self;

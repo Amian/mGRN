@@ -11,8 +11,12 @@
 #import "PurchaseOrder+Management.h"
 #import "PurchaseOrderItem+Management.h"
 #import "Contract+Management.h"
-@interface CoreDataManager : NSObject
+#import "M1XmGRNService.h"
+
+@interface CoreDataManager : NSObject <M1XmGRNDelegate>
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property BOOL processing;
 + (CoreDataManager*)sharedInstance;
 +(void)removeAllContracts;
+ -(void)submitGRN;
 @end

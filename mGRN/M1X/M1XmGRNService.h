@@ -73,5 +73,6 @@
                                        kco:(NSString*)kco
                        purchaseOrderNumber:(NSString*)poNumber;
 
+-(M1XResponse*)DoSubmissionSyncWithHeader:(M1XRequestHeader*)header grn:(M1XGRN*)grn lineItems:(NSArray*)lineItems kco:(NSString*)kco;
 
 @end

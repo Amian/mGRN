@@ -18,6 +18,7 @@
 #import "GRNLineItemVC.h"
 #import <QuartzCore/QuartzCore.h>
 #import "LoadingView.h"
+#import "GRNOrderDetailsVC.h"
 #define SignTagSave 0
 #define SignTagSignAgain 1
 
@@ -87,12 +88,13 @@
         [self.signatureView addSubview:self.fakeSignature];
         self.signatureView.userInteractionEnabled = NO;
         [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
-        self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        self.signatureView.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
         self.signButton.tag = 1;
+        self.fakeSignature.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     }
     else
     {
-        self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
+        self.signatureView.superview.layer.borderColor = GRNLightBlueColour.CGColor;
     }
     self.comments.text = self.grn.notes;
     
@@ -147,47 +149,58 @@
         return;
     }
     
-    
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];
     self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
     [self.view addSubview:self.loadingView];
-    M1XmGRNService *service = [[M1XmGRNService alloc] init];
-    service.delegate = self;
-    NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
-    kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
-    
-    M1XGRN *grn = [[M1XGRN alloc] init];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"yyyy-MM-dd'T'00:00:00";
-    grn.deliveryDate = [formatter stringFromDate:self.grn.deliveryDate];
-    
-    grn.kco = kco;
-    grn.notes = self.grn.notes;
-    grn.orderNumber = self.grn.purchaseOrder.orderNumber;
-    grn.photo1 = self.grn.photo1URI;
-    grn.photo2 = self.grn.photo2URI;
-    grn.photo3 = self.grn.photo3URI;
-    grn.signature = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
-    grn.supplierReference = self.grn.supplierReference;
-    NSMutableArray *items = [NSMutableArray array];
-    for (GRNItem *item in self.grn.lineItems)
+    self.grn.submitted = [NSNumber numberWithBool:YES];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 
+                                             (unsigned long)NULL), ^(void) 
     {
-        M1XLineItems *newItem = [[M1XLineItems alloc] init];
-        newItem.exception = item.exception;
-        newItem.item = item.itemNumber;
-        newItem.notes = item.notes;
-        newItem.quantityDelivered = [NSString stringWithFormat:@"%i",[item.quantityDelivered intValue]];
-        newItem.quantityRejected = [NSString stringWithFormat:@"%i",[item.quantityRejected intValue]];
-        newItem.serialNumber = item.serialNumber;
-        newItem.unitOfQuantityDelivered = item.uoq;
-        newItem.wbsCode = item.wbsCode;
-        [items addObject:newItem];
-    }
+        [[CoreDataManager sharedInstance] submitGRN];
+    });
+    [self updatePurchaseOrder];
     
-    [service DoSubmissionWithHeader:[GRNM1XHeader GetHeader]
-                                grn:grn
-                          lineItems:items
-                                kco:kco];
+    GRNOrderDetailsVC *orderVC = [self.navigationController.viewControllers objectAtIndex:0];
+    orderVC.returnedAfterSubmission = YES;
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+//    M1XmGRNService *service = [[M1XmGRNService alloc] init];
+//    service.delegate = self;
+//    NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
+//    kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
+//    
+//    M1XGRN *grn = [[M1XGRN alloc] init];
+//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    formatter.dateFormat = @"yyyy-MM-dd'T'00:00:00";
+//    grn.deliveryDate = [formatter stringFromDate:self.grn.deliveryDate];
+//    
+//    grn.kco = kco;
+//    grn.notes = self.grn.notes;
+//    grn.orderNumber = self.grn.purchaseOrder.orderNumber;
+//    grn.photo1 = self.grn.photo1URI;
+//    grn.photo2 = self.grn.photo2URI;
+//    grn.photo3 = self.grn.photo3URI;
+////    grn.signature = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
+//    grn.supplierReference = self.grn.supplierReference;
+//    NSMutableArray *items = [NSMutableArray array];
+//    for (GRNItem *item in self.grn.lineItems)
+//    {
+//        M1XLineItems *newItem = [[M1XLineItems alloc] init];
+//        newItem.exception = item.exception;
+//        newItem.item = item.itemNumber;
+//        newItem.notes = item.notes;
+//        newItem.quantityDelivered = [NSString stringWithFormat:@"%i",[item.quantityDelivered intValue]];
+//        newItem.quantityRejected = [NSString stringWithFormat:@"%i",[item.quantityRejected intValue]];
+//        newItem.serialNumber = item.serialNumber;
+//        newItem.unitOfQuantityDelivered = item.uoq;
+//        newItem.wbsCode = item.wbsCode;
+//        [items addObject:newItem];
+//    }
+//    
+//    [service DoSubmissionWithHeader:[GRNM1XHeader GetHeader]
+//                                grn:grn
+//                          lineItems:items
+//                                kco:kco];
     
 }
 
@@ -405,7 +418,7 @@
         case 0:
             self.signatureView.userInteractionEnabled = NO;
             [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
-            self.signatureView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+            self.signatureView.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
             self.signButton.tag = 1;
             break;
         case 1:
@@ -413,7 +426,7 @@
             [self.signatureView clearView];
             self.signatureView.userInteractionEnabled = YES;
             [self.signButton setTitle:@"Save Signature" forState:UIControlStateNormal];
-            self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
+            self.signatureView.superview.layer.borderColor = GRNLightBlueColour.CGColor;
             self.signButton.tag = 0;
             self.grn.signatureURI = nil;
             break;
@@ -496,6 +509,48 @@
 -(void)drawViewDidEndDrawing
 {
     self.grn.signatureURI = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
+}
+
+
+-(void)updatePurchaseOrder
+{
+    PurchaseOrder *po = self.grn.purchaseOrder;
+    int poItemsRemoved = 0;
+    for (PurchaseOrderItem *poItem in po.lineItems)
+    {
+        GRNItem *grnItem = [self itemForPurchaseOrderItem:poItem];
+        poItem.quantityBalance = [NSNumber numberWithInt:[[poItem quantityBalance] intValue] - ([grnItem.quantityDelivered intValue] - [grnItem.quantityRejected intValue])];
+        if ([poItem.quantityBalance intValue] <= 0)
+        {
+            @try
+            {
+                [[[CoreDataManager sharedInstance] managedObjectContext] deleteObject:poItem];
+            }
+            @catch (NSException *e)
+            {
+                //TOOD
+            }
+            poItemsRemoved++;
+        }
+    }
+    if ([po.lineItems count] == poItemsRemoved)
+    {
+        @try
+        {
+        [[[CoreDataManager sharedInstance] managedObjectContext] deleteObject:po];
+        }
+        @catch (NSException *e)
+        {
+            //TOOD
+        }
+    }
+    [[[CoreDataManager sharedInstance] managedObjectContext] save:nil];
+}
+
+-(GRNItem*)itemForPurchaseOrderItem:(PurchaseOrderItem*)item
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", item.itemNumber];
+    return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
 }
 
 @end

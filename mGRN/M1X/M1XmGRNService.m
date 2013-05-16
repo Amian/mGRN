@@ -154,6 +154,26 @@
     [requestor send];
 }
 
+-(M1XResponse*)DoSubmissionSyncWithHeader:(M1XRequestHeader*)header grn:(M1XGRN*)grn lineItems:(NSArray*)lineItems kco:(NSString*)kco
+{
+    M1XRequest *request = [[M1XRequest alloc] init];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/%@",self.systemURL,M1xMgrnService,M1xMgrnService_DoSubmission]];
+    request.header = header;
+    NSMutableDictionary *body = [[self getDictFromObject:grn] mutableCopy];
+    NSMutableArray *items = [NSMutableArray array];
+    for (M1XLineItems *item in lineItems)
+    {
+        [items addObject:[self getDictFromObject:item]];
+    }
+    [body setValue:items forKey:@"lineItems"];
+    request.body = body;
+    request.extraParameters = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         kco,@"kco",
+                                         nil];
+    M1XResponse *result = [M1XRequestor sendSyncronousRequest:request withURL:url];
+    return result;
+}
+
 -(NSDictionary*)getDictFromObject:(id)object
 {
     unsigned int propertyCount = 0;

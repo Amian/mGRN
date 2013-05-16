@@ -31,5 +31,5 @@
 @property (strong, nonatomic) IBOutlet UITextField *searchTextField;
 @property (strong, nonatomic) IBOutlet UIToolbar *searchBar;
 
-
+@property BOOL returnedAfterSubmission;
 @end

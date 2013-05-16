@@ -1,9 +1,9 @@
 //
 //  GRN.m
-//  mgrn
+//  mGRN
 //
-//  Created by Peter on 23/04/2013.
-//  Copyright (c) 2013 Coins Mobile. All rights reserved.
+//  Created by Anum on 16/05/2013.
+//  Copyright (c) 2013 Anum. All rights reserved.
 //
 
 #import "GRN.h"
@@ -21,6 +21,7 @@
 @dynamic photo3URI;
 @dynamic signatureURI;
 @dynamic supplierReference;
+@dynamic submitted;
 @dynamic lineItems;
 @dynamic purchaseOrder;
 

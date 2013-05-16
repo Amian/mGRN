@@ -25,7 +25,7 @@
 @end
 
 @implementation GRNOrderDetailsVC
-@synthesize service = _service, status = _status;
+@synthesize service = _service, status = _status, returnedAfterSubmission;
 
 - (void)viewDidLoad
 {
@@ -61,6 +61,12 @@
     //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [self tablecontainerDelegateChangedStatusTo:self.status];
+    
+    if (returnedAfterSubmission && self.orderItemTableView.dataArray.count == 0)
+    {
+        [self tablecontainerDelegateChangedStatusTo:PurchaseOrders];
+    }
+    returnedAfterSubmission = NO;
 }
 
 -(void)viewWillDisappear:(BOOL)animated

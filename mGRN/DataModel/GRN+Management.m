@@ -70,6 +70,20 @@
     return grn;
 }
 
++(NSArray*)fetchSubmittedGRNInMOC:(NSManagedObjectContext*)moc
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRN"];
+    
+    
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"supplierReference" ascending:YES]];
+    request.predicate = [NSPredicate predicateWithFormat:@"submitted = %@",[NSNumber numberWithBool:YES]];
+    
+    
+    NSError *fetchError = nil;
+    NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
+    return matches;
+}
+
 + (BOOL)grnExistsWithSDNRef:(NSString *)sdnRef inManagedObjectContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRN"];

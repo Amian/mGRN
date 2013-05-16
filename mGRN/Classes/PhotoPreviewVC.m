@@ -22,14 +22,14 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (self.image.imageOrientation == UIImageOrientationUp || self.image.imageOrientation == UIImageOrientationDown)
-    {
+//    if (self.image.imageOrientation == UIImageOrientationUp || self.image.imageOrientation == UIImageOrientationDown)
+//    {
         self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    }
-    else
-    {
-        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-    }
+//    }
+//    else
+//    {
+//        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+//    }
     self.imageView.image = self.image;
 }
 @end

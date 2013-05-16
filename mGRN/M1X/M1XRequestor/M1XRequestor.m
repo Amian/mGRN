@@ -66,6 +66,28 @@
     }
 }
 
++ (M1XResponse*)sendSyncronousRequest:(M1XRequest*)newRequest withURL:(NSURL*)newURL
+{
+        NSMutableURLRequest *theRequest = [[NSMutableURLRequest alloc] initWithURL:newURL];
+        
+        NSString *requestPostDataString = [newRequest jsonValue];
+        NSString *postLength =  [NSString stringWithFormat:@"%d", [requestPostDataString length]];
+        [theRequest addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [theRequest addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+        [theRequest addValue:postLength forHTTPHeaderField:@"Content-Length"];
+        [theRequest setHTTPMethod:@"POST"];
+        [theRequest setHTTPBody:[requestPostDataString dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        NSURLResponse* response;
+        NSError* error = nil;
+        
+        //Capturing server response
+        NSData* result = [NSURLConnection sendSynchronousRequest:theRequest  returningResponse:&response error:&error];
+//        NSString *resultString = [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
+    M1XResponse *theResponse = [[M1XResponse alloc] initWithResponseData:result];
+        return theResponse;
+}
+
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     waitingForResponse = NO;

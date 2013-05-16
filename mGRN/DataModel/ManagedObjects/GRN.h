@@ -1,9 +1,9 @@
 //
 //  GRN.h
-//  mgrn
+//  mGRN
 //
-//  Created by Peter on 23/04/2013.
-//  Copyright (c) 2013 Coins Mobile. All rights reserved.
+//  Created by Anum on 16/05/2013.
+//  Copyright (c) 2013 Anum. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSString * photo3URI;
 @property (nonatomic, retain) NSString * signatureURI;
 @property (nonatomic, retain) NSString * supplierReference;
+@property (nonatomic, retain) NSNumber * submitted;
 @property (nonatomic, retain) NSSet *lineItems;
 @property (nonatomic, retain) PurchaseOrder *purchaseOrder;
 @end

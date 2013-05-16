@@ -54,10 +54,11 @@
 
 -(NSArray*)getDataArray
 {
-    NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
-                                                                         inMOC:[CoreDataManager sharedInstance].managedObjectContext];
-    //    [self.myDelegate tableDidEndLoadingData:self];
-    return array;
+    return [self.purchaseOrder.lineItems allObjects];
+//    NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
+//                                                                         inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+//    //    [self.myDelegate tableDidEndLoadingData:self];
+//    return array;
 }
 
 -(void)setPurchaseOrder:(PurchaseOrder *)purchaseOrder

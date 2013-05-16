@@ -21,6 +21,7 @@
         <attribute name="photo2URI" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="photo3URI" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="signatureURI" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="submitted" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="supplierReference" optional="YES" attributeType="String" maxValueString="10" syncable="YES"/>
         <relationship name="lineItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="GRNItem" inverseName="grn" inverseEntity="GRNItem" syncable="YES"/>
         <relationship name="purchaseOrder" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="PurchaseOrder" inverseName="grns" inverseEntity="PurchaseOrder" syncable="YES"/>
@@ -80,7 +81,7 @@
     <elements>
         <element name="Company" positionX="-162" positionY="-207" width="128" height="90"/>
         <element name="Contract" positionX="-189" positionY="-54" width="128" height="135"/>
-        <element name="GRN" positionX="16" positionY="-297" width="128" height="195"/>
+        <element name="GRN" positionX="16" positionY="-297" width="128" height="210"/>
         <element name="GRNItem" positionX="304" positionY="-315" width="128" height="195"/>
         <element name="PurchaseOrder" positionX="-9" positionY="-6" width="128" height="195"/>
         <element name="PurchaseOrderItem" positionX="144" positionY="-45" width="128" height="210"/>
