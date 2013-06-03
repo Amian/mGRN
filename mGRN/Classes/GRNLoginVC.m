@@ -13,6 +13,8 @@
 #import "M1X.h"
 #import "M1XRequestHeader.h"
 #import "GRNM1XHeader.h"
+#import "SDN+Management.h"
+#import "CoreDataManager.h"
 
 #define LoginBoxTag 101
 
@@ -223,6 +225,9 @@
     [userDefault setValue:service.server forKey:KeyServiceServer];
     [userDefault setValue:service.serviceName forKey:KeyServiceName];
     [userDefault synchronize];
+    
+    [self initialSetup];
+    
     [self performSegueWithIdentifier:@"login" sender:nil];
 }
 
@@ -264,11 +269,9 @@
     }
 }
 
--(void)setup
+-(void)initialSetup
 {
-    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    [userDefault setObject:[NSMutableArray array] forKey:KeySdnDictionary];
-    [userDefault synchronize];
+    [SDN removeExpiredSDNinMOC:[[CoreDataManager sharedInstance] managedObjectContext]];
 }
 
 @end

@@ -328,7 +328,7 @@
 {
     if (buttonIndex != alertView.cancelButtonIndex)
     {
-        [CoreDataManager clearAllDataOnLogout];
+        //[CoreDataManager clearAllDataOnLogout];//TODO:Uncomment
         [self dismissModalViewControllerAnimated:YES];
     }
 }

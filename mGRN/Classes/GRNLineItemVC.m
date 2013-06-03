@@ -13,6 +13,7 @@
 #import "GRNCompleteGRNVC.h"
 #import "GRNWbsTableView.h"
 #import "GRNReasonTableVC.h"
+#import "SDN+Management.h"
 
 #define WBSCodeText @"Select WBS Code"
 #define TableHeight 323.0
@@ -274,11 +275,24 @@ static float KeyboardHeight;
     {
         self.selectedItem.quantityRejected = [NSNumber numberWithInt:[newString intValue]];
     }
-    else if ([textField isEqual:self.sdnTextField])
+    else if ([textField isEqual:self.searchTextField])
     {
-        if ([self checkIfSdnIsValid])
+        [self.itemTableView searchForString:newString];
+    }
+    else if ([textField isEqual:self.serialNumber])
+    {
+        self.selectedItem.serialNumber = textField.text;
+    }
+    return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if ([textField isEqual:self.sdnTextField])
+    {
+        if (![SDN doesSDNExist:textField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
         {
-            self.grn.supplierReference = newString;
+            self.grn.supplierReference = textField.text;
         }
         else
         {
@@ -290,14 +304,28 @@ static float KeyboardHeight;
             [alert show];
         }
     }
-    else if ([textField isEqual:self.searchTextField])
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField isEqual:self.sdnTextField])
     {
-        [self.itemTableView searchForString:newString];
+        if (![SDN doesSDNExist:textField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
+        {
+            self.grn.supplierReference = textField.text;
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"A GRN with this Service Delivery Number has already been submitted."
+                                                            message:nil
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            return NO;
+        }
     }
-    else if ([textField isEqual:self.serialNumber])
-    {
-        self.selectedItem.serialNumber = textField.text;
-    }
+    [textField resignFirstResponder];
     return YES;
 }
 
@@ -462,6 +490,12 @@ static float KeyboardHeight;
     {
         [errorString appendFormat:@"Please specify quantity delivered for atleast one order item.\n"];
     }
+    
+    if ([SDN doesSDNExist:self.sdnTextField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
+    {
+        [errorString appendFormat:@"A GRN with this Service Delivery Number has already been submitted. Please enter a different SDN.\n"];
+    }
+    
     return errorString;
 }
 
@@ -487,17 +521,4 @@ static float KeyboardHeight;
     return errorString;
 }
 
--(BOOL)checkIfSdnIsValid
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *sdns = [defaults objectForKey:KeySdnDictionary];
-    for (NSString *s in sdns)
-    {
-        if ([[s lowercaseString] isEqualToString:[self.sdnTextField.text lowercaseString]])
-        {
-            return NO;
-        }
-    }
-    return YES;
-}
 @end

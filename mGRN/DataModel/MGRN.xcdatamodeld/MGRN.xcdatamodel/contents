@@ -63,6 +63,10 @@
         <relationship name="grnItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="GRNItem" inverseName="purchaseOrderItem" inverseEntity="GRNItem" syncable="YES"/>
         <relationship name="purchaseOrder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PurchaseOrder" inverseName="lineItems" inverseEntity="PurchaseOrder" syncable="YES"/>
     </entity>
+    <entity name="SDN" representedClassName="SDN" syncable="YES">
+        <attribute name="expiryDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="User" representedClassName="User" syncable="YES">
         <attribute name="kcoString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="m1xDomain" optional="YES" attributeType="String" syncable="YES"/>
@@ -87,5 +91,6 @@
         <element name="PurchaseOrderItem" positionX="0" positionY="0" width="128" height="210"/>
         <element name="User" positionX="0" positionY="0" width="128" height="150"/>
         <element name="WBS" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="SDN" positionX="-218" positionY="72" width="128" height="75"/>
     </elements>
 </model>

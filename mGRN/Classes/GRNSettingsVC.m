@@ -23,6 +23,7 @@
     [self setMgrnURL:nil];
     [super viewDidUnload];
 }
+
 - (IBAction)save:(id)sender
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

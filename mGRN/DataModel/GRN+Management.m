@@ -87,18 +87,15 @@
 + (BOOL)grnExistsWithSDNRef:(NSString *)sdnRef inManagedObjectContext:(NSManagedObjectContext *)context
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRN"];
-    
-    
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"supplierReference" ascending:YES]];
     request.predicate = [NSPredicate predicateWithFormat:@"supplierReference = %@", sdnRef];
-    
-    
     NSError *fetchError = nil;
     NSArray *matches = [context executeFetchRequest:request error:&fetchError];
     
     if ([matches count] > 0) {
         return YES;
-    } else {
+    }
+    else
+    {
         return NO;
     }
 }

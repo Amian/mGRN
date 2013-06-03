@@ -19,6 +19,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "LoadingView.h"
 #import "GRNOrderDetailsVC.h"
+#import "SDN+Management.h"
+
 #define SignTagSave 0
 #define SignTagSignAgain 1
 
@@ -168,50 +170,16 @@
     {
         [[CoreDataManager sharedInstance] submitGRN];
     });
-    [self updateSdnDictionary];
+    
+    //Add SDN to core data
+    [SDN InsertSDN:self.grn.supplierReference InMOC:[[CoreDataManager sharedInstance] managedObjectContext]];
+    
+    //Adjust purchase orders
     [self updatePurchaseOrder];
     
     GRNOrderDetailsVC *orderVC = [self.navigationController.viewControllers objectAtIndex:0];
     orderVC.returnedAfterSubmission = YES;
     [self.navigationController popToRootViewControllerAnimated:YES];
-    
-//    M1XmGRNService *service = [[M1XmGRNService alloc] init];
-//    service.delegate = self;
-//    NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
-//    kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
-//    
-//    M1XGRN *grn = [[M1XGRN alloc] init];
-//    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    formatter.dateFormat = @"yyyy-MM-dd'T'00:00:00";
-//    grn.deliveryDate = [formatter stringFromDate:self.grn.deliveryDate];
-//    
-//    grn.kco = kco;
-//    grn.notes = self.grn.notes;
-//    grn.orderNumber = self.grn.purchaseOrder.orderNumber;
-//    grn.photo1 = self.grn.photo1URI;
-//    grn.photo2 = self.grn.photo2URI;
-//    grn.photo3 = self.grn.photo3URI;
-////    grn.signature = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
-//    grn.supplierReference = self.grn.supplierReference;
-//    NSMutableArray *items = [NSMutableArray array];
-//    for (GRNItem *item in self.grn.lineItems)
-//    {
-//        M1XLineItems *newItem = [[M1XLineItems alloc] init];
-//        newItem.exception = item.exception;
-//        newItem.item = item.itemNumber;
-//        newItem.notes = item.notes;
-//        newItem.quantityDelivered = [NSString stringWithFormat:@"%i",[item.quantityDelivered intValue]];
-//        newItem.quantityRejected = [NSString stringWithFormat:@"%i",[item.quantityRejected intValue]];
-//        newItem.serialNumber = item.serialNumber;
-//        newItem.unitOfQuantityDelivered = item.uoq;
-//        newItem.wbsCode = item.wbsCode;
-//        [items addObject:newItem];
-//    }
-//    
-//    [service DoSubmissionWithHeader:[GRNM1XHeader GetHeader]
-//                                grn:grn
-//                          lineItems:items
-//                                kco:kco];
     
 }
 
@@ -510,12 +478,6 @@
     self.signatureView.userInteractionEnabled = NO;
 }
 
-//-(void)drawViewDidBeginDrawing
-//{
-//    self.signatureView.layer.borderColor = GRNLightBlueColour.CGColor;
-//    [self.comments resignFirstResponder];
-//}
-//
 -(void)drawViewDidEndDrawing
 {
     self.grn.signatureURI = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
@@ -563,11 +525,5 @@
     return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
 }
 
--(void)updateSdnDictionary
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableArray *sdnArray = [defaults objectForKey:KeySdnDictionary];
-    [sdnArray addObject:self.grn.supplierReference];
-}
 
 @end

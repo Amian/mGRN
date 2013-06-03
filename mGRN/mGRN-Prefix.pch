@@ -43,5 +43,3 @@
 #define KeyServicePort @"serviceport"
 #define KeyServiceServer @"serviceserver"
 #define KeyServiceName @"serviceName"
-
-#define KeySdnDictionary @"sdnDict"
