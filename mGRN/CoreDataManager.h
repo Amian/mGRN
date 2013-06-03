@@ -19,5 +19,5 @@
 + (CoreDataManager*)sharedInstance;
 +(void)removeAllContracts;
  -(void)submitGRN;
-
++(void)clearAllDataOnLogout;
 @end

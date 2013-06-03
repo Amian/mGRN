@@ -147,4 +147,13 @@ static CoreDataManager *sharedInstance = nil;
     
     return ([response statusCode]==200)?YES:NO;
 }
+
++(void)clearAllDataOnLogout
+{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 
+                                             (unsigned long)NULL), ^(void) 
+    {
+        [CoreDataManager removeAllContracts];
+    });
+}
 @end
