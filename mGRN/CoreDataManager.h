@@ -19,4 +19,5 @@
 + (CoreDataManager*)sharedInstance;
 +(void)removeAllContracts;
  -(void)submitGRN;
+
 @end

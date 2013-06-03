@@ -81,7 +81,6 @@ static CoreDataManager *sharedInstance = nil;
     {
         [self performSelector:@selector(submitGRN) withObject:nil afterDelay:self.timeInterval];
         self.timeInterval = self.timeInterval *2;
-        //TODO: Try again in a bit
     }
     else
     {
@@ -132,13 +131,8 @@ static CoreDataManager *sharedInstance = nil;
                                                           kco:kco];
     if (result.header.success)
     {
-        //TODO: Add sdn
         [self.managedObjectContext deleteObject:self.grn];
         [self.managedObjectContext save:nil];
-    }
-    else
-    {
-        //TODO: Try again
     }
     return result.header.success;
 }

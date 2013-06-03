@@ -63,6 +63,8 @@ state = _state;
     //If communication failed, use cached data
     self.dataArray = [self getDataArray];
     [self reloadData];
+    if ([self.myDelegate respondsToSelector:@selector(failedToGetData)])
+        [self.myDelegate failedToGetData];
     NSLog(@"response = %@",response);
 }
 

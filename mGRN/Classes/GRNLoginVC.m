@@ -12,7 +12,7 @@
 #import "LoadingView.h"
 #import "M1X.h"
 #import "M1XRequestHeader.h"
-
+#import "GRNM1XHeader.h"
 @interface GRNLoginVC() <M1XDelegate>
 {
     BOOL animationInProgress;
@@ -40,8 +40,16 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [self animationPartOne];
     [super viewDidAppear:animated];
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    if (![[userDefault objectForKey:KeyDomainName] length] ||
+        ![userDefault objectForKey:KeySystemURI])
+    {
+        [self performSegueWithIdentifier:@"settings" sender:self];
+        return;
+    }
+    
+    [self animationPartOne];
 }
 
 - (void)viewDidUnload {
@@ -73,19 +81,19 @@
 
 -(void)createNewSession
 {
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    
     M1XRequestHeader *header = [[M1XRequestHeader alloc] init];
     header.userId = self.username.text;
     header.password = self.password.text;
-    header.domain = GRNDomainName;
+    header.domain = [userDefault objectForKey:KeyDomainName];
     header.role = GRNRole;
-    header.transactionId = @"123";
+    header.transactionId = [[NSProcessInfo processInfo] globallyUniqueString];
     
     //TODO: Create a unique GUID
     //    header.transactionId = (NSString*)[[UIDevice currentDevice] identifierForVendor];
     
     //Save session values
-    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
-    [userDefault setValue:header.domain forKey:KeyDomainName];
     [userDefault setValue:header.transactionId forKey:KeyTransactionID];
     [userDefault setValue:header.role forKey:KeyRole];
     [userDefault synchronize];
@@ -131,6 +139,11 @@
     self.mgrnLogo.center = CGPointMake(self.loginContainer.center.x, self.loginContainer.frame.origin.y);
     [UIView commitAnimations];
 }
+
+-(void)checkSystemURI
+{
+    
+}
 //
 //
 //-(void)runAnimation
@@ -142,7 +155,7 @@
 //    self.coinsLogoView.clipsToBounds = NO;
 //    self.coinsLogoView.center = CGPointMake(self.view.bounds.size.width/2,
 //                                               self.view.bounds.size.height/2);
-//    
+//
 //    [self performSelector:@selector(animationStageOne) withObject:nil afterDelay:0.2];
 //}
 //
@@ -167,9 +180,9 @@
 //    CGRect pervasicFrame = self.poweredByPervasicLabel.frame;
 //    pervasicFrame.origin.y += 20.0;
 //    self.poweredByPervasicLabel.frame = pervasicFrame;
-//    
+//
 //    pervasicFrame.origin.y -= 20.0;
-//    
+//
 //    [UIView beginAnimations:nil context:nil];
 //    [UIView setAnimationDuration:1.0];
 //    self.poweredByPervasicLabel.frame = pervasicFrame;
@@ -198,7 +211,7 @@
 //    [UIView commitAnimations];
 //    animationInProgress = NO;
 //    [self.username performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:1.0];
-//    
+//
 //}
 //
 #pragma mark - Earthquake
@@ -244,13 +257,77 @@
     [userDefault setValue:session.sessionKey forKey:KeyPassword];
     [userDefault setValue:session.kco forKey:KeyKCO];
     [userDefault synchronize];
+    
+    M1XRequestHeader *header = [GRNM1XHeader GetHeader];
+    M1X *m1x = [[M1X alloc] init];
+    m1x.delegate = self;
+    [m1x FetchServiceConnectionDetailsForAppName:GRNAppName withHeader:header];
+    
+}
+
+-(void)onServiceConnectionSuccess:(M1XServiceConnection *)service
+{
+    if (!service.port.length || !service.server.length || !service.serviceName.length)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:@"Could not retrieve service connection details."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    [userDefault setValue:service.port forKey:KeyServicePort];
+    [userDefault setValue:service.server forKey:KeyServiceServer];
+    [userDefault setValue:service.serviceName forKey:KeyServiceName];
+    [userDefault synchronize];
     [self performSegueWithIdentifier:@"login" sender:nil];
 }
 
--(void)onNewSessionFailure:(M1XResponse *)response
+-(void)onNewSessionFailure:(M1XResponse *)response exceptionType:(M1xException)exception
 {
     [self.loadingView removeFromSuperview];
     [self earthquake:self.loginContainer];
-    self.errorLabel.hidden = NO;
+    if (exception != 0)
+    {
+        NSString *message = @"";
+        switch (exception)
+        {
+            case M1xExceptionAuthenticationFailed:
+            {
+                message = @"Authentication has failed. Please try a different ￼username/password.";
+                break;
+            }
+            case M1xExceptionNoSuccess:
+            {
+                message = @"Unable to connect to server.";
+                break;
+            }
+            case M1xExceptionNoInternetConnection:
+                break;
+            case M1xExceptionNone:
+            default:
+                message = @"Unknown exception.";
+                break;
+        }
+        if (message.length)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Exception"
+                                                            message:message
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
+    }
 }
+
+-(void)setup
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    [userDefault setObject:[NSMutableArray array] forKey:KeySdnDictionary];
+    [userDefault synchronize];
+}
+
 @end

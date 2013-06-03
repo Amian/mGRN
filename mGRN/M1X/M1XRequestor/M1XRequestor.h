@@ -26,6 +26,6 @@
 - (void)send;
 - (void)clearResponse;
 
-+ (NSString*)sendSyncronousRequest:(M1XRequest*)newRequest withURL:(NSURL*)newURL;
++ (M1XResponse*)sendSyncronousRequest:(M1XRequest*)newRequest withURL:(NSURL*)newURL;
 
 @end

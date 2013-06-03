@@ -48,13 +48,6 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                 <textInputTraits key="textInputTraits" autocorrectionType="no" secureTextEntry="YES"/>
                                             </textField>
-                                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Invalid username or password!" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" id="MrW-4O-99A">
-                                                <rect key="frame" x="233" y="172" width="326" height="21"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" red="0.98979591836734693" green="0.0" blue="0.010740281782697279" alpha="1" colorSpace="calibratedRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="wilho2" placeholder="Username" minimumFontSize="17" id="fie-sP-iDu" customClass="BorderedTextField">
                                                 <rect key="frame" x="74" y="50" width="643" height="50"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
@@ -70,7 +63,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" id="1Tz-nG-O6b">
-                                <rect key="frame" x="0.0" y="624" width="1024" height="125"/>
+                                <rect key="frame" x="0.0" y="600" width="1024" height="148"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="logo-coinsmobile-pervasic.png" id="2oi-pC-Ya6">
@@ -90,7 +83,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="EzX-O6-hBx" kind="modal" modalPresentationStyle="fullScreen" modalTransitionStyle="flipHorizontal" id="j9T-3m-vAO"/>
+                                            <segue destination="EzX-O6-hBx" kind="modal" identifier="settings" modalPresentationStyle="fullScreen" modalTransitionStyle="flipHorizontal" id="j9T-3m-vAO"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -107,7 +100,6 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="coinsLogoView" destination="1Tz-nG-O6b" id="UlL-8E-7oA"/>
-                        <outlet property="errorLabel" destination="MrW-4O-99A" id="Obx-U1-5vV"/>
                         <outlet property="loginContainer" destination="WCG-V3-BHA" id="ciT-46-s0U"/>
                         <outlet property="mgrnLogo" destination="eWb-7V-wZf" id="tCE-xc-Ms9"/>
                         <outlet property="password" destination="m8W-9s-3JK" id="HNQ-bh-96P"/>
@@ -132,7 +124,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" image="logo-coinsmobile-pervasic.png" id="aHL-Pt-scG">
-                                <rect key="frame" x="321" y="600" width="520" height="128"/>
+                                <rect key="frame" x="252" y="600" width="520" height="128"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </imageView>
@@ -144,21 +136,21 @@
                                         <rect key="frame" x="27" y="20" width="795" height="205"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="mGRN URL" minimumFontSize="17" id="Vde-xf-GRQ" customClass="BorderedTextField">
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Domain" minimumFontSize="17" id="Vde-xf-GRQ" customClass="BorderedTextField">
                                                 <rect key="frame" x="74" y="106" width="644" height="50"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                <textInputTraits key="textInputTraits" autocorrectionType="no" secureTextEntry="YES"/>
+                                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                             </textField>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="System URL" minimumFontSize="17" id="Owa-Ee-FGK" customClass="BorderedTextField">
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Master Host" minimumFontSize="17" id="Owa-Ee-FGK" customClass="BorderedTextField">
                                                 <rect key="frame" x="74" y="50" width="644" height="50"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="URL"/>
                                             </textField>
                                         </subviews>
                                         <color key="backgroundColor" white="0.59999999999999998" alpha="0.10000000000000001" colorSpace="calibratedWhite"/>
@@ -575,8 +567,8 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Please sign on the dotted line below" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EJS-fR-tnb">
-                                        <rect key="frame" x="201" y="467" width="372" height="24"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <rect key="frame" x="201" y="467" width="412" height="24"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <color key="textColor" white="0.70460766419999998" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -619,7 +611,7 @@
                                     </button>
                                     <view contentMode="scaleToFill" id="T6i-Af-JON">
                                         <rect key="frame" x="201" y="499" width="412" height="277"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" id="uLl-cB-CgN" customClass="DrawView">
                                                 <rect key="frame" x="1" y="1" width="410" height="275"/>

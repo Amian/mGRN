@@ -404,7 +404,6 @@
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    //TODO:search
     switch (self.status)
     {
         case Contracts:
@@ -420,6 +419,12 @@
             break;
     }
     return YES;
+}
+
+-(void)failedToGetData
+{
+    self.loadingView.hidden = YES;
+    [self tablecontainerDelegateChangedStatusTo:self.status];
 }
 
 @end

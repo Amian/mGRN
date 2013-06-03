@@ -276,8 +276,19 @@ static float KeyboardHeight;
     }
     else if ([textField isEqual:self.sdnTextField])
     {
-        //TODO: Check if it is valid
-        self.grn.supplierReference = newString;
+        if ([self checkIfSdnIsValid])
+        {
+            self.grn.supplierReference = newString;
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"A GRN with this Service Delivery Number has already been submitted."
+                                                            message:nil
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
     }
     else if ([textField isEqual:self.searchTextField])
     {
@@ -474,5 +485,19 @@ static float KeyboardHeight;
         }
     }
     return errorString;
+}
+
+-(BOOL)checkIfSdnIsValid
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSArray *sdns = [defaults objectForKey:KeySdnDictionary];
+    for (NSString *s in sdns)
+    {
+        if ([[s lowercaseString] isEqualToString:[self.sdnTextField.text lowercaseString]])
+        {
+            return NO;
+        }
+    }
+    return YES;
 }
 @end

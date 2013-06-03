@@ -9,6 +9,13 @@
 #import "M1XRequestor.h"
 #import <Foundation/Foundation.h>
 
+typedef enum
+{
+    M1xExceptionNone,
+    M1xExceptionNoInternetConnection,
+    M1xExceptionNoSuccess,
+    M1xExceptionAuthenticationFailed
+}M1xException;
 
 @interface M1XSession : NSObject
 
@@ -21,6 +28,14 @@
 
 @end
 
+@interface M1XServiceConnection : NSObject
+
+@property (nonatomic, strong) NSString *port;
+@property (nonatomic, strong) NSString *server;
+@property (nonatomic, strong) NSString *serviceName;
+
+@end
+
 // ------------------------------------------
 
 @protocol M1XDelegate <NSObject>
@@ -28,7 +43,8 @@
 @optional
 
 - (void)onNewSessionSuccess:(M1XSession *)session;
-- (void)onNewSessionFailure:(M1XResponse *)response;
+- (void)onServiceConnectionSuccess:(M1XServiceConnection *)service;
+- (void)onNewSessionFailure:(M1XResponse *)response exceptionType:(M1xException)exception;
 
 @end
 
@@ -40,5 +56,6 @@
 @property (strong, nonatomic) NSString *systemURL;
 
 - (void)newSessionForAppName:(NSString *)appName withHeader:(M1XRequestHeader *)header;
+- (void)FetchServiceConnectionDetailsForAppName:(NSString *)appName withHeader:(M1XRequestHeader *)header;
 
 @end

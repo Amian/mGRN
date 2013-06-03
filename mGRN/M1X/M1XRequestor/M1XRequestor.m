@@ -41,6 +41,21 @@
 
 - (void)send
 {
+    if (![self connectedToInternet])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Exception"
+                                                        message:@"Communication has failed. Please check your internet connection and try again. If this continues to happen, contact support."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+        if ([self.delegate respondsToSelector:@selector(onM1XResponse:forRequest:)]) {
+            [self.delegate onConnectionFailure];
+        }
+        return;
+    }
+    
     if (!waitingForResponse) {
         waitingForResponse = YES;
         [self clearResponse];
@@ -123,6 +138,17 @@
 - (void)clearResponse
 {
     self.response = nil;
+}
+
+-(BOOL)connectedToInternet
+{
+    NSURL *url=[NSURL URLWithString:@"http://www.google.com"];
+    NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"HEAD"];
+    NSHTTPURLResponse *response;
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error: NULL];
+    
+    return ([response statusCode]==200)?YES:NO;
 }
 
 @end

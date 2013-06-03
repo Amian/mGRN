@@ -15,5 +15,5 @@
 @optional
 
 - (void)onM1XResponse:(M1XResponse *)response forRequest:(M1XRequest *)request;
-
+- (void)onConnectionFailure;
 @end

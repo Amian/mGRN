@@ -40,6 +40,16 @@
 {
     [self refreshImageView];
     [self.signatureView setNeedsDisplay];
+    CGRect frame = self.signatureView.superview.frame;
+    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    {
+    frame.origin = CGPointMake(268.0, 359.0);
+    }
+    else
+    {
+        frame.origin = CGPointMake(201.0, 499.0);
+    }
+    self.signatureView.superview.frame = frame;
 }
 
 -(void)viewDidLoad
@@ -140,8 +150,8 @@
     
     if (!self.signatureView.hasSigned)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                        message:@"Please sign the GRN"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please sign the GRN"
+                                                        message:nil
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
@@ -158,6 +168,7 @@
     {
         [[CoreDataManager sharedInstance] submitGRN];
     });
+    [self updateSdnDictionary];
     [self updatePurchaseOrder];
     
     GRNOrderDetailsVC *orderVC = [self.navigationController.viewControllers objectAtIndex:0];
@@ -207,7 +218,6 @@
 -(void)onAPIRequestFailure:(M1XResponse *)response
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
-    //TODO:put it in a queue
     NSLog(@"submit response = %@",response);
 }
 
@@ -551,6 +561,13 @@
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", item.itemNumber];
     return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
+}
+
+-(void)updateSdnDictionary
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableArray *sdnArray = [defaults objectForKey:KeySdnDictionary];
+    [sdnArray addObject:self.grn.supplierReference];
 }
 
 @end

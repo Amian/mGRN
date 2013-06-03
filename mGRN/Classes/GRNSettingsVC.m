@@ -10,6 +10,14 @@
 
 @implementation GRNSettingsVC
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.systemURl.text = [defaults objectForKey:KeySystemURI];
+    self.mgrnURL.text = [defaults objectForKey:KeyDomainName];
+}
+
 - (void)viewDidUnload {
     [self setSystemURl:nil];
     [self setMgrnURL:nil];
@@ -20,17 +28,38 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (self.systemURl.text.length)
     {
-    [defaults setValue:self.systemURl.text forKey:KeySystemURI];
+        NSString *uri = [self.systemURl.text stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
+    [defaults setValue:uri forKey:KeySystemURI];
     }
     if (self.mgrnURL.text.length)
     {
-        [defaults setValue:self.mgrnURL.text forKey:KeymGRNURI];
+        [defaults setValue:self.mgrnURL.text forKey:KeyDomainName];
     }
     [defaults synchronize];
-    [self dismissModalViewControllerAnimated:YES];
+    if ([self checkDetails])
+        [self dismissModalViewControllerAnimated:YES];
 }
 - (IBAction)cancel:(id)sender
 {
+    if ([self checkDetails])
     [self dismissModalViewControllerAnimated:YES];
+}
+
+-(BOOL)checkDetails
+{
+    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    if (![[userDefault objectForKey:KeyDomainName] length] ||
+        ![userDefault objectForKey:KeySystemURI])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please enter correct details to proceed"
+                                                        message:@""
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        
+        return NO;
+    }
+    return YES;
 }
 @end

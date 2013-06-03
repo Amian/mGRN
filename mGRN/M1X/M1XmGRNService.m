@@ -9,7 +9,6 @@
 #import "M1XmGRNService.h"
 #import <objc/runtime.h>
 
-#define M1xMgrnService @"m1xmgrnservice.svc"
 #define M1xMgrnService_GetContracts @"GetContracts"
 #define M1xMgrnService_GetPurchaseOrdersByContract @"GetPurchaseOrdersByContract"
 #define M1xMgrnService_GetPurchaseOrdersDetails @"GetPurchaseOrderDetails"
@@ -38,11 +37,10 @@
 {
     if (!_systemURL) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _systemURL = [defaults objectForKey:KeymGRNURI];
-        if (!_systemURL.length)
-        {
-            _systemURL = DefaultmGRNURI;
-        }
+        _systemURL = [NSString stringWithFormat:@"https://%@:%@/%@",
+                      [defaults objectForKey:KeyServiceServer],
+                      [defaults objectForKey:KeyServicePort],
+                      [defaults objectForKey:KeyServiceName]];
     }
     return _systemURL;
 }
@@ -78,12 +76,17 @@
     }
 }
 
+-(void)onConnectionFailure
+{
+    if ([self.delegate respondsToSelector:@selector(onAPIRequestFailure:)])
+        [self.delegate onAPIRequestFailure:nil];
+}
 
 - (void)GetContractsWithHeader:(M1XRequestHeader *)header kco:(NSString*)kco includeWBS:(BOOL)includeWBS
 {
     M1XRequestor *requestor = self.systemServiceRequestor;
     requestor.request = [[M1XRequest alloc] init];
-    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/%@",self.systemURL,M1xMgrnService,M1xMgrnService_GetContracts]];
+    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetContracts]];
     requestor.request.header = header;
     requestor.request.body = [NSDictionary dictionaryWithObjectsAndKeys:
                               includeWBS? @"true" : @"false",@"includeWBS",
@@ -97,7 +100,7 @@
 {
     M1XRequestor *requestor = self.systemServiceRequestor;
     requestor.request = [[M1XRequest alloc] init];
-    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/%@",self.systemURL,M1xMgrnService,M1xMgrnService_GetPurchaseOrdersByContract]];
+    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetPurchaseOrdersByContract]];
     requestor.request.header = header;
     requestor.request.body = [NSDictionary dictionaryWithObjectsAndKeys:
                               contractnumber,@"contractNumber",
@@ -111,7 +114,7 @@
 {
     M1XRequestor *requestor = self.systemServiceRequestor;
     requestor.request = [[M1XRequest alloc] init];
-    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/%@",self.systemURL,M1xMgrnService,M1xMgrnService_GetPurchaseOrdersDetails]];
+    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetPurchaseOrdersDetails]];
     requestor.request.header = header;
     requestor.request.body = [NSDictionary dictionaryWithObjectsAndKeys:
                               contractnumber,@"contractNumber",
@@ -125,7 +128,7 @@
 {
     M1XRequestor *requestor = self.systemServiceRequestor;
     requestor.request = [[M1XRequest alloc] init];
-    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/%@",self.systemURL,M1xMgrnService,M1xMgrnService_GetWBSByContract]];
+    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetWBSByContract]];
     requestor.request.header = header;
     requestor.request.body = [NSDictionary dictionaryWithObjectsAndKeys:
                               contractnumber,@"contractNumber", 
@@ -138,7 +141,7 @@
 {
     M1XRequestor *requestor = self.systemServiceRequestor;
     requestor.request = [[M1XRequest alloc] init];
-    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/%@",self.systemURL,M1xMgrnService,M1xMgrnService_DoSubmission]];
+    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_DoSubmission]];
     requestor.request.header = header;
     NSMutableDictionary *body = [[self getDictFromObject:grn] mutableCopy];
     NSMutableArray *items = [NSMutableArray array];
@@ -157,7 +160,7 @@
 -(M1XResponse*)DoSubmissionSyncWithHeader:(M1XRequestHeader*)header grn:(M1XGRN*)grn lineItems:(NSArray*)lineItems kco:(NSString*)kco
 {
     M1XRequest *request = [[M1XRequest alloc] init];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@/%@",self.systemURL,M1xMgrnService,M1xMgrnService_DoSubmission]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_DoSubmission]];
     request.header = header;
     NSMutableDictionary *body = [[self getDictFromObject:grn] mutableCopy];
     NSMutableArray *items = [NSMutableArray array];
