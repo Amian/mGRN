@@ -35,7 +35,7 @@ static CoreDataManager *sharedInstance = nil;
     
     if (self)
     {
-        self.timeInterval = 2.0 * 60.0;
+        self.timeInterval = 60.0;
     }
     
     return self;
@@ -79,12 +79,16 @@ static CoreDataManager *sharedInstance = nil;
     }
     if (tryAgain)
     {
-        [self performSelector:@selector(submitGRN) withObject:nil afterDelay:self.timeInterval];
         self.timeInterval = self.timeInterval *2;
+        NSTimer* t = [NSTimer scheduledTimerWithTimeInterval:self.timeInterval target:self  selector:@selector(submitGRN) userInfo:nil repeats:NO];
+        
+        [[NSRunLoop currentRunLoop] addTimer:t forMode:NSDefaultRunLoopMode];
+        
+        [[NSRunLoop currentRunLoop] run];
     }
     else
     {
-        self.timeInterval = 2.0;
+        self.timeInterval = 60.0;
     }
 }
 

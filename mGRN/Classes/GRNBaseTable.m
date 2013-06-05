@@ -48,7 +48,6 @@ state = _state;
 
 -(int)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSLog(@"sections for %@ = %i",NSStringFromClass([self class]),self.dataArray.count);
     return self.dataArray.count;
 }
 
@@ -65,7 +64,7 @@ state = _state;
     [self reloadData];
     if ([self.myDelegate respondsToSelector:@selector(failedToGetData)])
         [self.myDelegate failedToGetData];
-    NSLog(@"response = %@",response);
+    NSLog(@"Faliure response = %@",response);
 }
 
 -(NSArray*)getDataArray

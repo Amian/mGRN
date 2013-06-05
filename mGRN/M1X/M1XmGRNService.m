@@ -174,6 +174,7 @@
                                          kco,@"kco",
                                          nil];
     M1XResponse *result = [M1XRequestor sendSyncronousRequest:request withURL:url];
+    NSLog(@"order number = %@",[body objectForKey:@"orderNumber"]);
     return result;
 }
 
@@ -189,7 +190,6 @@
         [propertyNames addObject:[NSString stringWithUTF8String:name]];
     }
     free(properties);
-    NSLog(@"Names: %@", propertyNames);
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     for (NSString *key in propertyNames)
     {
@@ -200,7 +200,7 @@
             }
             @catch (NSException *e)
             {
-                NSLog(@"key = %@",key);
+                NSLog(@"exception: key = %@",key);
             }
         }
         else
@@ -210,7 +210,7 @@
             }
             @catch (NSException *e)
             {
-                NSLog(@"key = %@",key);
+                NSLog(@"exception: key = %@",key);
             }
         }
     }

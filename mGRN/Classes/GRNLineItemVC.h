@@ -18,7 +18,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (strong, nonatomic) IBOutlet UITextField *quantityDelivered;
 @property (strong, nonatomic) IBOutlet UITextField *quantityRejected;
-@property (strong, nonatomic) IBOutlet UITextField *note;
+@property (strong, nonatomic) IBOutlet UITextView *note;
 @property (strong, nonatomic) IBOutlet UILabel *expected;
 @property (strong, nonatomic) IBOutlet UIButton *wbsButton;
 @property (strong, nonatomic) IBOutlet UITextField *sdnTextField;
@@ -39,4 +39,5 @@
 @property (strong, nonatomic) IBOutlet UIView *viewBelowWbsCode;
 
 @property (strong, nonatomic) IBOutlet UIView *detailContainer;
+@property (strong, nonatomic) IBOutlet UILabel *wbsLabel;
 @end

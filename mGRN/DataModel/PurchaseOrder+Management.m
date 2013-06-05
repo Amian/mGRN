@@ -80,4 +80,14 @@
     [context save:nil];
 }
 
++(NSArray*)fetchPurchaseOrdersWithQuantityErrorinMOC:(NSManagedObjectContext*)moc
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"PurchaseOrder"];
+    request.predicate = [NSPredicate predicateWithFormat:@"quantityError > 0"];
+    
+    NSError *fetchError = nil;
+    NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
+    return matches? matches : [NSArray array];
+}
+
 @end

@@ -33,10 +33,11 @@
 @property (nonatomic, strong) UIPopoverController *popVC;
 @property (nonatomic, strong) UIImageView *fakeSignature;
 @property (nonatomic, strong) UIView *loadingView;
+@property BOOL grnDisplayed;
 @end
 
 @implementation GRNCompleteGRNVC
-@synthesize grn = _grn, image1, image2, image3, popVC = _popVC, grnDict, fakeSignature, loadingView;
+@synthesize grn = _grn, image1, image2, image3, popVC = _popVC, grnDict, fakeSignature, loadingView, grnDisplayed;
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
@@ -62,7 +63,8 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self displayGRN];
+    if (!self.grnDisplayed)
+        [self displayGRN];
 }
 
 - (void)viewDidUnload {
@@ -85,7 +87,6 @@
         NSString *date = [formatter stringFromDate:self.grn.deliveryDate];
         [self.dateButton setTitle:date forState:UIControlStateNormal];
     }
-    NSLog(@"dict recieved = %@",self.grnDict);
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.image1 = [UIImage imageWithData:[defaults objectForKey:KeyImage1]];
@@ -116,10 +117,11 @@
     [defaults removeObjectForKey:KeyImage3];
     [defaults removeObjectForKey:KeySignature];
     [defaults synchronize];
+    
+    self.grnDisplayed = YES;
 }
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSLog(@"id = %@",segue.identifier);
     if ([segue.identifier isEqualToString:@"back"])
     {
         self.grn.notes  = self.comments.text;
@@ -150,7 +152,9 @@
 }
 - (IBAction)submit:(id)sender {
     
-    if (!self.signatureView.hasSigned)
+    self.grn.notes = self.comments.text;
+    
+    if (!self.grn.signatureURI.length)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please sign the GRN"
                                                         message:nil
@@ -186,7 +190,7 @@
 -(void)onAPIRequestFailure:(M1XResponse *)response
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
-    NSLog(@"submit response = %@",response);
+    NSLog(@"submit failure response = %@",response);
 }
 
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData
@@ -195,7 +199,6 @@
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];
     
     //Refresh Purchase orders
-    
     
     [self.navigationController popToRootViewControllerAnimated:YES];
     NSLog(@"submit response = %@",orderData);

@@ -10,6 +10,8 @@
 
 #import "CoreDataManager.h"
 
+#import "PurchaseOrder+Management.h"
+
 @implementation GRNAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -20,6 +22,16 @@
 {
     CoreDataManager *cdm = [CoreDataManager sharedInstance];
     cdm.managedObjectContext = self.managedObjectContext;
+    
+    //TODO: remove the following
+    NSArray *a = [PurchaseOrder fetchPurchaseOrdersWithQuantityErrorinMOC:self.managedObjectContext];
+    for (PurchaseOrder *p in a)
+    {
+        p.quantityError = [NSNumber numberWithInt:2];
+        [self.managedObjectContext save:nil];
+//        NSLog(@"con = %@, %@",p.contract.name,p.orderNumber);
+    }
+    
     return YES;
 }
 

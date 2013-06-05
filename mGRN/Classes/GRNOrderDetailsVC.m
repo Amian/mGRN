@@ -27,6 +27,24 @@
 @implementation GRNOrderDetailsVC
 @synthesize service = _service, status = _status, returnedAfterSubmission;
 
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    CGRect frame = self.containerView.frame;
+    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    {
+        frame.size.width = 1300.0;
+    }
+    else
+    {
+        frame.size.width = 1125.0;
+    }
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    self.containerView.frame = frame;
+    [UIView commitAnimations];
+    [self tablecontainerDelegateChangedStatusTo:self.status];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -96,12 +114,6 @@
     [self setSearchTextField:nil];
     [self setSearchBar:nil];
     [super viewDidUnload];
-}
-
--(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    NSLog(@"new y = %f, new height = %f",[self.view viewWithTag:109].frame.origin.y, self.orderItemTableView.frame.size.height);
-    [self tablecontainerDelegateChangedStatusTo:self.status];
 }
 
 #pragma mark - Table Container Delegate
@@ -390,7 +402,7 @@
 
 -(void)onKeyboardShow:(NSNotification *)notification
 {
-    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
+    //    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
     CGRect frame = self.searchBar.frame;
     frame.origin.y = self.view.bounds.size.height - self.searchBar.frame.size.height - ( UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])? 352.0 : 264.0);
     [UIView beginAnimations:nil context:nil];

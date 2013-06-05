@@ -10,4 +10,5 @@
 
 @interface GRNBaseVC : UIViewController
 
+@property (strong, nonatomic) IBOutlet UIImageView *bgImageView;
 @end

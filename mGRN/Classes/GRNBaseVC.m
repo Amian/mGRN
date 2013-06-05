@@ -24,4 +24,31 @@
     [super viewDidAppear:animated];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setBgImage];
+}
+
+- (void)viewDidUnload {
+    [self setBgImageView:nil];
+    [super viewDidUnload];
+}
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self setBgImage];
+}
+
+-(void)setBgImage
+{
+    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    {
+        self.bgImageView.image = [UIImage imageNamed:@"home_bg_landscape_mgrn_1.png"];
+    }
+    else
+    {
+        self.bgImageView.image = [UIImage imageNamed:@"bg_mgrn.jpg"];
+    }
+}
 @end

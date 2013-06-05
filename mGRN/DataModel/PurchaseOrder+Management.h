@@ -22,4 +22,6 @@
 + (PurchaseOrder *)insertPurchaseOrderWithData:(NSDictionary *)purchaseOrderData forContract:(Contract *)contract inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
 + (NSArray*)fetchPurchaseOrdersForContractNumber:(NSString*)contractNumber inMOC:(NSManagedObjectContext*)moc;
 +(void)removeAllPurchaseOrdersInManagedObjectContext:(NSManagedObjectContext*)context;
++(NSArray*)fetchPurchaseOrdersWithQuantityErrorinMOC:(NSManagedObjectContext*)moc;
+
 @end

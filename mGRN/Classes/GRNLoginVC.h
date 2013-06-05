@@ -13,6 +13,7 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *username;
 @property (strong, nonatomic) IBOutlet UITextField *password;
+@property (strong, nonatomic) IBOutlet UIImageView *bgImageView;
 
 @property (strong, nonatomic) IBOutlet UIImageView *mgrnLogo;
 @end

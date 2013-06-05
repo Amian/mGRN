@@ -16,10 +16,11 @@
     if (self)
     {
         // Add a bottomBorder
-        CALayer *bottomBorder = [CALayer layer];
+        UIView *bottomBorder = [[UIView alloc] init];
         bottomBorder.frame = CGRectMake(0.0f, self.frame.size.height - 1.0, self.frame.size.width, 1.0f);
-        bottomBorder.backgroundColor = [UIColor whiteColor].CGColor;
-        [self.layer addSublayer:bottomBorder];
+        bottomBorder.backgroundColor = [UIColor whiteColor];
+        bottomBorder.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        [self addSubview:bottomBorder];
     }
     return self;
 }

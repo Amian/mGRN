@@ -38,6 +38,7 @@
         self.mgrnLogo.center = CGPointMake(loginBox.center.x, loginBox.frame.origin.y - self.mgrnLogo.frame.size.height - 10.0);
         [UIView commitAnimations];
     }
+    [self setBgImage];
 }
 
 -(void)viewDidLoad
@@ -48,6 +49,7 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [self setBgImage];
     [super viewWillAppear:animated];
     self.hiddenView.alpha = 0.0;
     self.mgrnLogo.alpha = 1.0;
@@ -72,6 +74,7 @@
     [self setUsername:nil];
     [self setPassword:nil];
     [self setMgrnLogo:nil];
+    [self setBgImageView:nil];
     [super viewDidUnload];
 }
 
@@ -274,4 +277,16 @@
     [SDN removeExpiredSDNinMOC:[[CoreDataManager sharedInstance] managedObjectContext]];
 }
 
+-(void)setBgImage
+{
+    
+    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    {
+        self.bgImageView.image = [UIImage imageNamed:@"home_bg_landscape_mgrn_1.png"];
+    }
+    else
+    {
+        self.bgImageView.image = [UIImage imageNamed:@"bg_mgrn.jpg"];
+    }
+}
 @end

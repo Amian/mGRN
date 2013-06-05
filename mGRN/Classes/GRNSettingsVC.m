@@ -16,11 +16,13 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.systemURl.text = [defaults objectForKey:KeySystemURI];
     self.mgrnURL.text = [defaults objectForKey:KeyDomainName];
+    [self setBgImage];
 }
 
 - (void)viewDidUnload {
     [self setSystemURl:nil];
     [self setMgrnURL:nil];
+    [self setBgImageView:nil];
     [super viewDidUnload];
 }
 
@@ -62,5 +64,23 @@
         return NO;
     }
     return YES;
+}
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self setBgImage];
+}
+
+-(void)setBgImage
+{
+    
+    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    {
+        self.bgImageView.image = [UIImage imageNamed:@"home_bg_landscape_mgrn_1.png"];
+    }
+    else
+    {
+        self.bgImageView.image = [UIImage imageNamed:@"bg_mgrn.jpg"];
+    }
 }
 @end
