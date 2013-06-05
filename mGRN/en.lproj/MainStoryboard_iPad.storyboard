@@ -269,7 +269,7 @@
             <objects>
                 <viewController storyboardIdentifier="OrderDetailVC" id="yBb-kj-pff" customClass="GRNOrderDetailsVC" sceneMemberID="viewController">
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U29-q2-3sq">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="20" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="rWl-cJ-9sr" userLabel="Container">
@@ -364,7 +364,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                        <state key="normal" image="icon_reload.png">
+                                        <state key="normal" image="icon_reload_on.png">
                                             <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -372,7 +372,6 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="reload:" destination="SYl-j8-JrI" eventType="touchUpInside" id="4Vz-gt-h61"/>
                                             <action selector="reload:" destination="yBb-kj-pff" eventType="touchUpInside" id="Bg0-LT-hqi"/>
                                         </connections>
                                     </button>
@@ -390,7 +389,6 @@
                                         </state>
                                         <connections>
                                             <action selector="search:" destination="yBb-kj-pff" eventType="touchUpInside" id="GuR-Cg-qXo"/>
-                                            <action selector="search:" destination="SYl-j8-JrI" eventType="touchUpInside" id="zUj-rs-Ukq"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Jeg-el-xHF">
@@ -407,7 +405,38 @@
                                         </state>
                                         <connections>
                                             <action selector="logout:" destination="yBb-kj-pff" eventType="touchUpInside" id="P5X-FK-LVV"/>
-                                            <action selector="search:" destination="SYl-j8-JrI" eventType="touchUpInside" id="5cQ-di-T82"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="xt8-sN-lFU">
+                                        <rect key="frame" x="597" y="2" width="45" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="icon_info_small.png">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="showInfo:" destination="yBb-kj-pff" eventType="touchUpInside" id="zpt-b2-QL1"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="NoS-0L-yYd">
+                                        <rect key="frame" x="544" y="3" width="45" height="44"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" image="logout_icon_white.png">
+                                            <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="logout:" destination="yBb-kj-pff" eventType="touchUpInside" id="plx-lS-GrI"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -422,6 +451,8 @@
                     <connections>
                         <outlet property="containerView" destination="rWl-cJ-9sr" id="7P5-F6-e4g"/>
                         <outlet property="contractsTableView" destination="xBa-WC-c7g" id="mCw-a9-0cz"/>
+                        <outlet property="infoLabel" destination="wJc-Bt-KMS" id="9y4-OG-v3F"/>
+                        <outlet property="infoView" destination="6xz-EO-9gD" id="MCb-Qy-JsS"/>
                         <outlet property="loadingView" destination="2lK-V0-FY1" id="jLG-0j-C16"/>
                         <outlet property="navContract" destination="boj-qS-eCB" id="vC2-Rk-1xH"/>
                         <outlet property="navPurchaseOrders" destination="VO0-O1-5Wy" id="ISC-V7-na7"/>
@@ -507,6 +538,59 @@
                                 </button>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
+                <view contentMode="scaleToFill" id="6xz-EO-9gD" userLabel="InfoView">
+                    <rect key="frame" x="0.0" y="0.0" width="768" height="1004"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" id="TXe-zI-iVm">
+                            <rect key="frame" x="2" y="-1" width="768" height="1005"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                            <state key="normal">
+                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="highlighted">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="removeInfoView:" destination="yBb-kj-pff" eventType="touchUpInside" id="GFj-Wb-jG3"/>
+                            </connections>
+                        </button>
+                        <view contentMode="scaleToFill" id="Udk-dw-Kjl">
+                            <rect key="frame" x="122" y="404" width="527" height="200"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" text="" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wJc-Bt-KMS">
+                                    <rect key="frame" x="20" y="20" width="487" height="100"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Fkh-GW-hIh">
+                                    <rect key="frame" x="0.0" y="146" width="527" height="55"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="0.076642335766423361" alpha="1" colorSpace="calibratedWhite"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                    <state key="normal" title="OK">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <state key="highlighted">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="removeInfoView:" destination="yBb-kj-pff" eventType="touchUpInside" id="aBM-OY-Pnc"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1281,16 +1365,177 @@
         <image name="icon_add.png" width="33" height="33"/>
         <image name="icon_close_task.png" width="128" height="105"/>
         <image name="icon_close_task_disabled.png" width="128" height="105"/>
+        <image name="icon_info_small.png" width="80" height="80"/>
         <image name="icon_main_camera.png" width="74" height="50"/>
         <image name="icon_reload.png" width="49" height="50"/>
+        <image name="icon_reload_on.png" width="49" height="50"/>
         <image name="icon_search.png" width="49" height="50"/>
         <image name="icon_sign.png" width="166" height="169"/>
         <image name="icon_sign_disabled.png" width="166" height="169"/>
         <image name="logo-coinsmobile-pervasic.png" width="1608" height="383"/>
         <image name="logo_mgrn.png" width="148" height="50"/>
         <image name="logo_mgrn_hat.png" width="256" height="50"/>
+        <image name="logout_icon_white.png" width="70" height="70"/>
         <image name="next_arrow.png" width="40" height="50"/>
     </resources>
+    <classes>
+        <class className="BorderedBlackView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/BorderedBlackView.h"/>
+        </class>
+        <class className="BorderedTextField" superclassName="UITextField">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/BorderedTextField.h"/>
+        </class>
+        <class className="BorderedTextView" superclassName="UITextView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/BorderedTextView.h"/>
+        </class>
+        <class className="DrawView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/DrawView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="delegate"/>
+            </relationships>
+        </class>
+        <class className="GRNBaseTable" superclassName="UITableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNBaseTable.h"/>
+            <relationships>
+                <relationship kind="outlet" name="myDelegate"/>
+            </relationships>
+        </class>
+        <class className="GRNBaseVC" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNBaseVC.h"/>
+            <relationships>
+                <relationship kind="outlet" name="bgImageView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="GRNCompleteGRNVC" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNCompleteGRNVC.h"/>
+            <relationships>
+                <relationship kind="action" name="saveSignature:" candidateClass="UIButton"/>
+                <relationship kind="action" name="showDatePicker:" candidateClass="UIButton"/>
+                <relationship kind="action" name="signAgain:" candidateClass="UIButton"/>
+                <relationship kind="action" name="submit:"/>
+                <relationship kind="action" name="takePhoto:"/>
+                <relationship kind="outlet" name="comments" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="dateButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="photoLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="photoView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="signButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="signatureView" candidateClass="DrawView"/>
+                <relationship kind="outlet" name="takePhotoButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="GRNContractTableView" superclassName="GRNBaseTable">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNContractTableView.h"/>
+        </class>
+        <class className="GRNLineItemVC" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNLineItemVC.h"/>
+            <relationships>
+                <relationship kind="action" name="Reason:" candidateClass="UIButton"/>
+                <relationship kind="action" name="acceptOrClear:" candidateClass="UIButton"/>
+                <relationship kind="action" name="back:"/>
+                <relationship kind="action" name="dismissReason:"/>
+                <relationship kind="action" name="dismissWBS:"/>
+                <relationship kind="action" name="doneSearching:"/>
+                <relationship kind="action" name="refresh:"/>
+                <relationship kind="action" name="search:"/>
+                <relationship kind="action" name="wbsCodes:" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="descriptionLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="detailContainer" candidateClass="UIView"/>
+                <relationship kind="outlet" name="expected" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="itemLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="itemTableView" candidateClass="GRNOrderItemsTableView"/>
+                <relationship kind="outlet" name="note" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="orderNameLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="quantityDelivered" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="quantityRejected" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="reasonButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="resonView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="sdnTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="searchBar" candidateClass="UIToolbar"/>
+                <relationship kind="outlet" name="searchTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="serialNumber" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="serialNumberLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="viewBelowWbsCode" candidateClass="UIView"/>
+                <relationship kind="outlet" name="wbsButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="wbsCodeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="wbsLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="wbsTable" candidateClass="GRNWbsTableView"/>
+                <relationship kind="outlet" name="wbsView" candidateClass="UIView"/>
+            </relationships>
+        </class>
+        <class className="GRNLoginVC" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNLoginVC.h"/>
+            <relationships>
+                <relationship kind="outlet" name="bgImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="hiddenView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="mgrnLogo" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="password" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="username" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="GRNOrderDetailsVC" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNOrderDetailsVC.h"/>
+            <relationships>
+                <relationship kind="action" name="contract:"/>
+                <relationship kind="action" name="doneSearching:"/>
+                <relationship kind="action" name="logout:"/>
+                <relationship kind="action" name="purchaseOrders:"/>
+                <relationship kind="action" name="reload:"/>
+                <relationship kind="action" name="removeInfoView:" candidateClass="UIButton"/>
+                <relationship kind="action" name="search:"/>
+                <relationship kind="action" name="showInfo:"/>
+                <relationship kind="action" name="viewDetails:"/>
+                <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="contractsTableView" candidateClass="GRNContractTableView"/>
+                <relationship kind="outlet" name="infoLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="infoView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="loadingView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="navContract" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="navPurchaseOrders" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="navViewOrder" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="orderDetailView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="orderItemTableView" candidateClass="GRNOrderItemsTableView"/>
+                <relationship kind="outlet" name="purchaseOrderTableView" candidateClass="GRNPurchaseOrderTableView"/>
+                <relationship kind="outlet" name="searchBar" candidateClass="UIToolbar"/>
+                <relationship kind="outlet" name="searchTextField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="tablesView" candidateClass="UIView"/>
+            </relationships>
+        </class>
+        <class className="GRNOrderItemsTableView" superclassName="GRNBaseTable">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNOrderItemsTableView.h"/>
+        </class>
+        <class className="GRNPurchaseOrderTableView" superclassName="GRNBaseTable">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNPurchaseOrderTableView.h"/>
+        </class>
+        <class className="GRNReasonTableVC" superclassName="UITableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNReasonTableVC.h"/>
+        </class>
+        <class className="GRNSettingsVC" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNSettingsVC.h"/>
+            <relationships>
+                <relationship kind="action" name="cancel:"/>
+                <relationship kind="action" name="save:"/>
+                <relationship kind="outlet" name="bgImageView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="mgrnURL" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="systemURl" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="GRNWbsTableView" superclassName="UITableView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNWbsTableView.h"/>
+        </class>
+        <class className="PhotoPreviewVC" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/PhotoPreviewVC.h"/>
+            <relationships>
+                <relationship kind="action" name="close:"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="RoundCorneredView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/RoundCorneredView.h"/>
+        </class>
+        <class className="UnderlinedView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UnderlinedView.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

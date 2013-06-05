@@ -113,6 +113,8 @@
     [self setNavViewOrder:nil];
     [self setSearchTextField:nil];
     [self setSearchBar:nil];
+    [self setInfoLabel:nil];
+    [self setInfoView:nil];
     [super viewDidUnload];
 }
 
@@ -325,6 +327,25 @@
                                           otherButtonTitles:@"YES",nil];
     [alert show];
     
+}
+- (IBAction)showInfo:(id)sender
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *info = [NSString stringWithFormat:@"Username: %@\nMaster Host: %@\nDomain: %@\nVersion: %@",
+                      [defaults objectForKey:KeyUserID],[defaults objectForKey:KeySystemURI],[defaults objectForKey:KeyDomainName],[[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"]];
+    self.infoLabel.text = info;
+    self.infoView.frame = self.view.bounds;
+    [self.view addSubview:self.infoView];
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+//                                                        message:info
+//                                                       delegate:nil
+//                                              cancelButtonTitle:@"OK"
+//                                              otherButtonTitles:nil];
+//    [alert show];
+}
+- (IBAction)removeInfoView:(UIButton*)sender
+{
+    [self.infoView removeFromSuperview];
 }
 
 - (IBAction)doneSearching:(id)sender

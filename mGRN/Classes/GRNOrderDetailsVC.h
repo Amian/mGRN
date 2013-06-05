@@ -32,4 +32,9 @@
 @property (strong, nonatomic) IBOutlet UIToolbar *searchBar;
 
 @property BOOL returnedAfterSubmission;
+- (IBAction)logout:(id)sender;
+- (IBAction)removeInfoView:(UIButton*)sender;
+@property (strong, nonatomic) IBOutlet UILabel *infoLabel;
+@property (strong, nonatomic) IBOutlet UIView *infoView;
+
 @end
