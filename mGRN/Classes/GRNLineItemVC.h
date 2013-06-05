@@ -40,4 +40,5 @@
 
 @property (strong, nonatomic) IBOutlet UIView *detailContainer;
 @property (strong, nonatomic) IBOutlet UILabel *wbsLabel;
+@property (strong, nonatomic) IBOutlet UILabel *orderNameLabel;
 @end

@@ -103,9 +103,6 @@
     header.role = GRNRole;
     header.transactionId = [[NSProcessInfo processInfo] globallyUniqueString];
     
-    //TODO: Create a unique GUID
-    //    header.transactionId = (NSString*)[[UIDevice currentDevice] identifierForVendor];
-    
     //Save session values
     [userDefault setValue:header.transactionId forKey:KeyTransactionID];
     [userDefault setValue:header.role forKey:KeyRole];

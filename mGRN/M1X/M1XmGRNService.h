@@ -75,4 +75,11 @@
 
 -(M1XResponse*)DoSubmissionSyncWithHeader:(M1XRequestHeader*)header grn:(M1XGRN*)grn lineItems:(NSArray*)lineItems kco:(NSString*)kco;
 
+
+- (M1XResponse*)SynchronousGetPurchaseOrdersDetailsWithHeader:(M1XRequestHeader *)header contractNumber:(NSString*)contractnumber kco:(NSString*)kco purchaseOrderNumber:(NSString*)poNumber;
+
+- (M1XResponse*)SynchronousGetPurchaseOrdersWithHeader:(M1XRequestHeader *)header contractNumber:(NSString*)contractnumber kco:(NSString*)kco includeLineItems:(BOOL)includeLineItems;
+
+- (M1XResponse*)SynchronousGetContractsWithHeader:(M1XRequestHeader *)header kco:(NSString*)kco includeWBS:(BOOL)includeWBS;
+
 @end

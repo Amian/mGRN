@@ -11,13 +11,16 @@
 #import "GRNItem+Management.h"
 #import "GRNM1XHeader.h"
 
-@interface CoreDataManager()
+@interface CoreDataManager() <M1XmGRNDelegate>
 @property (nonatomic, strong) GRN *grn;
 @property float timeInterval;
+@property UIBackgroundTaskIdentifier bgTask;
+
+
 @end
 
 @implementation CoreDataManager
-@synthesize managedObjectContext, grn = _grn, processing = _processing, timeInterval = _timeInterval;
+@synthesize managedObjectContext, grn = _grn, processing = _processing, timeInterval = _timeInterval, bgTask;
 static CoreDataManager *sharedInstance = nil;
 
 // Get the shared instance and create it if necessary.
@@ -94,6 +97,9 @@ static CoreDataManager *sharedInstance = nil;
 
 - (BOOL)submit:(GRN*)newGRN
 {
+    
+    
+    
     self.grn = newGRN;
     [self.managedObjectContext save:nil];
     M1XmGRNService *service = [[M1XmGRNService alloc] init];
@@ -108,7 +114,7 @@ static CoreDataManager *sharedInstance = nil;
     
     grn.kco = kco;
     grn.notes = newGRN.notes;
-    grn.orderNumber = newGRN.purchaseOrder.orderNumber;
+    grn.orderNumber = newGRN.orderNumber;
     grn.photo1 = newGRN.photo1URI;
     grn.photo2 = newGRN.photo2URI;
     grn.photo3 = newGRN.photo3URI;
@@ -154,10 +160,105 @@ static CoreDataManager *sharedInstance = nil;
 
 +(void)clearAllDataOnLogout
 {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 
-                                             (unsigned long)NULL), ^(void) 
-    {
-        [CoreDataManager removeAllContracts];
-    });
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,
+                                             (unsigned long)NULL), ^(void)
+                   {
+                       [CoreDataManager removeAllContracts];
+                   });
+}
+
+//+(void)getAllDataInBG
+//{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,
+//                                             (unsigned long)NULL), ^(void)
+//                   {
+//                       NSManagedObjectContext *moc =  [CoreDataManager moc];
+//
+//                       //Get All contracts
+//                       NSArray *allContracts = [Contract fetchAllContractsInManagedObjectContext:moc];
+//                       NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
+//                       kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
+//                       M1XmGRNService *service = [[M1XmGRNService alloc] init];
+//
+//
+//                       for (Contract *contract in allContracts)
+//                       {
+//                           if (!contract.purchaseOrders.count)
+//                           {
+//                               //Get PO
+//                               M1XResponse *response = [service SynchronousGetPurchaseOrdersWithHeader:[GRNM1XHeader GetHeader]
+//                                                                contractNumber:contract.number
+//                                                                           kco:kco
+//                                                              includeLineItems:YES];
+//                               NSArray *poArray = [response.body objectForKey:@"purchaseOrders"];
+//                               for (NSDictionary *dict in poArray)
+//                               {
+//                                   [PurchaseOrder insertPurchaseOrderWithData:dict
+//                                                                  forContract:contract
+//                                                       inManagedObjectContext:moc
+//                                                                        error:nil];
+//                                   [moc save:nil];
+//                               }
+//                           }
+//                       }
+//                   });
+//}
+
+//-(void)getAllDataInBG
+//{
+//    
+//    UIApplication *app = [UIApplication sharedApplication];
+//    
+//    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
+//        [app endBackgroundTask:bgTask];
+//        bgTask = UIBackgroundTaskInvalid;
+//    }];
+//    
+//    NSManagedObjectContext *moc =  [CoreDataManager moc];
+//    
+//    //Get All contracts
+//    NSArray *allContracts = [Contract fetchAllContractsInManagedObjectContext:moc];
+//    NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
+//    kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
+//    M1XmGRNService *service = [[M1XmGRNService alloc] init];
+//    service.delegate = self;
+//    
+//    for (Contract *contract in allContracts)
+//    {
+//        if (!contract.purchaseOrders.count)
+//        {
+//            //Get PO
+//            M1XResponse *response = [service SynchronousGetPurchaseOrdersWithHeader:[GRNM1XHeader GetHeader]
+//                                                                     contractNumber:contract.number
+//                                                                                kco:kco
+//                                                                   includeLineItems:YES];
+//            NSArray *poArray = [response.body objectForKey:@"purchaseOrders"];
+//            for (NSDictionary *dict in poArray)
+//            {
+//                [PurchaseOrder insertPurchaseOrderWithData:dict
+//                                               forContract:contract
+//                                    inManagedObjectContext:moc
+//                                                     error:nil];
+//                
+//            }
+//        }
+//    }
+//}
+//
+//-(void)onAPIRequestSuccess:(NSDictionary *)contracts
+//{
+//    NSArray *poArray = [contracts objectForKey:@"purchaseOrders"];
+//    for (NSDictionary *dict in poArray)
+//    {
+//        [PurchaseOrder insertPurchaseOrderWithData:dict
+//                                       forContract:contract
+//                            inManagedObjectContext:moc
+//                                             error:nil];
+//    }
+//}
+
++(NSManagedObjectContext*)moc
+{
+    return [CoreDataManager sharedInstance].managedObjectContext;
 }
 @end

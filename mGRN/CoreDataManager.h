@@ -20,4 +20,5 @@
 +(void)removeAllContracts;
  -(void)submitGRN;
 +(void)clearAllDataOnLogout;
++(void)getAllDataInBG;
 @end

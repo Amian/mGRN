@@ -57,7 +57,6 @@
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRNItem"];
     
-    
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"itemNumber" ascending:YES]];
     request.predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", number];
     NSError *fetchError = nil;

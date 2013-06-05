@@ -85,12 +85,12 @@
     <elements>
         <element name="Company" positionX="0" positionY="0" width="128" height="90"/>
         <element name="Contract" positionX="0" positionY="0" width="128" height="135"/>
-        <element name="GRN" positionX="0" positionY="0" width="128" height="210"/>
-        <element name="GRNItem" positionX="0" positionY="0" width="128" height="195"/>
-        <element name="PurchaseOrder" positionX="0" positionY="0" width="128" height="195"/>
-        <element name="PurchaseOrderItem" positionX="0" positionY="0" width="128" height="210"/>
-        <element name="User" positionX="0" positionY="0" width="128" height="150"/>
-        <element name="WBS" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="GRN" positionX="-225" positionY="429" width="128" height="210"/>
+        <element name="GRNItem" positionX="178" positionY="246" width="128" height="195"/>
+        <element name="PurchaseOrder" positionX="-18" positionY="390" width="128" height="195"/>
+        <element name="PurchaseOrderItem" positionX="322" positionY="141" width="128" height="210"/>
         <element name="SDN" positionX="-218" positionY="72" width="128" height="75"/>
+        <element name="User" positionX="297" positionY="-81" width="128" height="150"/>
+        <element name="WBS" positionX="-189" positionY="243" width="128" height="105"/>
     </elements>
 </model>

@@ -24,6 +24,9 @@
 #define SignTagSave 0
 #define SignTagSignAgain 1
 
+#define SignAgainButtonTag 123
+#define SignSaveButtonTag 345
+
 
 @interface GRNCompleteGRNVC()<UIImagePickerControllerDelegate, M1XmGRNDelegate,DrawViewDelegate, UIAlertViewDelegate, UIPopoverControllerDelegate, UITextViewDelegate>
 @property (nonatomic, strong) UIImage *image1;
@@ -100,15 +103,17 @@
         self.fakeSignature.image = fakeImage;
         [self.signatureView addSubview:self.fakeSignature];
         self.signatureView.userInteractionEnabled = NO;
-        [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
         self.signatureView.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
-        self.signButton.tag = 1;
         self.fakeSignature.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     }
     else
     {
-        self.signatureView.superview.layer.borderColor = GRNLightBlueColour.CGColor;
+        self.signatureView.superview.layer.borderColor = [UIColor orangeColor].CGColor;
     }
+    [(UIButton*)[self.view viewWithTag:SignSaveButtonTag] setEnabled:NO];
+    [(UIButton*)[self.view viewWithTag:SignAgainButtonTag] setEnabled:fakeImage? YES : NO];
+
+    self.signatureView.superview.layer.borderWidth = 1.0;
     self.comments.text = self.grn.notes;
     
     //Remove data from nsuserdefaults
@@ -152,6 +157,10 @@
 }
 - (IBAction)submit:(id)sender {
     
+    if (!self.grn.purchaseOrder.orderNumber.length)
+    {
+        NSLog(@"po = %@",self.grn.purchaseOrder);
+    }
     self.grn.notes = self.comments.text;
     
     if (!self.grn.signatureURI.length)
@@ -391,29 +400,22 @@
 }
 
 #pragma  mark - IBActions
-
-- (IBAction)signOrSave:(id)sender
+- (IBAction)signAgain:(UIButton*)sender
 {
-    switch (self.signButton.tag)
-    {
-        case 0:
-            self.signatureView.userInteractionEnabled = NO;
-            [self.signButton setTitle:@"Sign Again" forState:UIControlStateNormal];
-            self.signatureView.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
-            self.signButton.tag = 1;
-            break;
-        case 1:
-            [self.fakeSignature removeFromSuperview];
-            [self.signatureView clearView];
-            self.signatureView.userInteractionEnabled = YES;
-            [self.signButton setTitle:@"Save Signature" forState:UIControlStateNormal];
-            self.signatureView.superview.layer.borderColor = GRNLightBlueColour.CGColor;
-            self.signButton.tag = 0;
-            self.grn.signatureURI = nil;
-            break;
-        default:
-            break;
-    }
+    [self.fakeSignature removeFromSuperview];
+    [self.signatureView clearView];
+    self.signatureView.userInteractionEnabled = YES;
+    self.signatureView.superview.layer.borderColor = [UIColor orangeColor].CGColor;
+    self.grn.signatureURI = nil;
+    sender.enabled = NO;
+    [(UIButton*)[self.view viewWithTag:SignSaveButtonTag] setEnabled:NO];
+}
+- (IBAction)saveSignature:(UIButton*)sender
+{
+    self.signatureView.userInteractionEnabled = NO;
+    self.signatureView.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    sender.enabled = NO;
+    [(UIButton*)[self.view viewWithTag:SignAgainButtonTag] setEnabled:YES];
 }
 
 - (IBAction)showDatePicker:(UIButton*)button
@@ -427,6 +429,7 @@
     datePicker.frame=CGRectMake(0,44,320, 216);
     datePicker.datePickerMode = UIDatePickerModeDate;
     [datePicker setMinuteInterval:5];
+    [datePicker setMaximumDate:[NSDate date]];
     [datePicker setTag:10];
     [datePicker addTarget:self action:@selector(donePickingDate:) forControlEvents:UIControlEventValueChanged];
     [popoverView addSubview:datePicker];
@@ -447,7 +450,7 @@
     [self.popVC setPopoverContentSize:CGSizeMake(320, 264) animated:NO];
     [self.popVC presentPopoverFromRect:button.superview.frame inView:button.superview.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
     
-    self.dateButton.superview.layer.borderColor = GRNLightBlueColour.CGColor;
+    self.dateButton.superview.layer.borderColor = [UIColor orangeColor].CGColor;
     [self.comments resignFirstResponder];
 }
 
@@ -464,6 +467,12 @@
 {
     self.dateButton.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
     [self.popVC dismissPopoverAnimated:YES];
+}
+
+-(BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController
+{
+    self.dateButton.superview.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    return YES;
 }
 
 -(void)textViewDidBeginEditing:(UITextView *)textView
@@ -484,6 +493,8 @@
 -(void)drawViewDidEndDrawing
 {
     self.grn.signatureURI = [self base64forData:UIImageJPEGRepresentation([self.signatureView makeImage],1.f)];
+    [(UIButton*)[self.view viewWithTag:SignSaveButtonTag] setEnabled:YES];
+    [(UIButton*)[self.view viewWithTag:SignAgainButtonTag] setEnabled:YES];
 }
 
 

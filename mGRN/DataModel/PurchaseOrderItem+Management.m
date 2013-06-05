@@ -51,6 +51,7 @@
 //                purchaseOrderItem.quantityClass = [[purchaseOrderData valueForKey:M1XPurchaseOrderItem_QtyClass] description];
                 purchaseOrderItem.uoq = [[purchaseOrderItemData valueForKey:M1XPurchaseOrderItem_Uoq] description];
                 purchaseOrderItem.wbsCode = [[purchaseOrderItemData valueForKey:M1XPurchaseOrderItem_WBSCode] description];
+                purchaseOrderItem.plant = (NSNumber*)[purchaseOrderItemData objectForKey:M1XPurchaseOrderItem_Plant];
 //                NSLog(@"Created POI %@ for %@", purchaseOrderItem.itemNumber, purchaseOrder.orderNumber);
             }
             [purchaseOrder addLineItemsObject:purchaseOrderItem];

@@ -44,7 +44,7 @@
 {
     BOOL x = [super becomeFirstResponder];
     if (x)
-        self.layer.borderColor = GRNLightBlueColour.CGColor;
+        self.layer.borderColor = [UIColor orangeColor].CGColor;
     return x;
 }
 

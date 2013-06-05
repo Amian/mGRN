@@ -55,13 +55,13 @@
     self.orderDetailView.hidden = YES;
     
     [self.navContract setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
-    [self.navContract setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    [self.navContract setTitleColor:GRNLightBlueColour forState:UIControlStateNormal];
     
-    [self.navPurchaseOrders setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    [self.navPurchaseOrders setTitleColor:GRNLightBlueColour forState:UIControlStateNormal];
     [self.navPurchaseOrders setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self.navPurchaseOrders setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     
-    [self.navViewOrder setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    [self.navViewOrder setTitleColor:GRNLightBlueColour forState:UIControlStateNormal];
     [self.navViewOrder setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self.navViewOrder setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     
@@ -130,9 +130,9 @@
             self.navPurchaseOrders.selected = NO;
             self.navViewOrder.selected = NO;
             
-            self.navContract.titleLabel.font = [UIFont boldSystemFontOfSize:18.0];
-            self.navPurchaseOrders.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
-            self.navViewOrder.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
+            self.navContract.titleLabel.font = [UIFont systemFontOfSize:22.0];
+            self.navPurchaseOrders.titleLabel.font = [UIFont systemFontOfSize:19.0];
+            self.navViewOrder.titleLabel.font = [UIFont systemFontOfSize:19.0];
             
             self.navPurchaseOrders.enabled = NO;
             self.navViewOrder.enabled = NO;
@@ -151,9 +151,9 @@
             self.navContract.selected = NO;
             self.navViewOrder.selected = NO;
             
-            self.navPurchaseOrders.titleLabel.font = [UIFont boldSystemFontOfSize:18.0];
-            self.navContract.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
-            self.navViewOrder.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
+            self.navPurchaseOrders.titleLabel.font = [UIFont systemFontOfSize:22.0];
+            self.navContract.titleLabel.font = [UIFont systemFontOfSize:19.0];
+            self.navViewOrder.titleLabel.font = [UIFont systemFontOfSize:19.0];
             
             self.navPurchaseOrders.enabled = YES;
             self.navViewOrder.enabled = NO;
@@ -171,9 +171,9 @@
             self.navPurchaseOrders.selected = NO;
             self.navViewOrder.selected = YES;
             
-            self.navViewOrder.titleLabel.font = [UIFont boldSystemFontOfSize:18.0];
-            self.navContract.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
-            self.navPurchaseOrders.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
+            self.navViewOrder.titleLabel.font = [UIFont systemFontOfSize:22.0];
+            self.navContract.titleLabel.font = [UIFont systemFontOfSize:19.0];
+            self.navPurchaseOrders.titleLabel.font = [UIFont systemFontOfSize:19.0];
             
             self.navPurchaseOrders.enabled = YES;
             self.navViewOrder.enabled = YES;

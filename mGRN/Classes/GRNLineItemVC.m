@@ -17,7 +17,7 @@
 
 #define WBSCodeText @"Select WBS Code"
 #define TableHeight 323.0
-#define DetailContainerOriginY 434.0
+#define DetailContainerOriginY 381.0
 #define QuantityAlertTag 123
 
 @interface GRNLineItemVC() <UITableViewDelegate, UIAlertViewDelegate, UITextFieldDelegate, UITextViewDelegate>
@@ -58,7 +58,7 @@ static float KeyboardHeight;
     {
         self.wbsTable.contract = self.grn.purchaseOrder.contract;
     }
-    
+    self.orderNameLabel.text = [NSString stringWithFormat:@"Order Items for %@",self.grn.purchaseOrder.orderNumber];
     self.searchBar.hidden = YES;
     self.grnDict = [NSDictionary dictionary];
     [super viewDidLoad];
@@ -83,7 +83,6 @@ static float KeyboardHeight;
         self.viewBelowWbsCode.frame = frame;
     }
     
-    NSLog(@"dict in lvc = %@",self.grnDict);
     [self displaySelectedItem];
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -121,6 +120,7 @@ static float KeyboardHeight;
     [self setViewBelowWbsCode:nil];
     [self setDetailContainer:nil];
     [self setWbsLabel:nil];
+    [self setOrderNameLabel:nil];
     [super viewDidUnload];
 }
 
@@ -217,10 +217,9 @@ static float KeyboardHeight;
     PurchaseOrderItem *item = self.itemTableView.selectedObject;
     self.itemLabel.text = item.itemNumber;
     self.descriptionLabel.text = item.itemDescription;
-    self.expected.text = [NSString stringWithFormat:@"%@ (%i expected)",item.uoq,[item.quantityBalance intValue]];
+    self.expected.text = [NSString stringWithFormat:@"EA (%i expected)",[item.quantityBalance intValue]];
     [self.reasonButton setTitle:[GRNReasonTableVC ReasonForCode:self.selectedItem.exception] forState:UIControlStateNormal];
     WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode inMOC:[CoreDataManager sharedInstance].managedObjectContext];
-    NSLog(@"%@,%@",self.selectedItem.wbsCode, wbs.codeDescription);
     [self.wbsButton setTitle:wbs.codeDescription.length? wbs.codeDescription : WBSCodeText forState:UIControlStateNormal];
     self.quantityDelivered.text = [NSString stringWithFormat:@"%i",[self.selectedItem.quantityDelivered intValue] ];
     self.quantityRejected.text = [NSString stringWithFormat:@"%i",[self.selectedItem.quantityRejected intValue]];
@@ -250,6 +249,13 @@ static float KeyboardHeight;
     return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
 }
 
+
+-(PurchaseOrderItem*)purchaseOrderItemForGRNItem:(GRNItem*)item
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemNumber = %@", item.itemNumber];
+    return [[self.grn.purchaseOrder.lineItems filteredSetUsingPredicate:predicate] anyObject];
+}
+
 #pragma mark - TextView delegate
 
 -(void)textViewDidChange:(UITextView *)textView
@@ -257,6 +263,19 @@ static float KeyboardHeight;
     if ([textView isEqual:self.note])
     {
         self.selectedItem.notes = textView.text;
+    }
+}
+
+-(void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if (self.view.frame.origin.y == 0)
+    {
+        CGRect frame = self.view.frame;
+        frame.origin.y = -KeyboardHeight; //height of keyboard
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.3];
+        self.view.frame = frame;
+        [UIView commitAnimations];
     }
 }
 
@@ -275,18 +294,6 @@ static float KeyboardHeight;
     }
 }
 
--(void)textViewDidBeginEditing:(UITextView *)textView
-{
-    if (self.view.frame.origin.y == 0)
-    {
-        CGRect frame = self.view.frame;
-        frame.origin.y = -KeyboardHeight; //height of keyboard
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        self.view.frame = frame;
-        [UIView commitAnimations];
-    }
-}
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
@@ -297,7 +304,6 @@ static float KeyboardHeight;
     }
     else if ([textField isEqual:self.quantityDelivered])
     {
-        NSLog(@"%@, %@",((PurchaseOrderItem*)self.itemTableView.selectedObject).quantityBalance,self.grn.purchaseOrder.quantityError);
         if (!self.quantityConfirmed &&
             [newString intValue] > [((PurchaseOrderItem*)self.itemTableView.selectedObject).quantityBalance intValue] &&
             [self.grn.purchaseOrder.quantityError intValue] == 2)
@@ -373,7 +379,9 @@ static float KeyboardHeight;
 #pragma mark - Segue
 
 -(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
-{    
+{
+    [self.sdnTextField resignFirstResponder];
+    
     if ([identifier isEqualToString:@"next"])
     {
         NSString *error = [self checkAllData];
@@ -425,6 +433,19 @@ static float KeyboardHeight;
 }
 
 #pragma mark - IBActions
+
+- (IBAction)acceptOrClear:(UIButton*)sender
+{
+    BOOL accept = [sender.titleLabel.text hasPrefix:@"Accept"];
+    for (GRNItem *li in self.grn.lineItems)
+    {
+        PurchaseOrderItem *poi = [self purchaseOrderItemForGRNItem:li];
+        li.quantityDelivered = accept? poi.quantityBalance : [NSNumber numberWithInt:0];
+    }
+    [sender setTitle:accept? @"Clear All" : @"Accept All" forState:UIControlStateNormal];
+    [self.itemTableView reloadData];
+    [self displaySelectedItem];
+}
 
 - (IBAction)wbsCodes:(UIButton*)button
 {
@@ -602,7 +623,6 @@ static float KeyboardHeight;
 //    [[[CoreDataManager sharedInstance] managedObjectContext] save:nil];
 //
 //    [self checkItem];
-//    //TODO Check item
 //}
 
 @end

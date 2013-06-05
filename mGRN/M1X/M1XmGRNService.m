@@ -216,4 +216,45 @@
     }
     return dict;
 }
+
+#pragma mark - Syncronous requests
+
+- (M1XResponse*)SynchronousGetContractsWithHeader:(M1XRequestHeader *)header kco:(NSString*)kco includeWBS:(BOOL)includeWBS
+{
+    M1XRequest *request = [[M1XRequest alloc] init];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetContracts]];
+    request.header = header;
+    request.body = [NSDictionary dictionaryWithObjectsAndKeys:
+                              includeWBS? @"true" : @"false",@"includeWBS",
+                              kco,@"kco",
+                              nil];
+    return [M1XRequestor sendSyncronousRequest:request withURL:url];
+}
+
+- (M1XResponse*)SynchronousGetPurchaseOrdersWithHeader:(M1XRequestHeader *)header contractNumber:(NSString*)contractnumber kco:(NSString*)kco includeLineItems:(BOOL)includeLineItems
+{
+    M1XRequest *request = [[M1XRequest alloc] init];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetPurchaseOrdersByContract]];
+    request.header = header;
+    request.body = [NSDictionary dictionaryWithObjectsAndKeys:
+                              contractnumber,@"contractNumber",
+                              includeLineItems? @"true" : @"false",@"includeLineItems",
+                              kco,@"kco",
+                              nil];
+    return [M1XRequestor sendSyncronousRequest:request withURL:url];
+}
+
+- (M1XResponse*)SynchronousGetPurchaseOrdersDetailsWithHeader:(M1XRequestHeader *)header contractNumber:(NSString*)contractnumber kco:(NSString*)kco purchaseOrderNumber:(NSString*)poNumber
+{
+    M1XRequest *request = [[M1XRequest alloc] init];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetPurchaseOrdersDetails]];
+    request.header = header;
+    request.body = [NSDictionary dictionaryWithObjectsAndKeys:
+                              contractnumber,@"contractNumber",
+                              kco,@"kco",
+                              poNumber,@"purchaseOrderNumber",
+                              nil];
+    return [M1XRequestor sendSyncronousRequest:request withURL:url];
+}
+
 @end

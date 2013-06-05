@@ -61,7 +61,7 @@
     grn.orderNumber = purchaseOrder.orderNumber;
     grn.deliveryDate = [[NSDate alloc] init];
     grn.notes = @"";
-    
+//    grn.purchaseOrder = purchaseOrder;
     [purchaseOrder addGrnsObject:grn];
     for (PurchaseOrderItem *poi in purchaseOrder.lineItems) {
         [GRNItem grnItemForGRN:grn withDataFromPurchaseOrderItem:poi inManagedObjectContext:context error:nil];

@@ -7,7 +7,7 @@
 //
 
 #import "PurchaseOrder+Management.h"
-
+#import "PurchaseOrderItem+Management.h"
 @implementation PurchaseOrder (Management)
 
 + (PurchaseOrder *)insertPurchaseOrderWithData:(NSDictionary *)purchaseOrderData forContract:(Contract *)contract inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
@@ -16,7 +16,7 @@
     
     if (purchaseOrderData == nil) {
         if (error != NULL) {
-// TODO: set values for error
+            // TODO: set values for error
             *error = [NSError errorWithDomain:@"" code:0 userInfo:nil];;
         }
         return nil;
@@ -30,7 +30,7 @@
         NSArray *matches = [context executeFetchRequest:request error:&fetchError];
         
         if (!matches || [matches count] > 1) {
-// TODO: set values for error
+            // TODO: set values for error
             if (error != NULL) {
                 *error = [NSError errorWithDomain:@"" code:0 userInfo:nil];;
             }
@@ -38,7 +38,7 @@
         } else {
             if ([matches count] == 1) {
                 purchaseOrder = [matches objectAtIndex:0];
-//                NSLog(@"Match found for PO %@: %@", purchaseOrder.orderNumber, purchaseOrder.orderDescription);
+                //                NSLog(@"Match found for PO %@: %@", purchaseOrder.orderNumber, purchaseOrder.orderDescription);
             } else {
                 purchaseOrder = [NSEntityDescription insertNewObjectForEntityForName:@"PurchaseOrder" inManagedObjectContext:context];
                 purchaseOrder.orderNumber = [[purchaseOrderData valueForKey:M1XPurchaseOrder_OrderNumber] description];
@@ -47,10 +47,22 @@
                 purchaseOrder.attention = [[purchaseOrderData valueForKey:M1XPurchaseOrder_Attention] description];
                 purchaseOrder.attentionPhone = [[purchaseOrderData valueForKey:M1XPurchaseOrder_AttentionPhone] description];
                 purchaseOrder.quantityError = (NSNumber *)[purchaseOrderData valueForKey:M1XPurchaseOrder_QuantityError];
-
+                
+                
+                
                 [contract addPurchaseOrdersObject:purchaseOrder];
+                
+                NSArray *lineItems = [purchaseOrderData objectForKey:M1XPurchaseOrder_LineItems];
+                for (NSDictionary *lineItemDict in lineItems)
+                {
+                    [PurchaseOrderItem insertPurchaseOrderItemWithData:lineItemDict
+                                                      forPurchaseOrder:purchaseOrder
+                                                inManagedObjectContext:context
+                                                                 error:nil];
+                }
+                
                 [context save:nil];
-//                NSLog(@"created PO %@: %@", purchaseOrder.orderNumber, purchaseOrder.orderDescription);
+                //                NSLog(@"created PO %@: %@", purchaseOrder.orderNumber, purchaseOrder.orderDescription);
             }
         }
     }
@@ -82,8 +94,8 @@
 
 +(NSArray*)fetchPurchaseOrdersWithQuantityErrorinMOC:(NSManagedObjectContext*)moc
 {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"PurchaseOrder"];
-    request.predicate = [NSPredicate predicateWithFormat:@"quantityError > 0"];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"PurchaseOrderItem"];
+    request.predicate = [NSPredicate predicateWithFormat:@"plant > 0"];
     
     NSError *fetchError = nil;
     NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
