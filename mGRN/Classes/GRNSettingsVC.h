@@ -13,4 +13,5 @@
 @property (strong, nonatomic) IBOutlet UITextField *systemURl;
 @property (strong, nonatomic) IBOutlet UITextField *mgrnURL;
 @property (strong, nonatomic) IBOutlet UIImageView *bgImageView;
+@property (strong, nonatomic) IBOutlet UILabel *version;
 @end

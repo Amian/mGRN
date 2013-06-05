@@ -16,6 +16,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.systemURl.text = [defaults objectForKey:KeySystemURI];
     self.mgrnURL.text = [defaults objectForKey:KeyDomainName];
+    self.version.text = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
     [self setBgImage];
 }
 
@@ -23,6 +24,7 @@
     [self setSystemURl:nil];
     [self setMgrnURL:nil];
     [self setBgImageView:nil];
+    [self setVersion:nil];
     [super viewDidUnload];
 }
 
@@ -74,7 +76,7 @@
 -(void)setBgImage
 {
     
-    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
         self.bgImageView.image = [UIImage imageNamed:@"home_bg_landscape_mgrn_1.png"];
     }

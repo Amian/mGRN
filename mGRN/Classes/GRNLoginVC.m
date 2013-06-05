@@ -53,6 +53,7 @@
     [super viewWillAppear:animated];
     self.hiddenView.alpha = 0.0;
     self.mgrnLogo.alpha = 1.0;
+    self.mgrnLogo.center = self.hiddenView.center;
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -118,7 +119,6 @@
 -(void)animationPartOne
 {
     animationInProgress = YES;
-    self.mgrnLogo.center = self.hiddenView.center;
     [self performSelector:@selector(animationPartTwo) withObject:nil afterDelay:0.7];
 }
 
@@ -277,7 +277,7 @@
 -(void)setBgImage
 {
     
-    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
         self.bgImageView.image = [UIImage imageNamed:@"home_bg_landscape_mgrn_1.png"];
     }

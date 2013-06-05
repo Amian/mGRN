@@ -37,4 +37,5 @@
 @property (strong, nonatomic) IBOutlet UILabel *infoLabel;
 @property (strong, nonatomic) IBOutlet UIView *infoView;
 
+@property (strong, nonatomic) IBOutlet UIView *searchView;
 @end

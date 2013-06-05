@@ -13,7 +13,25 @@
 @end
 
 @implementation GRNPurchaseOrderTableView
-@synthesize contract = _contract;
+@synthesize contract = _contract, errorLabel;
+
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        self.errorLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 200.0, 80.0)];
+        self.errorLabel.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/20);
+        self.errorLabel.numberOfLines = 0;
+        self.errorLabel.backgroundColor = [UIColor clearColor];
+        self.errorLabel.textColor = [UIColor lightGrayColor];
+        self.errorLabel.text = @"There are no purchase orders available for this contract.";
+        [self addSubview:self.errorLabel];
+        self.errorLabel.hidden = YES;
+    }
+    return self;
+}
 
 -(UIView*)cellContentViewWithFrame:(CGRect)frame purchaseOrder:(PurchaseOrder*)order indexPath:(NSIndexPath*)indexPath
 {
@@ -56,7 +74,7 @@
         label2.minimumFontSize = 10.0;
         label2.numberOfLines = 2;
         label2.minimumScaleFactor = 0.5f;
-                
+        
         if ([text hasPrefix:@"Attention"])
         {
             [label2 sizeToFit];
@@ -68,7 +86,7 @@
         
         label2.frame = CGRectMake(x, y, 200.0 + ( x > 100? 0 : 40.0), 40.0);
         [contentView addSubview:label2];
-
+        
         y += 35.0;
     }
     
@@ -93,7 +111,8 @@
     self.state = TableStateNormal;
     NSArray *array = [PurchaseOrder fetchPurchaseOrdersForContractNumber:self.contract.number
                                                                    inMOC:[CoreDataManager sharedInstance].managedObjectContext];
-//    [self.myDelegate tableDidEndLoadingData:self];
+    //    [self.myDelegate tableDidEndLoadingData:self];
+    self.errorLabel.hidden = array.count > 0? YES : NO;
     return array;
 }
 

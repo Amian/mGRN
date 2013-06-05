@@ -47,7 +47,7 @@
     [self refreshImageView];
     [self.signatureView setNeedsDisplay];
     CGRect frame = self.signatureView.superview.frame;
-    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
     frame.origin = CGPointMake(268.0, 359.0);
     }

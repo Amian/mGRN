@@ -32,7 +32,9 @@ static float KeyboardHeight;
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    if (UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    NSLog(@"orientation at rotate = %i",[[UIApplication sharedApplication] statusBarOrientation]);
+
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
         CGRect frame = self.itemTableView.frame;
         frame.size.height = TableHeight/2;
@@ -68,12 +70,16 @@ static float KeyboardHeight;
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    NSLog(@"orientation at will appear = %i",[[UIApplication sharedApplication] statusBarOrientation]);
+    
     [super viewWillAppear:animated];
     [self didRotateFromInterfaceOrientation:0];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"orientation at did appear = %i",[[UIApplication sharedApplication] statusBarOrientation]);
+
     if (![self.grn.purchaseOrder.contract.useWBS boolValue] && !self.wbsButton.hidden)
     {
         self.wbsButton.hidden = YES;
@@ -428,7 +434,7 @@ static float KeyboardHeight;
 -(void)onKeyboardShow:(NSNotification *)notification
 {
     CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
-    KeyboardHeight = UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])? 352.0 : 264.0;
+    KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
     
 }
 

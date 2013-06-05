@@ -42,7 +42,7 @@
 
 -(void)setBgImage
 {
-    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
         self.bgImageView.image = [UIImage imageNamed:@"home_bg_landscape_mgrn_1.png"];
     }

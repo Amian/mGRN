@@ -30,7 +30,7 @@
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     CGRect frame = self.containerView.frame;
-    if (UIInterfaceOrientationIsLandscape([[UIDevice currentDevice] orientation]))
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
         frame.size.width = 1300.0;
     }
@@ -42,13 +42,13 @@
     [UIView setAnimationDuration:0.3];
     self.containerView.frame = frame;
     [UIView commitAnimations];
-    [self tablecontainerDelegateChangedStatusTo:self.status];
+    [self refreshView];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.searchBar.hidden = YES;
+    self.searchView.hidden = YES;
     self.status = Contracts;
     [self.view addSubview:self.loadingView];
     self.loadingView.hidden = YES;
@@ -78,12 +78,13 @@
     }
     //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
-    [self tablecontainerDelegateChangedStatusTo:self.status];
+    [self refreshView];
     
     if (returnedAfterSubmission && self.orderItemTableView.dataArray.count == 0)
     {
         [self tablecontainerDelegateChangedStatusTo:PurchaseOrders];
     }
+
     returnedAfterSubmission = NO;
 }
 
@@ -115,10 +116,34 @@
     [self setSearchBar:nil];
     [self setInfoLabel:nil];
     [self setInfoView:nil];
+    [self setSearchView:nil];
     [super viewDidUnload];
 }
 
 #pragma mark - Table Container Delegate
+
+-(void)refreshView
+{
+    switch (self.status)
+    {
+        case Contracts:
+            [self moveContainerToTheRight];
+            break;
+        case PurchaseOrders:
+            [self moveContainerToTheRight];
+            
+            if (self.purchaseOrderTableView.dataArray.count == 0)
+            {
+                self.purchaseOrderTableView.errorLabel.hidden = NO;
+            }
+            break;
+        case ViewOrder:
+            [self moveContainerToTheLeft];
+            break;
+        default:
+            break;
+    }
+}
 
 -(void)tablecontainerDelegateChangedStatusTo:(TableNavigationStatus)newStatus
 {
@@ -166,6 +191,11 @@
             
             [self.purchaseOrderTableView doneSearching];
             [self moveContainerToTheRight];
+            
+            if (self.purchaseOrderTableView.dataArray.count == 0)
+            {
+                self.purchaseOrderTableView.errorLabel.hidden = NO;
+            }
             break;
         case ViewOrder:
             
@@ -305,16 +335,17 @@
 }
 - (IBAction)search:(id)sender
 {
-    if (self.searchBar.hidden)
+    if (self.searchView.hidden)
     {
-        self.searchBar.hidden = NO;
+        self.searchView.hidden = NO;
         [self.searchTextField becomeFirstResponder];
     }
     else
     {
         self.searchTextField.text = @"";
-        self.searchBar.hidden = YES;
+        self.searchView.hidden = YES;
         [self.searchTextField resignFirstResponder];
+        [self tablecontainerDelegateChangedStatusTo:self.status];
     }
 }
 
@@ -425,7 +456,7 @@
 {
     //    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
     CGRect frame = self.searchBar.frame;
-    frame.origin.y = self.view.bounds.size.height - self.searchBar.frame.size.height - ( UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])? 352.0 : 264.0);
+    frame.origin.y = self.view.bounds.size.height - self.searchBar.frame.size.height - ( UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0);
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.3];
     self.searchBar.frame = frame;
