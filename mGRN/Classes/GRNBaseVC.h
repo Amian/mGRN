@@ -11,4 +11,6 @@
 @interface GRNBaseVC : UIViewController
 
 @property (strong, nonatomic) IBOutlet UIImageView *bgImageView;
+@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (strong, nonatomic) IBOutlet UIView *container;
 @end

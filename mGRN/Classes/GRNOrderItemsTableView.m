@@ -159,26 +159,26 @@
     [self reloadData];
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    
-    // Create label with section title
-    UILabel *label = [[UILabel alloc] init] ;
-    label.frame = CGRectMake(0, 0, self.frame.size.width, 50);
-    label.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1];
-    label.textColor = [UIColor whiteColor];
-    label.shadowOffset = CGSizeMake(0.0, 1.0);
-    label.font = [UIFont boldSystemFontOfSize:20.0];
-    label.text = @"     Order Items";
-    
-    // Create header view and add label as a subview
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
-    [view addSubview:label];
-    
-    return view;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//    
+//    // Create label with section title
+//    UILabel *label = [[UILabel alloc] init] ;
+//    label.frame = CGRectMake(0, 0, self.frame.size.width, 50);
+//    label.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1];
+//    label.textColor = [UIColor whiteColor];
+//    label.shadowOffset = CGSizeMake(0.0, 1.0);
+//    label.font = [UIFont boldSystemFontOfSize:20.0];
+//    label.text = @"     Order Items";
+//    
+//    // Create header view and add label as a subview
+//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
+//    [view addSubview:label];
+//    
+//    return view;
+//}
 
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 50.0;
-}
+//-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+//{
+//    return 50.0;
+//}
 @end

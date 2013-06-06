@@ -38,7 +38,12 @@
 @property (strong, nonatomic) IBOutlet UILabel *wbsCodeLabel;
 @property (strong, nonatomic) IBOutlet UIView *viewBelowWbsCode;
 
-@property (strong, nonatomic) IBOutlet UIView *detailContainer;
 @property (strong, nonatomic) IBOutlet UILabel *wbsLabel;
 @property (strong, nonatomic) IBOutlet UILabel *orderNameLabel;
+
+
+//Containers for adjusting orientation
+@property (strong, nonatomic) IBOutlet UIView *tableandSDNContainer;
+@property (strong, nonatomic) IBOutlet UIView *detailContainer;
+
 @end

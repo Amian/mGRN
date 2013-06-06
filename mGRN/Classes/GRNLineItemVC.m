@@ -30,28 +30,31 @@
 @synthesize grn = _grn, selectedItem, pvc, quantityConfirmed;
 static float KeyboardHeight;
 
+
+
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     NSLog(@"orientation at rotate = %i",[[UIApplication sharedApplication] statusBarOrientation]);
-
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
-    {
-        CGRect frame = self.itemTableView.frame;
-        frame.size.height = TableHeight/2;
-        self.itemTableView.frame = frame;
-        frame = self.detailContainer.frame;
-        frame.origin.y = DetailContainerOriginY - TableHeight/2;
-        self.detailContainer.frame = frame;
-    }
-    else
-    {
-        CGRect frame = self.itemTableView.frame;
-        frame.size.height = TableHeight;
-        self.itemTableView.frame = frame;
-        frame = self.detailContainer.frame;
-        frame.origin.y = DetailContainerOriginY;
-        self.detailContainer.frame = frame;
-    }
+    [self checkOrientation];
+    //    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+    //    {
+    //        CGRect frame = self.itemTableView.frame;
+    //        frame.size.height = TableHeight/2;
+    //        self.itemTableView.frame = frame;
+    //        frame = self.detailContainer.frame;
+    //        frame.origin.y = DetailContainerOriginY - TableHeight/2;
+    //        self.detailContainer.frame = frame;
+    //    }
+    //    else
+    //    {
+    //        [self showPortraitView];
+    ////        CGRect frame = self.itemTableView.frame;
+    ////        frame.size.height = TableHeight;
+    ////        self.itemTableView.frame = frame;
+    ////        frame = self.detailContainer.frame;
+    ////        frame.origin.y = DetailContainerOriginY;
+    ////        self.detailContainer.frame = frame;
+    //    }
 }
 
 -(void)viewDidLoad
@@ -70,8 +73,8 @@ static float KeyboardHeight;
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"orientation at will appear = %i",[[UIApplication sharedApplication] statusBarOrientation]);
     
+    [self checkOrientation];
     [super viewWillAppear:animated];
     [self didRotateFromInterfaceOrientation:0];
 }
@@ -79,7 +82,7 @@ static float KeyboardHeight;
 -(void)viewDidAppear:(BOOL)animated
 {
     NSLog(@"orientation at did appear = %i",[[UIApplication sharedApplication] statusBarOrientation]);
-
+    
     if (![self.grn.purchaseOrder.contract.useWBS boolValue] && !self.wbsButton.hidden)
     {
         self.wbsButton.hidden = YES;
@@ -127,39 +130,40 @@ static float KeyboardHeight;
     [self setDetailContainer:nil];
     [self setWbsLabel:nil];
     [self setOrderNameLabel:nil];
+    [self setTableandSDNContainer:nil];
     [super viewDidUnload];
 }
 
 #pragma mark - Table View Delegate
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    
-    UIView *headerView = NULL;
-    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
-    {
-        // Create label with section title
-        UILabel *label = [[UILabel alloc] init] ;
-        label.frame = CGRectMake(0, 0, self.itemTableView.frame.size.width, 50);
-        label.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1];
-        label.textColor = [UIColor whiteColor];
-        label.shadowOffset = CGSizeMake(0.0, 1.0);
-        label.font = [UIFont boldSystemFontOfSize:20.0];
-        label.text = @"     Order Items";
-        
-        // Create header view and add label as a subview
-        headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
-        [headerView addSubview:label];
-    }
-    return headerView;
-}
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
-    {
-        return 50.0;
-    }
-    return 0.0;
-}
+//
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//
+//    UIView *headerView = NULL;
+//    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
+//    {
+//        // Create label with section title
+//        UILabel *label = [[UILabel alloc] init] ;
+//        label.frame = CGRectMake(0, 0, self.itemTableView.frame.size.width, 50);
+//        label.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1];
+//        label.textColor = [UIColor whiteColor];
+//        label.shadowOffset = CGSizeMake(0.0, 1.0);
+//        label.font = [UIFont boldSystemFontOfSize:20.0];
+//        label.text = @"     Order Items";
+//
+//        // Create header view and add label as a subview
+//        headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
+//        [headerView addSubview:label];
+//    }
+//    return headerView;
+//}
+//-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+//{
+//    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
+//    {
+//        return 50.0;
+//    }
+//    return 0.0;
+//}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -289,7 +293,21 @@ static float KeyboardHeight;
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if (self.view.frame.origin.y == 0 && ![textField isEqual:self.sdnTextField] && ![textField isEqual:self.searchTextField])
+    if (self.view.frame.origin.y != 0) return;
+    
+    BOOL moveView = NO;
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+    {
+        if ([textField isEqual:self.serialNumber])
+        {
+            moveView = YES;
+        }
+    }    
+    else if (![textField isEqual:self.sdnTextField] && ![textField isEqual:self.searchTextField])
+    {
+        moveView = YES;
+    }
+    if (moveView)
     {
         CGRect frame = self.view.frame;
         frame.origin.y = -KeyboardHeight; //height of keyboard
@@ -341,22 +359,28 @@ static float KeyboardHeight;
 
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if ([textField isEqual:self.sdnTextField])
-    {
-        if (![SDN doesSDNExist:textField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
+    @try {
+        if ([textField isEqual:self.sdnTextField])
         {
-            self.grn.supplierReference = textField.text;
-        }
-        else
-        {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"A GRN with this Service Delivery Number has already been submitted."
-                                                            message:nil
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            if (![SDN doesSDNExist:textField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
+            {
+                self.grn.supplierReference = textField.text;
+            }
+            else
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"A GRN with this Service Delivery Number has already been submitted."
+                                                                message:nil
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
         }
     }
+    @catch (NSException *exception) {
+        
+    }
+
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -420,21 +444,21 @@ static float KeyboardHeight;
 
 -(void)onKeyboardHide:(NSNotification *)notification
 {
-    if (self.view.frame.origin.y != 0)
-    {
-        CGRect frame = self.view.frame;
-        frame.origin.y = 0.0;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        self.view.frame = frame;
-        [UIView commitAnimations];
-    }
+//    if (self.view.frame.origin.y != 0)
+//    {
+//        CGRect frame = self.view.frame;
+//        frame.origin.y = 0.0;
+//        [UIView beginAnimations:nil context:nil];
+//        [UIView setAnimationDuration:0.3];
+//        self.view.frame = frame;
+//        [UIView commitAnimations];
+//    }
 }
 
 -(void)onKeyboardShow:(NSNotification *)notification
 {
-    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
-    KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
+//    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
+//    KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
     
 }
 
@@ -455,11 +479,13 @@ static float KeyboardHeight;
 
 - (IBAction)wbsCodes:(UIButton*)button
 {
+    self.wbsView.frame = self.view.bounds;
     [self.view addSubview:self.wbsView];
 }
 
 - (IBAction)Reason:(UIButton*)button
 {
+    self.resonView.frame = self.view.bounds;
     [self.view addSubview:self.resonView];
 }
 
@@ -631,4 +657,51 @@ static float KeyboardHeight;
 //    [self checkItem];
 //}
 
+#pragma mark - Orientation Adjustments
+
+-(void)checkOrientation
+{
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+    {
+        [self showLandscapeView];
+    }
+    else
+    {
+        [self showPortraitView];
+    }
+}
+
+-(void)showPortraitView
+{
+    CGRect frame = self.tableandSDNContainer.frame;
+    frame.origin.x = 41.0;
+    frame.origin.y = 133.0;
+    frame.size.width = 686.0;
+    frame.size.height = 377.0;
+    self.tableandSDNContainer.frame = frame;
+    
+    frame = self.detailContainer.frame;
+    frame.origin.x = 41.0;
+    frame.origin.y = 518.0;
+    frame.size.width = 686.0;
+    frame.size.height = 394.0;
+    self.detailContainer.frame = frame;
+}
+
+-(void)showLandscapeView
+{
+    CGRect frame = self.tableandSDNContainer.frame;
+    frame.origin.x = 13.0;
+    frame.origin.y = 133.0;
+    frame.size.width = 430.0;
+    frame.size.height = 550.0;
+    self.tableandSDNContainer.frame = frame;
+    
+    frame = self.detailContainer.frame;
+    frame.origin.x = 465.0;
+    frame.origin.y = 133.0;
+    frame.size.width = 550.0;
+    frame.size.height = 550.0;
+    self.detailContainer.frame = frame;
+}
 @end

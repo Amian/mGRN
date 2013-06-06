@@ -23,14 +23,14 @@
     CoreDataManager *cdm = [CoreDataManager sharedInstance];
     cdm.managedObjectContext = self.managedObjectContext;
     
-//    //TODO: remove the following
-//    NSArray *a = [PurchaseOrder fetchPurchaseOrdersWithQuantityErrorinMOC:self.managedObjectContext];
-//    for (PurchaseOrderItem *p in a)
-//    {
-//        p.purchaseOrder.contract.useWBS = [NSNumber numberWithBool:YES];
-//        NSLog(@"con = %@, %@",p,p.plant);
-//    }
-//    
+    //TODO: remove the following
+    NSArray *a = [PurchaseOrder fetchPurchaseOrdersWithQuantityErrorinMOC:self.managedObjectContext];
+    for (PurchaseOrderItem *p in a)
+    {
+        p.purchaseOrder.contract.useWBS = [NSNumber numberWithBool:YES];
+        NSLog(@"con = %@, %@",p,p.plant);
+    }
+    
 
     return YES;
 }

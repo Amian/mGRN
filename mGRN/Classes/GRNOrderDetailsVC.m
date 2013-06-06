@@ -68,16 +68,14 @@
     self.navContract.selected = YES;
 }
 
--(void)viewDidAppear:(BOOL)animated
+-(void)viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     if (!self.tablesView.window)
     {
         self.tablesView.frame = self.containerView.bounds;
         [self.containerView addSubview:self.tablesView];
     }
-    //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     [self refreshView];
     
     if (returnedAfterSubmission && self.orderItemTableView.dataArray.count == 0)
@@ -451,17 +449,6 @@
 //        [UIView commitAnimations];
 ////    }
 //}
-
--(void)onKeyboardShow:(NSNotification *)notification
-{
-    //    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
-    CGRect frame = self.searchBar.frame;
-    frame.origin.y = self.view.bounds.size.height - self.searchBar.frame.size.height - ( UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0);
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.3];
-    self.searchBar.frame = frame;
-    [UIView commitAnimations];
-}
 
 
 #pragma  mark - Text Field Delegate

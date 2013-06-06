@@ -44,18 +44,19 @@
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
+    [self checkOrientation];
     [self refreshImageView];
-    [self.signatureView setNeedsDisplay];
-    CGRect frame = self.signatureView.superview.frame;
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
-    {
-    frame.origin = CGPointMake(268.0, 359.0);
-    }
-    else
-    {
-        frame.origin = CGPointMake(201.0, 499.0);
-    }
-    self.signatureView.superview.frame = frame;
+//    [self.signatureView setNeedsDisplay];
+//    CGRect frame = self.signatureView.superview.frame;
+//    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+//    {
+//    frame.origin = CGPointMake(268.0, 359.0);
+//    }
+//    else
+//    {
+//        frame.origin = CGPointMake(201.0, 499.0);
+//    }
+//    self.signatureView.superview.frame = frame;
 }
 
 -(void)viewDidLoad
@@ -70,6 +71,12 @@
         [self displayGRN];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self checkOrientation];
+}
+
 - (void)viewDidUnload {
     [self setComments:nil];
     [self setSignatureView:nil];
@@ -78,6 +85,8 @@
     [self setTakePhotoButton:nil];
     [self setDateButton:nil];
     [self setSignButton:nil];
+    [self setPhotoAndSignContainer:nil];
+    [self setDateAndNoteContainer:nil];
     [super viewDidUnload];
 }
 
@@ -281,8 +290,12 @@
 
 -(void)displayImage:(UIImage*)image position:(int)position tag:(int)tag
 {
+    //calculate width
+    CGFloat h = (self.photoView.frame.size.width - 10.0*3)/3;
+    CGFloat w = self.photoView.frame.size.height *5/6;
+    CGFloat width = h > w? w : h;
+
     UIButton *imageButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    CGFloat width = self.takePhotoButton.frame.size.height;
     int x = self.photoView.subviews.count/2;
     imageButton.frame = CGRectMake(width*position + 10.0*position, 0.0, width, width);
     [imageButton setImage:image forState:UIControlStateNormal];
@@ -539,5 +552,63 @@
     return [[self.grn.lineItems filteredSetUsingPredicate:predicate] anyObject];
 }
 
+
+#pragma mark - Orientation Adjustments
+
+-(void)checkOrientation
+{
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+    {
+        [self showLandscapeView];
+    }
+    else
+    {
+        [self showPortraitView];
+    }
+}
+
+-(void)showPortraitView
+{
+    CGRect frame = self.dateAndNoteContainer.frame;
+    frame.origin.x = 41.0;
+    frame.origin.y = 137.0;
+    frame.size.width = 713.0;
+    frame.size.height = 300.0;
+    self.dateAndNoteContainer.frame = frame;
+    
+    frame = self.photoAndSignContainer.frame;
+    frame.origin.x = 51.0;
+    frame.origin.y = 441.0;
+    frame.size.width = 672.0;
+    frame.size.height = 489.0;
+    self.photoAndSignContainer.frame = frame;
+    
+    frame = self.signButton.frame;
+    frame.origin.x = 531.0;
+    frame.origin.y = 356.0;
+    self.signButton.frame = frame;
+}
+
+-(void)showLandscapeView
+{
+    CGRect frame = self.dateAndNoteContainer.frame;
+    frame.origin.x = 20.0;
+    frame.origin.y = 134.0;
+    frame.size.width = 450.0;
+    frame.size.height = 500.0;
+    self.dateAndNoteContainer.frame = frame;
+    
+    frame = self.photoAndSignContainer.frame;
+    frame.origin.x = 482.0;
+    frame.origin.y = 134.0;
+    frame.size.width = 530.0;
+    frame.size.height = 500.0;
+    self.photoAndSignContainer.frame = frame;
+    
+    frame = self.signButton.frame;
+    frame.origin.x = 7.0;
+    frame.origin.y = 216.0;
+    self.signButton.frame = frame;
+}
 
 @end
