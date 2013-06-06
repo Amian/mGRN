@@ -57,7 +57,7 @@
         ![userDefault objectForKey:KeySystemURI])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please enter correct details to proceed"
-                                                        message:@""
+                                                        message:nil
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];

@@ -29,6 +29,11 @@
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
+    [self checkOrientation];
+}
+
+-(void)checkOrientation
+{
     CGRect frame = self.containerView.frame;
     if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
@@ -38,11 +43,8 @@
     {
         frame.size.width = 1125.0;
     }
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.3];
     self.containerView.frame = frame;
-    [UIView commitAnimations];
-    [self refreshView];
+    [self tablecontainerDelegateChangedStatusTo:self.status];
 }
 
 - (void)viewDidLoad
@@ -75,14 +77,16 @@
     {
         self.tablesView.frame = self.containerView.bounds;
         [self.containerView addSubview:self.tablesView];
+        self.loadingView.frame = self.view.bounds;
+        [self.view addSubview:self.loadingView];
     }
-    [self refreshView];
-    
+    [self checkOrientation];
+
     if (returnedAfterSubmission && self.orderItemTableView.dataArray.count == 0)
     {
-        [self tablecontainerDelegateChangedStatusTo:PurchaseOrders];
+        self.status = PurchaseOrders;
     }
-
+    [self tablecontainerDelegateChangedStatusTo:self.status];
     returnedAfterSubmission = NO;
 }
 
@@ -349,8 +353,8 @@
 
 - (IBAction)logout:(id)sender
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout"
-                                                    message:@"Are you sure you want to log out?"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to log out?"
+                                                    message:nil
                                                    delegate:self
                                           cancelButtonTitle:@"NO"
                                           otherButtonTitles:@"YES",nil];
@@ -390,7 +394,7 @@
 {
     if (buttonIndex != alertView.cancelButtonIndex)
     {
-        //[CoreDataManager clearAllDataOnLogout];//TODO:Uncomment
+        [CoreDataManager clearAllDataOnLogout];
         [self dismissModalViewControllerAnimated:YES];
     }
 }

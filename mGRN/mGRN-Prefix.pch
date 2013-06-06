@@ -43,3 +43,9 @@
 #define KeyServicePort @"serviceport"
 #define KeyServiceServer @"serviceserver"
 #define KeyServiceName @"serviceName"
+
+
+#define KeyImage1 @"i1"
+#define KeyImage2 @"i2"
+#define KeyImage3 @"i3"
+#define KeySignature @"s1"

@@ -202,8 +202,8 @@ static float KeyboardHeight;
         NSString *error = [self checkItem];
         if (error.length)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                            message:error
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:error
+                                                            message:nil
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
@@ -332,8 +332,8 @@ static float KeyboardHeight;
             [newString intValue] > [((PurchaseOrderItem*)self.itemTableView.selectedObject).quantityBalance intValue] &&
             [self.grn.purchaseOrder.quantityError intValue] == 2)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm Quantity"
-                                                            message:@"The quantity delivered exceeds quantity balance."
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"The quantity delivered exceeds quantity balance."
+                                                            message:nil
                                                            delegate:self
                                                   cancelButtonTitle:@"Cancel"
                                                   otherButtonTitles:@"Confirm",nil];
@@ -417,8 +417,8 @@ static float KeyboardHeight;
         NSString *error = [self checkAllData];
         if (error.length)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                            message:error
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:error
+                                                            message:nil
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
@@ -500,8 +500,8 @@ static float KeyboardHeight;
 
 - (IBAction)back:(id)sender
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Discard GRN"
-                                                    message:@"Are you sure you want to discard this GRN?"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to discard this GRN?"
+                                                    message:nil
                                                    delegate:self
                                           cancelButtonTitle:@"Cancel"
                                           otherButtonTitles:@"OK",nil];

@@ -33,6 +33,7 @@
 {
     [super viewWillAppear:animated];
     [self setBgImage];
+    [self setScrollViewSize];
 }
 
 -(void)viewWillUnload
@@ -72,10 +73,7 @@
 -(void)onKeyboardHide:(NSNotification *)notification
 {
     keyboardVisible = NO;
-    NSLog(@"content = %@, frame = %@",NSStringFromCGSize(self.scrollView.contentSize),NSStringFromCGRect(self.scrollView.frame));
-
     [self setScrollViewSize];
-
 }
 
 -(void)onKeyboardShow:(NSNotification *)notification
@@ -84,8 +82,6 @@
     
     keyboardVisible = YES;
     [self setScrollViewSize];
-    
-    NSLog(@"content = %@, frame = %@",NSStringFromCGSize(self.scrollView.contentSize),NSStringFromCGRect(self.scrollView.frame));
 }
 
 -(void)setScrollViewSize

@@ -212,7 +212,7 @@
 {
     if (!service.port.length || !service.server.length || !service.serviceName.length)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Exception"
                                                         message:@"Could not retrieve service connection details."
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
@@ -272,6 +272,13 @@
 -(void)initialSetup
 {
     [SDN removeExpiredSDNinMOC:[[CoreDataManager sharedInstance] managedObjectContext]];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setValue:nil forKey:KeyImage1];
+    [defaults setValue:nil forKey:KeyImage2];
+    [defaults setValue:nil forKey:KeyImage3];
+    [defaults setValue:nil forKey:KeySignature];
+    [defaults synchronize];
 }
 
 -(void)setBgImage

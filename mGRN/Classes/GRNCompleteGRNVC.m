@@ -174,7 +174,7 @@
     
     if (!self.grn.signatureURI.length)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please sign the GRN"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"The signature can't be blank."
                                                         message:nil
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
@@ -345,11 +345,11 @@
 
 -(void)deletePhoto:(UIButton*)sender
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Delete Photo"
-                                                    message:@"Are you sure you want to remove this photo?"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Are you sure you want to remove this photo?"
+                                                    message:nil
                                                    delegate:self
-                                          cancelButtonTitle:@"No"
-                                          otherButtonTitles:@"Delete", nil];
+                                          cancelButtonTitle:@"Cancel"
+                                          otherButtonTitles:@"OK", nil];
     alert.tag = sender.tag;
     [alert show];
 }

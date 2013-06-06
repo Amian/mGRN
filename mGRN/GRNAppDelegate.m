@@ -64,6 +64,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    [CoreDataManager removeAllContracts];
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }

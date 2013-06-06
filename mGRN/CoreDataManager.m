@@ -105,8 +105,14 @@ static CoreDataManager *sharedInstance = nil;
     M1XmGRNService *service = [[M1XmGRNService alloc] init];
     //    service.delegate = self;
     NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
+    @try
+    {
     kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
-    
+    }
+    @catch (NSException *ex)
+    {
+        //
+    }
     M1XGRN *grn = [[M1XGRN alloc] init];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"yyyy-MM-dd'T'00:00:00";
