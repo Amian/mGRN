@@ -27,34 +27,14 @@
 @end
 
 @implementation GRNLineItemVC
-@synthesize grn = _grn, selectedItem, pvc, quantityConfirmed;
+@synthesize grn = _grn, selectedItem, pvc, quantityConfirmed, selectedIndexPath;
 static float KeyboardHeight;
 
 
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    NSLog(@"orientation at rotate = %i",[[UIApplication sharedApplication] statusBarOrientation]);
     [self checkOrientation];
-    //    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
-    //    {
-    //        CGRect frame = self.itemTableView.frame;
-    //        frame.size.height = TableHeight/2;
-    //        self.itemTableView.frame = frame;
-    //        frame = self.detailContainer.frame;
-    //        frame.origin.y = DetailContainerOriginY - TableHeight/2;
-    //        self.detailContainer.frame = frame;
-    //    }
-    //    else
-    //    {
-    //        [self showPortraitView];
-    ////        CGRect frame = self.itemTableView.frame;
-    ////        frame.size.height = TableHeight;
-    ////        self.itemTableView.frame = frame;
-    ////        frame = self.detailContainer.frame;
-    ////        frame.origin.y = DetailContainerOriginY;
-    ////        self.detailContainer.frame = frame;
-    //    }
 }
 
 -(void)viewDidLoad
@@ -73,16 +53,9 @@ static float KeyboardHeight;
 
 -(void)viewWillAppear:(BOOL)animated
 {
-    
-    [self checkOrientation];
     [super viewWillAppear:animated];
-    [self didRotateFromInterfaceOrientation:0];
-}
+    [self checkOrientation];
 
--(void)viewDidAppear:(BOOL)animated
-{
-    NSLog(@"orientation at did appear = %i",[[UIApplication sharedApplication] statusBarOrientation]);
-    
     if (![self.grn.purchaseOrder.contract.useWBS boolValue] && !self.wbsButton.hidden)
     {
         self.wbsButton.hidden = YES;
@@ -92,8 +65,14 @@ static float KeyboardHeight;
         self.viewBelowWbsCode.frame = frame;
     }
     
-    [self displaySelectedItem];
-    [super viewDidAppear:animated];
+    if (self.selectedIndexPath)
+    {
+        [self performSelector:@selector(selectRow:) withObject:self.selectedIndexPath afterDelay:0.1];
+    }
+    else
+    {
+        [self displaySelectedItem];
+    }
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
 }
@@ -135,48 +114,12 @@ static float KeyboardHeight;
 }
 
 #pragma mark - Table View Delegate
-//
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//
-//    UIView *headerView = NULL;
-//    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
-//    {
-//        // Create label with section title
-//        UILabel *label = [[UILabel alloc] init] ;
-//        label.frame = CGRectMake(0, 0, self.itemTableView.frame.size.width, 50);
-//        label.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1];
-//        label.textColor = [UIColor whiteColor];
-//        label.shadowOffset = CGSizeMake(0.0, 1.0);
-//        label.font = [UIFont boldSystemFontOfSize:20.0];
-//        label.text = @"     Order Items";
-//
-//        // Create header view and add label as a subview
-//        headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
-//        [headerView addSubview:label];
-//    }
-//    return headerView;
-//}
-//-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-//{
-//    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
-//    {
-//        return 50.0;
-//    }
-//    return 0.0;
-//}
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
     {
         self.quantityConfirmed = NO;
-        [tableView reloadData];
-        [tableView selectRowAtIndexPath:indexPath
-                               animated:NO
-                         scrollPosition:UITableViewScrollPositionNone];
-        [tableView scrollToRowAtIndexPath:indexPath
-                         atScrollPosition:UITableViewScrollPositionNone
-                                 animated:NO];
         [self displaySelectedItem];
     }
     else if ([tableView isKindOfClass:[GRNWbsTableView class]])
@@ -199,6 +142,8 @@ static float KeyboardHeight;
 {
     if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
     {
+        [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                         withRowAnimation:UITableViewRowAnimationNone];
         NSString *error = [self checkItem];
         if (error.length)
         {
@@ -216,9 +161,12 @@ static float KeyboardHeight;
 
 -(void)selectRow:(NSIndexPath*)indexPath
 {
+    [self.itemTableView beginUpdates];
     [self.itemTableView selectRowAtIndexPath:indexPath
                                     animated:YES
                               scrollPosition:UITableViewScrollPositionNone];
+    [self.itemTableView endUpdates];
+    self.selectedIndexPath = nil;
     [self displaySelectedItem];
 }
 
@@ -278,22 +226,14 @@ static float KeyboardHeight;
 
 -(void)textViewDidBeginEditing:(UITextView *)textView
 {
-    if (self.view.frame.origin.y == 0)
-    {
-        CGRect frame = self.view.frame;
-        frame.origin.y = -KeyboardHeight; //height of keyboard
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        self.view.frame = frame;
-        [UIView commitAnimations];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:ChangeScrollViewContentOffsetNotification object:nil];
 }
 
 #pragma mark - Text Field Delegate
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if (self.view.frame.origin.y != 0) return;
+    //    if (self.view.frame.origin.y != 0) return;
     
     BOOL moveView = NO;
     if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
@@ -302,19 +242,14 @@ static float KeyboardHeight;
         {
             moveView = YES;
         }
-    }    
+    }
     else if (![textField isEqual:self.sdnTextField] && ![textField isEqual:self.searchTextField])
     {
         moveView = YES;
     }
     if (moveView)
     {
-        CGRect frame = self.view.frame;
-        frame.origin.y = -KeyboardHeight; //height of keyboard
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        self.view.frame = frame;
-        [UIView commitAnimations];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ChangeScrollViewContentOffsetNotification object:nil];
     }
 }
 
@@ -380,7 +315,7 @@ static float KeyboardHeight;
     @catch (NSException *exception) {
         
     }
-
+    
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -444,21 +379,21 @@ static float KeyboardHeight;
 
 -(void)onKeyboardHide:(NSNotification *)notification
 {
-//    if (self.view.frame.origin.y != 0)
-//    {
-//        CGRect frame = self.view.frame;
-//        frame.origin.y = 0.0;
-//        [UIView beginAnimations:nil context:nil];
-//        [UIView setAnimationDuration:0.3];
-//        self.view.frame = frame;
-//        [UIView commitAnimations];
-//    }
+    //    if (self.view.frame.origin.y != 0)
+    //    {
+    //        CGRect frame = self.view.frame;
+    //        frame.origin.y = 0.0;
+    //        [UIView beginAnimations:nil context:nil];
+    //        [UIView setAnimationDuration:0.3];
+    //        self.view.frame = frame;
+    //        [UIView commitAnimations];
+    //    }
 }
 
 -(void)onKeyboardShow:(NSNotification *)notification
 {
-//    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
-//    KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
+    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
+    KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
     
 }
 

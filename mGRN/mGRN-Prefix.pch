@@ -49,3 +49,5 @@
 #define KeyImage2 @"i2"
 #define KeyImage3 @"i3"
 #define KeySignature @"s1"
+
+#define ChangeScrollViewContentOffsetNotification @"ChangeScrollViewContentOffsetNotification"

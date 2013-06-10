@@ -7,47 +7,33 @@
 //
 
 #import "GRNSettingsVC.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation GRNSettingsVC
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    self.okButton.layer.borderColor = self.cancelButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.okButton.layer.borderWidth = self.cancelButton.layer.borderWidth = 1.0;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    self.systemURl.text = [defaults objectForKey:KeySystemURI];
-    self.mgrnURL.text = [defaults objectForKey:KeyDomainName];
+    self.masterHostLabel.text = [defaults objectForKey:KeySystemURI];
+    self.domainLabel.text = [defaults objectForKey:KeyDomainName];
     self.version.text = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
     [self setBgImage];
 }
 
 - (void)viewDidUnload {
-    [self setSystemURl:nil];
-    [self setMgrnURL:nil];
     [self setBgImageView:nil];
     [self setVersion:nil];
+    [self setMasterHostLabel:nil];
+    [self setDomainLabel:nil];
+    [self setPopUpTextField:nil];
+    [self setPopUpView:nil];
+    [self setOkButton:nil];
+    [self setCancelButton:nil];
+    [self setPopupHeading:nil];
     [super viewDidUnload];
-}
-
-- (IBAction)save:(id)sender
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (self.systemURl.text.length)
-    {
-        NSString *uri = [self.systemURl.text stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
-    [defaults setValue:uri forKey:KeySystemURI];
-    }
-    if (self.mgrnURL.text.length)
-    {
-        [defaults setValue:self.mgrnURL.text forKey:KeyDomainName];
-    }
-    [defaults synchronize];
-    if ([self checkDetails])
-        [self dismissModalViewControllerAnimated:YES];
-}
-- (IBAction)cancel:(id)sender
-{
-    if ([self checkDetails])
-    [self dismissModalViewControllerAnimated:YES];
 }
 
 -(BOOL)checkDetails
@@ -84,5 +70,55 @@
     {
         self.bgImageView.image = [UIImage imageNamed:@"bg_mgrn.jpg"];
     }
+}
+
+- (IBAction)ok:(id)sender
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([self.popupHeading.text hasPrefix:@"Master"])
+    {
+        NSString *uri = [self.popUpTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
+        [defaults setValue:uri forKey:KeySystemURI];
+        self.masterHostLabel.text = self.popUpTextField.text;
+    }
+    else if ([self.popupHeading.text hasPrefix:@"Domain"])
+    {
+        [defaults setValue:self.popUpTextField.text forKey:KeyDomainName];
+        self.domainLabel.text = self.popUpTextField.text;
+    }
+    self.popUpView.hidden = YES;
+    [self.popUpTextField resignFirstResponder];
+    [defaults synchronize];
+}
+
+- (IBAction)closePopup:(id)sender
+{
+    self.popUpView.hidden = YES;
+    [self.popUpTextField resignFirstResponder];
+}
+
+- (IBAction)showDomainPopup:(id)sender
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.popupHeading.text = @"Domain";
+    self.popUpTextField.text = [defaults objectForKey:KeyDomainName];
+    self.popUpView.hidden = NO;
+    [self.popUpTextField becomeFirstResponder];
+}
+
+- (IBAction)showMasterHostPopup:(id)sender
+{
+    self.popupHeading.text = @"Master Host";
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.popUpTextField.text = [defaults objectForKey:KeySystemURI];
+    self.popUpView.hidden = NO;
+    [self.popUpTextField becomeFirstResponder];
+}
+
+- (IBAction)back:(id)sender
+{
+    self.popUpView.hidden = YES;
+    if ([self checkDetails])
+        [self dismissModalViewControllerAnimated:YES];
 }
 @end

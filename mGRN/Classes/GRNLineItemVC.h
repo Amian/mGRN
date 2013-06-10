@@ -13,6 +13,9 @@
 
 @interface GRNLineItemVC : UIViewController <UITableViewDelegate, UITextFieldDelegate>
 @property (nonatomic, strong) GRN *grn;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+
+
 @property (strong, nonatomic) IBOutlet GRNOrderItemsTableView *itemTableView;
 @property (strong, nonatomic) IBOutlet UILabel *itemLabel;
 @property (strong, nonatomic) IBOutlet UILabel *descriptionLabel;

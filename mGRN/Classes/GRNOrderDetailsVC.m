@@ -17,7 +17,6 @@
 #import "GRNLineItemVC.h"
 #import "GRNBaseTable.h"
 #import "GRN+Management.h"
-
 @interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 {
 }
@@ -410,7 +409,7 @@
                                       error:nil];
         GRNLineItemVC *vc = segue.destinationViewController;
         vc.grn = grn;
-        
+        vc.selectedIndexPath = self.orderItemTableView.indexPathForSelectedRow;
     }
 }
 

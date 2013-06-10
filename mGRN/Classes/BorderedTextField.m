@@ -22,7 +22,6 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        self.backgroundColor = [UIColor blackColor];
         self.layer.borderWidth = 1.0;
         self.layer.borderColor = [UIColor lightGrayColor].CGColor;
         self.horizontalPadding = 15.0;

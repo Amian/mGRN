@@ -42,6 +42,7 @@
     {
         cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i %@]",item.itemNumber, item.itemDescription ,[item.quantityBalance intValue],item.uoq];
     }
+    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     return cell;
     
 }

@@ -22,6 +22,11 @@
 
 -(void)viewDidLoad
 {
+    //Notify if scroll view offset needs to be changed
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeScrollViewOffset:) name:ChangeScrollViewContentOffsetNotification object:nil];
+    
+    
+    //Notify when keyboard appears
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
     
@@ -50,6 +55,8 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    self.scrollView.contentOffset = CGPointZero;
+
     [super viewWillAppear:animated];
     [self setBgImage];
     [self setScrollViewSize];
@@ -58,6 +65,7 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillUnload];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:ChangeScrollViewContentOffsetNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 }
@@ -118,7 +126,7 @@
     {
         self.scrollView.frame = self.view.bounds;
         self.container.frame = self.view.bounds;
-        self.scrollView.contentSize = CGSizeZero;
+        self.scrollView.contentSize = self.view.bounds.size;
     }
 }
 
@@ -142,5 +150,14 @@
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
         [alert show];
+}
+
+-(void)changeScrollViewOffset:(NSNotification*)info
+{
+    CGFloat KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
+
+    NSLog(@"%@",[info object]);
+    if (self.scrollView.contentOffset.y == 0.0)
+    [self.scrollView setContentOffset:CGPointMake(0.0, KeyboardHeight) animated:YES];
 }
 @end
