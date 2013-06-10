@@ -102,6 +102,7 @@ state = _state;
 
 -(id)selectedObject
 {
+    NSLog(@"class = %@, count = %i",NSStringFromClass([self class]),self.dataArray.count);
     return [self.dataArray objectAtIndex:self.indexPathForSelectedRow.section];
 }
 

@@ -44,7 +44,7 @@
         frame.size.width = 1125.0;
     }
     self.containerView.frame = frame;
-    [self tablecontainerDelegateChangedStatusTo:self.status];
+    [self refreshView];
 }
 
 - (void)viewDidLoad
@@ -81,7 +81,7 @@
         [self.view addSubview:self.loadingView];
     }
     [self checkOrientation];
-
+    [self tablecontainerDelegateChangedStatusTo:self.status];
     if (returnedAfterSubmission && self.orderItemTableView.dataArray.count == 0)
     {
         self.status = PurchaseOrders;
