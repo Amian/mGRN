@@ -98,6 +98,7 @@ state = _state;
     [super reloadData];
     self.hidden = NO;
     self.alpha = 1.0;
+//    [self.myDelegate tableDidEndLoadingData:self];
 }
 
 -(id)selectedObject

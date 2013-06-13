@@ -7,6 +7,12 @@
 //
 
 #import "GRNReasonTableVC.h"
+#import "RejectionReasons+Management.h"
+#import "CoreDataManager.h"
+#import "M1XmGRNService.h"
+#import "GRNM1XHeader.h"
+@interface GRNReasonTableVC()<M1XmGRNDelegate>
+@end
 
 @implementation GRNReasonTableVC
 
@@ -15,7 +21,11 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        self.dataArray = [NSArray arrayWithObjects:@"No Reason",@"Damaged",@"Fragmented", @"Expect QA Details", @"Query", nil];
+        self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:[CoreDataManager sharedInstance].managedObjectContext];
+        if (!self.dataArray.count)
+        {
+            [self getReasonsFromAPI];
+        }
         self.dataSource = self;
     }
     return self;
@@ -34,7 +44,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MyIdentifier];
         cell.indentationLevel = 1;        
         cell.textLabel.textColor = [UIColor blackColor];
-        cell.textLabel.text = [self.dataArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = [(RejectionReasons*)[self.dataArray objectAtIndex:indexPath.row] codeDescription];
         
     }
     return cell;
@@ -55,46 +65,46 @@
     return self.frame.size.height/5;
 }
 
--(NSString*)selectedReason
+-(RejectionReasons*)selectedReason
 {
     return [self.dataArray objectAtIndex:[self indexPathForSelectedRow].row];
 }
 
--(NSString*)selectedCode
+-(RejectionReasons*)selectedCode
 {
     NSArray *codes = [NSArray arrayWithObjects:@"", @"DA", @"FR", @"QA", @"QR", nil];
     return [codes objectAtIndex:[self indexPathForSelectedRow].row];
 }
 
-+(NSString*)ReasonForCode:(NSString*)code
++(RejectionReasons*)ReasonForCode:(NSString*)code
 {
-    NSArray *array = [NSArray arrayWithObjects:@"No Reason",@"Damaged",@"Fragmented", @"Expect QA Details", @"Query", nil];
-    NSArray *codes = [NSArray arrayWithObjects:@"", @"DA", @"FR", @"QA", @"QR", nil];
-    int index = 0;
-    for (NSString *c in codes)
-    {
-        if ([code isEqualToString:c])
-        {
-            return [array objectAtIndex:index];
-        }
-        index++;
-    }
-    return @"No Reason";
+    return [RejectionReasons fetchReasonWithCode:code inMOC:[CoreDataManager sharedInstance].managedObjectContext];
 }
 
-+(NSString*)CodeForReason:(NSString*)reason
+-(void)getReasonsFromAPI
 {
-    NSArray *array = [NSArray arrayWithObjects:@"No Reason",@"Damaged",@"Fragmented", @"Expect QA Details", @"Query", nil];
-    NSArray *codes = [NSArray arrayWithObjects:@"", @"DA", @"FR", @"QA", @"QR", nil];
-    int index = 0;
-    for (NSString *c in array)
-    {
-        if ([reason isEqualToString:c])
-        {
-            return [codes objectAtIndex:index];
-        }
-        index++;
-    }
-    return @"";
+    M1XmGRNService *service = [[M1XmGRNService alloc] init];
+    service.delegate = self;
+    NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
+    kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
+    [service GetRejectionReasonsWithHeader:[GRNM1XHeader GetHeader]
+                                       kco:kco];
 }
+
+-(void)onAPIRequestSuccess:(NSDictionary *)response requestType:(RequestType)requestType
+{
+    NSArray *reasons = [response objectForKey:@"reasons"];
+    for (NSDictionary *r in reasons)
+    {
+        [RejectionReasons insertRejectionReasonsWithDictionary:r inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    }
+    self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    [self reloadData];
+}
+
+-(void)onAPIRequestFailure:(M1XResponse *)response
+{
+    
+}
+
 @end

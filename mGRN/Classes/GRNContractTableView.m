@@ -71,7 +71,7 @@
     [self.service GetContractsWithHeader:[GRNM1XHeader GetHeader] kco:self.kco includeWBS:NO];
 }
 
--(void)onAPIRequestSuccess:(NSDictionary *)contractData
+-(void)onAPIRequestSuccess:(NSDictionary *)contractData requestType:(RequestType)requestType
 {
     NSLog(@"response = %@",contractData);
     NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
@@ -90,8 +90,8 @@
         [contractObjectArray addObject:c];
     }
     self.dataArray = [self getDataArray];
-    [self.myDelegate tableDidEndLoadingData:self];
     [self reloadData];
+    [self.myDelegate tableDidEndLoadingData:self];
 }
 
 -(void)searchForString:(NSString*)searchString

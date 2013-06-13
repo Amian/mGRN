@@ -89,7 +89,7 @@
     
 }
 
--(void)onAPIRequestSuccess:(NSDictionary *)contracts
+-(void)onAPIRequestSuccess:(NSDictionary *)contracts requestType:(RequestType)requestType
 {
     NSArray *wbsData = [contracts objectForKey:@"wbsCodes"];
     NSMutableArray *result = [NSMutableArray array];

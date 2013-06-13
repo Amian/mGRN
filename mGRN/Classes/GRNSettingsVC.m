@@ -8,7 +8,7 @@
 
 #import "GRNSettingsVC.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "CoreDataManager.h"
 @implementation GRNSettingsVC
 
 -(void)viewWillAppear:(BOOL)animated
@@ -77,18 +77,22 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([self.popupHeading.text hasPrefix:@"Master"])
     {
-        NSString *uri = [self.popUpTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
-        [defaults setValue:uri forKey:KeySystemURI];
-        self.masterHostLabel.text = self.popUpTextField.text;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning"
+                                                        message:@"If you change MasterHost all your buffered data will be deleted. Are you sure you wnat to change it?"
+                                                       delegate:self
+                                              cancelButtonTitle:@"NO"
+                                              otherButtonTitles:@"YES",nil];
+        [alert show];
+
     }
     else if ([self.popupHeading.text hasPrefix:@"Domain"])
     {
         [defaults setValue:self.popUpTextField.text forKey:KeyDomainName];
         self.domainLabel.text = self.popUpTextField.text;
-    }
     self.popUpView.hidden = YES;
     [self.popUpTextField resignFirstResponder];
     [defaults synchronize];
+    }
 }
 
 - (IBAction)closePopup:(id)sender
@@ -120,5 +124,20 @@
     self.popUpView.hidden = YES;
     if ([self checkDetails])
         [self dismissModalViewControllerAnimated:YES];
+}
+
+-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != alertView.cancelButtonIndex)
+    {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *uri = [self.popUpTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
+        [defaults setValue:uri forKey:KeySystemURI];
+        self.masterHostLabel.text = self.popUpTextField.text;
+        self.popUpView.hidden = YES;
+        [self.popUpTextField resignFirstResponder];
+        [defaults synchronize];
+        [CoreDataManager removeAllSDNs];
+    }
 }
 @end

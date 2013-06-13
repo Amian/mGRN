@@ -12,5 +12,6 @@
 +(void)InsertSDN:(NSString*)sdn InMOC:(NSManagedObjectContext*)moc;
 +(BOOL)doesSDNExist:(NSString*)sdn inMOC:(NSManagedObjectContext*)moc;
 +(void)removeExpiredSDNinMOC:(NSManagedObjectContext*)moc;
++(void)removeAllSDNsinMOC:(NSManagedObjectContext*)moc;
 
 @end

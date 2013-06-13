@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class RejectionReasons;
 
 @interface GRNReasonTableVC : UITableView <UITableViewDataSource>
 @property (nonatomic, retain) NSArray *dataArray;
--(NSString*)selectedReason;
--(NSString*)selectedCode;
-+(NSString*)CodeForReason:(NSString*)reason;
-+(NSString*)ReasonForCode:(NSString*)code;
+-(RejectionReasons*)selectedReason;
++(RejectionReasons*)ReasonForCode:(NSString*)code;
 @end

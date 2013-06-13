@@ -22,6 +22,7 @@
 {
     BOOL animationInProgress;
     CGPoint originalCenter;
+    BOOL keyboardVisible;
 }
 @property (nonatomic, strong) UIView *loadingView;
 @end
@@ -38,6 +39,7 @@
         self.mgrnLogo.center = CGPointMake(loginBox.center.x, loginBox.frame.origin.y - self.mgrnLogo.frame.size.height - 10.0);
         [UIView commitAnimations];
     }
+    [self adjustViewForKeyboard];
     [self setBgImage];
 }
 
@@ -49,6 +51,11 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+
+    
     self.username.text = self.password.text = AmIBeingDebugged()? @"wilho2" : @"";
     
     [self setBgImage];
@@ -90,6 +97,18 @@
 
 -(IBAction)login
 {
+    if (!self.username.text.length || !self.password.text.length)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please enter username and password."
+                                                        message:nil
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+            [self earthquake:self.hiddenView];
+        return;
+    }
+    
     self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
     [self.view addSubview:self.loadingView];
     [self createNewSession];
@@ -229,7 +248,8 @@
     [userDefault synchronize];
     
     [self initialSetup];
-    
+    [self.username resignFirstResponder];
+    [self.password resignFirstResponder];
     [self performSegueWithIdentifier:@"login" sender:nil];
 }
 
@@ -274,7 +294,7 @@
 -(void)initialSetup
 {
     [SDN removeExpiredSDNinMOC:[[CoreDataManager sharedInstance] managedObjectContext]];
-    
+    if (!AmIBeingDebugged()) [CoreDataManager removeAllContracts];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:nil forKey:KeyImage1];
     [defaults setValue:nil forKey:KeyImage2];
@@ -333,6 +353,40 @@ static bool AmIBeingDebugged(void)
     // We're being debugged if the P_TRACED flag is set.
     
     return ( (info.kp_proc.p_flag & P_TRACED) != 0 );
+}
+
+-(void)onKeyboardHide:(NSNotification *)notification
+{
+    keyboardVisible = NO;
+    [self adjustViewForKeyboard];
+}
+
+-(void)onKeyboardShow:(NSNotification *)notification
+{
+    keyboardVisible = YES;
+    [self adjustViewForKeyboard];
+}
+
+-(void)adjustViewForKeyboard
+{
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) && keyboardVisible)
+    {
+        CGRect rect = self.view.bounds;
+        rect.origin.y = 100.0;
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.3];
+        self.view.bounds = rect;
+        [UIView commitAnimations];
+    }
+    else
+    {
+        CGRect rect = self.view.bounds;
+        rect.origin = CGPointZero;
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:0.3];
+        self.view.bounds = rect;
+        [UIView commitAnimations];
+    }
 }
 
 @end

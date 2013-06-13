@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface GRNSettingsVC : UIViewController
+@interface GRNSettingsVC : UIViewController <UIAlertViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIImageView *bgImageView;
 @property (strong, nonatomic) IBOutlet UILabel *version;

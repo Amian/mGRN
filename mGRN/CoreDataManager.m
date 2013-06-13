@@ -10,6 +10,8 @@
 #import "GRN+Management.h"
 #import "GRNItem+Management.h"
 #import "GRNM1XHeader.h"
+#import "RejectionReasons+Management.h"
+#import "SDN+Management.h"
 
 @interface CoreDataManager() <M1XmGRNDelegate>
 @property (nonatomic, strong) GRN *grn;
@@ -61,6 +63,7 @@ static CoreDataManager *sharedInstance = nil;
     [PurchaseOrder removeAllPurchaseOrdersInManagedObjectContext:context];
     [PurchaseOrderItem removeAllPurchaseOrdersItemsInManagedObjectContext:context];
     [WBS removeAllWBSInManagedObjectContext:context];
+    [RejectionReasons removeAllRejectionReasonsInMOC:context];
 }
 
 -(void)submitGRN
@@ -266,5 +269,10 @@ static CoreDataManager *sharedInstance = nil;
 +(NSManagedObjectContext*)moc
 {
     return [CoreDataManager sharedInstance].managedObjectContext;
+}
+
++(void)removeAllSDNs
+{
+    [SDN removeAllSDNsinMOC:[CoreDataManager moc]];
 }
 @end

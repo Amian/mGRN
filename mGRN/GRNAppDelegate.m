@@ -23,6 +23,12 @@
     CoreDataManager *cdm = [CoreDataManager sharedInstance];
     cdm.managedObjectContext = self.managedObjectContext;
     
+    double d = 123456789.00;
+    float f = 123456789.123456789;
+    NSLog(@"(double = %f, %g), (float = %f, %g)",d,d,f,f);
+    
+    
+    
     //TODO: remove the following
 //    NSArray *a = [PurchaseOrder fetchPurchaseOrdersWithQuantityErrorinMOC:self.managedObjectContext];
 //    for (PurchaseOrderItem *p in a)

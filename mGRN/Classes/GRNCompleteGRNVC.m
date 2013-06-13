@@ -211,7 +211,7 @@
     NSLog(@"submit failure response = %@",response);
 }
 
--(void)onAPIRequestSuccess:(NSDictionary *)orderData
+-(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
     [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
     [[CoreDataManager sharedInstance].managedObjectContext save:nil];

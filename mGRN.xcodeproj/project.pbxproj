@@ -40,6 +40,8 @@
 		F7B73FBA175FF38E00E5A502 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F7B73FB9175FF38E00E5A502 /* Default-Landscape@2x~ipad.png */; };
 		F7B73FBC175FF3CC00E5A502 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F7B73FBB175FF3CB00E5A502 /* Default-Landscape~ipad.png */; };
 		F7B73FBE176005B400E5A502 /* arrow_button.png in Resources */ = {isa = PBXBuildFile; fileRef = F7B73FBD176005B400E5A502 /* arrow_button.png */; };
+		F7B73FD51768DE7E00E5A502 /* RejectionReasons.m in Sources */ = {isa = PBXBuildFile; fileRef = F7B73FD41768DE7E00E5A502 /* RejectionReasons.m */; };
+		F7B73FD91768DEAF00E5A502 /* RejectionReasons+Management.m in Sources */ = {isa = PBXBuildFile; fileRef = F7B73FD81768DEAF00E5A502 /* RejectionReasons+Management.m */; };
 		F7D662BC175F5E1A002512A9 /* BorderedTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D662BB175F5E1A002512A9 /* BorderedTextView.m */; };
 		F7D662BF175F625A002512A9 /* back_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = F7D662BD175F625A002512A9 /* back_arrow.png */; };
 		F7D662C0175F625A002512A9 /* next_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = F7D662BE175F625A002512A9 /* next_arrow.png */; };
@@ -165,6 +167,10 @@
 		F7B73FB9175FF38E00E5A502 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
 		F7B73FBB175FF3CB00E5A502 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		F7B73FBD176005B400E5A502 /* arrow_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_button.png; sourceTree = "<group>"; };
+		F7B73FD31768DE7E00E5A502 /* RejectionReasons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RejectionReasons.h; path = ../RejectionReasons.h; sourceTree = "<group>"; };
+		F7B73FD41768DE7E00E5A502 /* RejectionReasons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RejectionReasons.m; path = ../RejectionReasons.m; sourceTree = "<group>"; };
+		F7B73FD71768DEAF00E5A502 /* RejectionReasons+Management.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RejectionReasons+Management.h"; sourceTree = "<group>"; };
+		F7B73FD81768DEAF00E5A502 /* RejectionReasons+Management.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RejectionReasons+Management.m"; sourceTree = "<group>"; };
 		F7D662BA175F5E1A002512A9 /* BorderedTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BorderedTextView.h; sourceTree = "<group>"; };
 		F7D662BB175F5E1A002512A9 /* BorderedTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BorderedTextView.m; sourceTree = "<group>"; };
 		F7D662BD175F625A002512A9 /* back_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back_arrow.png; sourceTree = "<group>"; };
@@ -531,6 +537,8 @@
 				F7E9837617313C5700B93426 /* User+Management.m */,
 				F7E9837717313C5700B93426 /* WBS+Management.h */,
 				F7E9837817313C5700B93426 /* WBS+Management.m */,
+				F7B73FD71768DEAF00E5A502 /* RejectionReasons+Management.h */,
+				F7B73FD81768DEAF00E5A502 /* RejectionReasons+Management.m */,
 			);
 			path = DataModel;
 			sourceTree = "<group>";
@@ -540,6 +548,8 @@
 			children = (
 				F7E9835E17313C5700B93426 /* Company.h */,
 				F7E9835F17313C5700B93426 /* Company.m */,
+				F7B73FD31768DE7E00E5A502 /* RejectionReasons.h */,
+				F7B73FD41768DE7E00E5A502 /* RejectionReasons.m */,
 				F7E9836017313C5700B93426 /* Contract.h */,
 				F7E9836117313C5700B93426 /* Contract.m */,
 				F7E9836417313C5700B93426 /* GRNItem.h */,
@@ -718,6 +728,8 @@
 				F78F8D7A175D2D3F007DF197 /* SDN.m in Sources */,
 				F78F8D7E175D2EAD007DF197 /* SDN+Management.m in Sources */,
 				F7D662BC175F5E1A002512A9 /* BorderedTextView.m in Sources */,
+				F7B73FD51768DE7E00E5A502 /* RejectionReasons.m in Sources */,
+				F7B73FD91768DEAF00E5A502 /* RejectionReasons+Management.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

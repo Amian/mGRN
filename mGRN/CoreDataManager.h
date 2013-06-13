@@ -21,4 +21,6 @@
  -(void)submitGRN;
 +(void)clearAllDataOnLogout;
 +(void)getAllDataInBG;
++(void)removeAllSDNs;
++(NSManagedObjectContext*)moc;
 @end

@@ -9,6 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "M1XRequestor.h"
 
+typedef enum
+{
+    RequestTypeNone,
+    RequestTypeGetContracts,
+    RequestTypeGetPurchaseOrdersByContracts,
+    RequestTypeGetPurchaseOrdersDetails,
+    RequestTypeGetWBSByContract,
+    RequestTypeRejectionReason,
+    RequestTypeDoSubmission
+}
+RequestType;
 
 @interface M1XGRN : NSObject
 @property (nonatomic, strong) NSString *deliveryDate;
@@ -41,7 +52,7 @@
 
 @optional
 
-- (void)onAPIRequestSuccess:(NSDictionary *)contracts;
+- (void)onAPIRequestSuccess:(NSDictionary *)response requestType:(RequestType)requestType;
 - (void)onAPIRequestFailure:(M1XResponse *)response;
 
 @end
@@ -81,5 +92,7 @@
 - (M1XResponse*)SynchronousGetPurchaseOrdersWithHeader:(M1XRequestHeader *)header contractNumber:(NSString*)contractnumber kco:(NSString*)kco includeLineItems:(BOOL)includeLineItems;
 
 - (M1XResponse*)SynchronousGetContractsWithHeader:(M1XRequestHeader *)header kco:(NSString*)kco includeWBS:(BOOL)includeWBS;
+
+-(void)GetRejectionReasonsWithHeader:(M1XRequestHeader*)header kco:(NSString*)kco;
 
 @end

@@ -39,8 +39,8 @@
     contentView.backgroundColor = [UIColor clearColor];
     CGFloat x = 0.0;
     
-    NSArray *valueArray = [NSArray array];
-    NSArray *labelArray = [NSArray array];
+    NSArray *valueArray = NULL;
+    NSArray *labelArray = NULL;
     if (self.state == TableStateSelected && indexPath.section == self.selectedIndex.section)
     {
         
@@ -148,7 +148,7 @@
                              includeLineItems:NO];
 }
 
--(void)onAPIRequestSuccess:(NSDictionary *)orderData
+-(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
     NSLog(@"response = %@",orderData);
     NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];

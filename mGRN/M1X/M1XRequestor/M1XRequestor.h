@@ -13,6 +13,14 @@
 #import "M1XResponse.h"
 #import "M1XRequestorDelegate.h"
 
+typedef enum
+{
+    M1XRequestorNone,
+    M1XRequestorConnectionFailure,
+    M1XRequestorAlreadyWaitingForResponse,
+    M1XRequestorRequestSent
+}M1XRequestorState;
+
 @interface M1XRequestor : NSObject
 
 @property (strong, nonatomic) id <M1XRequestorDelegate> delegate;
@@ -23,7 +31,7 @@
 // Designated Inititiliser
 - (id)initWithDelegate:(id)delegate;
 
-- (void)send;
+- (M1XRequestorState)send;
 - (void)clearResponse;
 
 + (M1XResponse*)sendSyncronousRequest:(M1XRequest*)newRequest withURL:(NSURL*)newURL;

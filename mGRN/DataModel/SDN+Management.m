@@ -59,5 +59,15 @@
     }
 }
 
++(void)removeAllSDNsinMOC:(NSManagedObjectContext*)moc
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"SDN"];
+    NSError *fetchError = nil;
+    NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
+    for (SDN *sdn in matches)
+    {
+        [moc deleteObject:sdn];
+    }
+}
 
 @end

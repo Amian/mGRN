@@ -17,6 +17,7 @@
 #import "GRNLineItemVC.h"
 #import "GRNBaseTable.h"
 #import "GRN+Management.h"
+
 @interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 {
 }
@@ -52,7 +53,8 @@
     self.searchView.hidden = YES;
     self.status = Contracts;
     [self.view addSubview:self.loadingView];
-    self.loadingView.hidden = YES;
+    
+    self.purchaseOrderTableView.hidden = YES;
     self.orderDetailView.hidden = YES;
     
     [self.navContract setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
@@ -72,12 +74,17 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if (!self.tablesView.window)
+    if (!self.tablesView.superview)
     {
         self.tablesView.frame = self.containerView.bounds;
         [self.containerView addSubview:self.tablesView];
         self.loadingView.frame = self.view.bounds;
+        self.loadingView.hidden = AmIBeingDebugged()? YES : NO;
         [self.view addSubview:self.loadingView];
+    }
+    else
+    {
+        self.loadingView.hidden = YES;
     }
     [self checkOrientation];
     [self tablecontainerDelegateChangedStatusTo:self.status];
@@ -132,7 +139,6 @@
             break;
         case PurchaseOrders:
             [self moveContainerToTheRight];
-            
             if (self.purchaseOrderTableView.dataArray.count == 0)
             {
                 self.purchaseOrderTableView.errorLabel.hidden = NO;
@@ -482,4 +488,42 @@
     [self tablecontainerDelegateChangedStatusTo:self.status];
 }
 
+#include <assert.h>
+#include <stdbool.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/sysctl.h>
+
+static bool AmIBeingDebugged(void)
+// Returns true if the current process is being debugged (either
+// running under the debugger or has a debugger attached post facto).
+{
+    int                 junk;
+    int                 mib[4];
+    struct kinfo_proc   info;
+    size_t              size;
+    
+    // Initialize the flags so that, if sysctl fails for some bizarre
+    // reason, we get a predictable result.
+    
+    info.kp_proc.p_flag = 0;
+    
+    // Initialize mib, which tells sysctl the info we want, in this case
+    // we're looking for information about a specific process ID.
+    
+    mib[0] = CTL_KERN;
+    mib[1] = KERN_PROC;
+    mib[2] = KERN_PROC_PID;
+    mib[3] = getpid();
+    
+    // Call sysctl.
+    
+    size = sizeof(info);
+    junk = sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0);
+    assert(junk == 0);
+    
+    // We're being debugged if the P_TRACED flag is set.
+    
+    return ( (info.kp_proc.p_flag & P_TRACED) != 0 );
+}
 @end

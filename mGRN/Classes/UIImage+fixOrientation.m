@@ -3,11 +3,6 @@
 
 @implementation UIImage (fixOrientation)
 
--(UIImageOrientation*)ima
-{
-    
-}
-
 - (UIImage *)fixOrientation {
     
     // No-op if the orientation is already correct

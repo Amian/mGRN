@@ -39,7 +39,7 @@
     return [self initWithDelegate:nil];
 }
 
-- (void)send
+- (M1XRequestorState)send
 {
     if (![self connectedToInternet])
     {
@@ -53,7 +53,7 @@
         if ([self.delegate respondsToSelector:@selector(onM1XResponse:forRequest:)]) {
             [self.delegate onConnectionFailure];
         }
-        return;
+        return M1XRequestorConnectionFailure;
     }
     
     if (!waitingForResponse) {
@@ -76,9 +76,9 @@
         
         [reqConn start];
     } else {
-// TODO: use delegate to inform about this kind of thing
-        NSLog(@"Already waiting for response!");
+        return M1XRequestorAlreadyWaitingForResponse;
     }
+    return M1XRequestorRequestSent;
 }
 
 + (M1XResponse*)sendSyncronousRequest:(M1XRequest*)newRequest withURL:(NSURL*)newURL

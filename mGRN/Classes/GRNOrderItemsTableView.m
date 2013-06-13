@@ -36,11 +36,22 @@
     if (self.grnItems.count)
     {
         GRNItem *grnItem = [self getGRNItemForPOItem:item];
-        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i of %i %@]",item.itemNumber, item.itemDescription, [grnItem.quantityDelivered intValue] ,[item.quantityBalance intValue],item.uoq];
+        
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        [formatter setMinimumFractionDigits:2];
+        [formatter setMaximumFractionDigits:2];
+        [formatter setRoundingMode:NSNumberFormatterRoundDown];
+        
+        //        float realValue = [grnItem.quantityDelivered floatValue];
+        //            float formattedValue = [[formatter stringFromNumber:grnItem.quantityDelivered] floatValue];
+        //        NSString *delivered = realValue > formattedValue? [NSString stringWithFormat:@"%g",realValue] : [NSString stringWithFormat:@"%.02f",formattedValue];
+        
+        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%.02f of %.02f %@]",item.itemNumber, item.itemDescription, [grnItem.quantityDelivered doubleValue] ,[item.quantityBalance doubleValue],item.uoq];
     }
     else
     {
-        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%i %@]",item.itemNumber, item.itemDescription ,[item.quantityBalance intValue],item.uoq];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@ [%.02f %@]",item.itemNumber, item.itemDescription ,[item.quantityBalance floatValue],item.uoq];
     }
     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     return cell;
@@ -56,10 +67,10 @@
 -(NSArray*)getDataArray
 {
     return [self.purchaseOrder.lineItems allObjects];
-//    NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
-//                                                                         inMOC:[CoreDataManager sharedInstance].managedObjectContext];
-//    //    [self.myDelegate tableDidEndLoadingData:self];
-//    return array;
+    //    NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
+    //                                                                         inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    //    //    [self.myDelegate tableDidEndLoadingData:self];
+    //    return array;
 }
 
 -(void)setPurchaseOrder:(PurchaseOrder *)purchaseOrder
@@ -93,7 +104,7 @@
                                  purchaseOrderNumber:self.purchaseOrder.orderNumber];
 }
 
--(void)onAPIRequestSuccess:(NSDictionary *)orderData
+-(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
     NSLog(@"response = %@",orderData);
     NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
@@ -136,13 +147,7 @@
 -(void)reloadData
 {
     [super reloadData];
-    if (self.dataArray.count > 0)
-    {
-        //Select first row
-        [self selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                          animated:NO
-                    scrollPosition:NO];
-    }
+//    self.allowsSelection = self.dataArray.count > 1? YES : NO;
 }
 
 
@@ -161,7 +166,7 @@
 }
 
 //- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    
+//
 //    // Create label with section title
 //    UILabel *label = [[UILabel alloc] init] ;
 //    label.frame = CGRectMake(0, 0, self.frame.size.width, 50);
@@ -170,11 +175,11 @@
 //    label.shadowOffset = CGSizeMake(0.0, 1.0);
 //    label.font = [UIFont boldSystemFontOfSize:20.0];
 //    label.text = @"     Order Items";
-//    
+//
 //    // Create header view and add label as a subview
 //    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
 //    [view addSubview:label];
-//    
+//
 //    return view;
 //}
 

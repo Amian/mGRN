@@ -14,11 +14,12 @@
 #define M1xMgrnService_GetPurchaseOrdersDetails @"GetPurchaseOrderDetails"
 #define M1xMgrnService_GetWBSByContract @"GetWBSByContract"
 #define M1xMgrnService_DoSubmission @"DoSubmission"
+#define M1xMgrnService_GetRejectionReasons @"GetRejectionReasons"
 
 @interface M1XmGRNService ()
 
 @property (strong, nonatomic) M1XRequestor *systemServiceRequestor;
-
+@property RequestType requestType;
 @end
 
 @implementation M1XGRN
@@ -31,7 +32,7 @@
 
 
 @implementation M1XmGRNService
-@synthesize delegate = _delegate, systemServiceRequestor = _systemServiceRequestor, systemURL = _systemURL;
+@synthesize delegate = _delegate, systemServiceRequestor = _systemServiceRequestor, systemURL = _systemURL, requestType = _requestType;
 
 -(NSString *)systemURL
 {
@@ -59,8 +60,8 @@
     if (self.delegate) {
         if (response.header.success) {
             if ([[response.header valueForKey:@"success"] boolValue]) {
-                if ([self.delegate respondsToSelector:@selector(onAPIRequestSuccess:)]) {
-                    [self.delegate onAPIRequestSuccess:response.body];
+                if ([self.delegate respondsToSelector:@selector(onAPIRequestSuccess:requestType:)]) {
+                    [self.delegate onAPIRequestSuccess:response.body requestType:self.requestType];
                 }
             } else {
                 failed = YES;
@@ -92,7 +93,11 @@
                               includeWBS? @"true" : @"false",@"includeWBS",
                               kco,@"kco",
                               nil];
-    [requestor send];
+    M1XRequestorState state = [requestor send];
+    if (state == M1XRequestorRequestSent)
+    {
+        
+    }
     NSLog(@"request = %@",requestor.request);
 }
 
@@ -131,7 +136,20 @@
     requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetWBSByContract]];
     requestor.request.header = header;
     requestor.request.body = [NSDictionary dictionaryWithObjectsAndKeys:
-                              contractnumber,@"contractNumber", 
+                              contractnumber,@"contractNumber",
+                              kco,@"kco",
+                              nil];
+    [requestor send];
+}
+
+
+-(void)GetRejectionReasonsWithHeader:(M1XRequestHeader*)header kco:(NSString*)kco
+{
+    M1XRequestor *requestor = self.systemServiceRequestor;
+    requestor.request = [[M1XRequest alloc] init];
+    requestor.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetRejectionReasons]];
+    requestor.request.header = header;
+    requestor.request.body = [NSDictionary dictionaryWithObjectsAndKeys:
                               kco,@"kco",
                               nil];
     [requestor send];
@@ -152,8 +170,8 @@
     [body setValue:items forKey:@"lineItems"];
     requestor.request.body = body;
     requestor.request.extraParameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                              kco,@"kco",
-                              nil];
+                                         kco,@"kco",
+                                         nil];
     [requestor send];
 }
 
@@ -171,8 +189,8 @@
     [body setValue:items forKey:@"lineItems"];
     request.body = body;
     request.extraParameters = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         kco,@"kco",
-                                         nil];
+                               kco,@"kco",
+                               nil];
     M1XResponse *result = [M1XRequestor sendSyncronousRequest:request withURL:url];
     NSLog(@"order number = %@",[body objectForKey:@"orderNumber"]);
     return result;
@@ -196,7 +214,7 @@
         if ([key isEqualToString:@"ID"])
         {
             @try {
-            [dict setValue:[object valueForKey:key] forKey:@"id"];
+                [dict setValue:[object valueForKey:key] forKey:@"id"];
             }
             @catch (NSException *e)
             {
@@ -225,9 +243,9 @@
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetContracts]];
     request.header = header;
     request.body = [NSDictionary dictionaryWithObjectsAndKeys:
-                              includeWBS? @"true" : @"false",@"includeWBS",
-                              kco,@"kco",
-                              nil];
+                    includeWBS? @"true" : @"false",@"includeWBS",
+                    kco,@"kco",
+                    nil];
     return [M1XRequestor sendSyncronousRequest:request withURL:url];
 }
 
@@ -237,10 +255,10 @@
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetPurchaseOrdersByContract]];
     request.header = header;
     request.body = [NSDictionary dictionaryWithObjectsAndKeys:
-                              contractnumber,@"contractNumber",
-                              includeLineItems? @"true" : @"false",@"includeLineItems",
-                              kco,@"kco",
-                              nil];
+                    contractnumber,@"contractNumber",
+                    includeLineItems? @"true" : @"false",@"includeLineItems",
+                    kco,@"kco",
+                    nil];
     return [M1XRequestor sendSyncronousRequest:request withURL:url];
 }
 
@@ -250,10 +268,10 @@
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@",self.systemURL,M1xMgrnService_GetPurchaseOrdersDetails]];
     request.header = header;
     request.body = [NSDictionary dictionaryWithObjectsAndKeys:
-                              contractnumber,@"contractNumber",
-                              kco,@"kco",
-                              poNumber,@"purchaseOrderNumber",
-                              nil];
+                    contractnumber,@"contractNumber",
+                    kco,@"kco",
+                    poNumber,@"purchaseOrderNumber",
+                    nil];
     return [M1XRequestor sendSyncronousRequest:request withURL:url];
 }
 
