@@ -19,8 +19,4 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
-- (void)transitionToViewController:(UIViewController *)viewController
-                    withTransition:(UIViewAnimationOptions)transition;
-
-
 @end

@@ -17,8 +17,7 @@
     GRNOrderDetailsVC *source = self.sourceViewController;
     [self.sourceViewController addChildViewController:self.destinationViewController];
 
-    CGRect frame = [self.destinationViewController view].frame;
-    frame = source.containerView.bounds;
+    CGRect frame = source.containerView.bounds;
     [self.destinationViewController view].frame = frame;
     [source.containerView addSubview:[self.destinationViewController view]];
 

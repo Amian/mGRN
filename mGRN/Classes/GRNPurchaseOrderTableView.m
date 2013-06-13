@@ -110,7 +110,7 @@
 {
     self.state = TableStateNormal;
     NSArray *array = [PurchaseOrder fetchPurchaseOrdersForContractNumber:self.contract.number
-                                                                   inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+                                                                   inMOC:[CoreDataManager moc]];
     //    [self.myDelegate tableDidEndLoadingData:self];
     self.errorLabel.hidden = array.count > 0? YES : NO;
     return array;
@@ -142,7 +142,7 @@
 -(void)getDataFromAPI
 {
     [super getDataFromAPI];
-    [self.service GetPurchaseOrdersWithHeader:[GRNM1XHeader GetHeader]
+    [self.service GetPurchaseOrdersWithHeader:[GRNM1XHeader Header]
                                contractNumber:self.contract.number
                                           kco:self.kco
                              includeLineItems:NO];
@@ -151,7 +151,7 @@
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
     NSLog(@"response = %@",orderData);
-    NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
+    NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *orders = [orderData objectForKey:@"purchaseOrders"];
     for (NSDictionary *dict in orders)

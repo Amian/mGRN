@@ -10,7 +10,7 @@
 
 @implementation GRNM1XHeader
 
-+(M1XRequestHeader*)GetHeader
++(M1XRequestHeader*)Header
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     

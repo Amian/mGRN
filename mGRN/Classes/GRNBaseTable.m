@@ -94,7 +94,6 @@ state = _state;
 
 -(void)reloadData
 {
-//    //TODO: Display error if no data found
     [super reloadData];
     self.hidden = NO;
     self.alpha = 1.0;

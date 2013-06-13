@@ -22,22 +22,6 @@
 {
     CoreDataManager *cdm = [CoreDataManager sharedInstance];
     cdm.managedObjectContext = self.managedObjectContext;
-    
-    double d = 123456789.00;
-    float f = 123456789.123456789;
-    NSLog(@"(double = %f, %g), (float = %f, %g)",d,d,f,f);
-    
-    
-    
-    //TODO: remove the following
-//    NSArray *a = [PurchaseOrder fetchPurchaseOrdersWithQuantityErrorinMOC:self.managedObjectContext];
-//    for (PurchaseOrderItem *p in a)
-//    {
-//        p.purchaseOrder.contract.useWBS = [NSNumber numberWithBool:YES];
-//        NSLog(@"con = %@, %@",p,p.plant);
-//    }
-//    
-
     return YES;
 }
 
@@ -170,18 +154,4 @@
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-
-#pragma mark - Custom View Transition
-
-- (void)transitionToViewController:(UIViewController *)viewController
-                    withTransition:(UIViewAnimationOptions)transition
-{
-    [UIView transitionFromView:self.window.rootViewController.view
-                        toView:viewController.view
-                      duration:0.65f
-                       options:transition
-                    completion:^(BOOL finished){
-                        self.window.rootViewController = viewController;
-                    }];
-}
 @end

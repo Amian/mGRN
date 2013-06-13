@@ -61,20 +61,20 @@
 -(NSArray*)getDataArray
 {
     self.state = TableStateNormal;
-    NSArray *array = [Contract fetchAllContractsInManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext];
+    NSArray *array = [Contract fetchAllContractsInManagedObjectContext:[CoreDataManager moc]];
     return array;
 }
 
 -(void)getDataFromAPI
 {
     [super getDataFromAPI];
-    [self.service GetContractsWithHeader:[GRNM1XHeader GetHeader] kco:self.kco includeWBS:NO];
+    [self.service GetContractsWithHeader:[GRNM1XHeader Header] kco:self.kco includeWBS:NO];
 }
 
 -(void)onAPIRequestSuccess:(NSDictionary *)contractData requestType:(RequestType)requestType
 {
     NSLog(@"response = %@",contractData);
-    NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
+    NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *contracts = [contractData objectForKey:@"contracts"];
     NSMutableArray *contractObjectArray = [NSMutableArray array];

@@ -68,7 +68,7 @@
 {
     return [self.purchaseOrder.lineItems allObjects];
     //    NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
-    //                                                                         inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    //                                                                         inMOC:[CoreDataManager moc]];
     //    //    [self.myDelegate tableDidEndLoadingData:self];
     //    return array;
 }
@@ -98,7 +98,7 @@
 -(void)getDataFromAPI
 {
     [super getDataFromAPI];
-    [self.service GetPurchaseOrdersDetailsWithHeader:[GRNM1XHeader GetHeader]
+    [self.service GetPurchaseOrdersDetailsWithHeader:[GRNM1XHeader Header]
                                       contractNumber:self.purchaseOrder.contract.number
                                                  kco:self.kco
                                  purchaseOrderNumber:self.purchaseOrder.orderNumber];
@@ -107,7 +107,7 @@
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
     NSLog(@"response = %@",orderData);
-    NSManagedObjectContext *context = [[CoreDataManager sharedInstance] managedObjectContext];
+    NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *items = [[orderData objectForKey:@"purchaseOrder"] objectForKey:@"lineItems"];
     for (NSDictionary *dict in items)

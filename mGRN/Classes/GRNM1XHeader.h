@@ -12,6 +12,6 @@
 
 @interface GRNM1XHeader : NSObject
 
-+(M1XRequestHeader*)GetHeader;
++(M1XRequestHeader*)Header;
 
 @end

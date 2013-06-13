@@ -139,7 +139,7 @@
     if ([segue.identifier isEqualToString:@"back"])
     {
         self.grn.notes  = self.comments.text;
-        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+        [[CoreDataManager moc] save:nil];
         GRNLineItemVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
         
@@ -183,7 +183,7 @@
         return;
     }
     
-    [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+    [[CoreDataManager moc] save:nil];
     self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
     [self.view addSubview:self.loadingView];
     self.grn.submitted = [NSNumber numberWithBool:YES];
@@ -194,7 +194,7 @@
     });
     
     //Add SDN to core data
-    [SDN InsertSDN:self.grn.supplierReference InMOC:[[CoreDataManager sharedInstance] managedObjectContext]];
+    [SDN InsertSDN:self.grn.supplierReference InMOC:[CoreDataManager moc]];
     
     //Adjust purchase orders
     [self updatePurchaseOrder];
@@ -213,8 +213,8 @@
 
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
-    [[CoreDataManager sharedInstance].managedObjectContext deleteObject:self.grn];
-    [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+    [[CoreDataManager moc] deleteObject:self.grn];
+    [[CoreDataManager moc] save:nil];
     
     //Refresh Purchase orders
     
@@ -523,7 +523,7 @@
         {
             @try
             {
-                [[[CoreDataManager sharedInstance] managedObjectContext] deleteObject:poItem];
+                [[CoreDataManager moc] deleteObject:poItem];
             }
             @catch (NSException *e)
             {
@@ -536,14 +536,14 @@
     {
         @try
         {
-        [[[CoreDataManager sharedInstance] managedObjectContext] deleteObject:po];
+        [[CoreDataManager moc] deleteObject:po];
         }
         @catch (NSException *e)
         {
             //TOOD
         }
     }
-    [[[CoreDataManager sharedInstance] managedObjectContext] save:nil];
+    [[CoreDataManager moc] save:nil];
 }
 
 -(GRNItem*)itemForPurchaseOrderItem:(PurchaseOrderItem*)item

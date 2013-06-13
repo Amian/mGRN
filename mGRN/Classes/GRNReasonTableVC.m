@@ -21,7 +21,7 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:[CoreDataManager sharedInstance].managedObjectContext];
+        self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:[CoreDataManager moc]];
         if (!self.dataArray.count)
         {
             [self getReasonsFromAPI];
@@ -78,7 +78,7 @@
 
 +(RejectionReasons*)ReasonForCode:(NSString*)code
 {
-    return [RejectionReasons fetchReasonWithCode:code inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    return [RejectionReasons fetchReasonWithCode:code inMOC:[CoreDataManager moc]];
 }
 
 -(void)getReasonsFromAPI
@@ -87,7 +87,7 @@
     service.delegate = self;
     NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
     kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
-    [service GetRejectionReasonsWithHeader:[GRNM1XHeader GetHeader]
+    [service GetRejectionReasonsWithHeader:[GRNM1XHeader Header]
                                        kco:kco];
 }
 
@@ -96,9 +96,9 @@
     NSArray *reasons = [response objectForKey:@"reasons"];
     for (NSDictionary *r in reasons)
     {
-        [RejectionReasons insertRejectionReasonsWithDictionary:r inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+        [RejectionReasons insertRejectionReasonsWithDictionary:r inMOC:[CoreDataManager moc]];
     }
-    self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:[CoreDataManager moc]];
     [self reloadData];
 }
 

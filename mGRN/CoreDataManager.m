@@ -17,8 +17,6 @@
 @property (nonatomic, strong) GRN *grn;
 @property float timeInterval;
 @property UIBackgroundTaskIdentifier bgTask;
-
-
 @end
 
 @implementation CoreDataManager
@@ -58,7 +56,7 @@ static CoreDataManager *sharedInstance = nil;
 
 +(void)removeAllContracts
 {
-    NSManagedObjectContext *context = [CoreDataManager sharedInstance].managedObjectContext;
+    NSManagedObjectContext *context = [CoreDataManager moc];
     [Contract removeAllContractsInManagedObjectContext:context];
     [PurchaseOrder removeAllPurchaseOrdersInManagedObjectContext:context];
     [PurchaseOrderItem removeAllPurchaseOrdersItemsInManagedObjectContext:context];
@@ -144,7 +142,7 @@ static CoreDataManager *sharedInstance = nil;
         [items addObject:newItem];
     }
     
-    M1XResponse *result = [service DoSubmissionSyncWithHeader:[GRNM1XHeader GetHeader]
+    M1XResponse *result = [service DoSubmissionSyncWithHeader:[GRNM1XHeader Header]
                                                           grn:grn
                                                     lineItems:items
                                                           kco:kco];

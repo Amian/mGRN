@@ -43,23 +43,17 @@
     [self setBgImage];
 }
 
--(void)viewDidLoad
-{
-    [super viewDidLoad];
-    //    self.appTitleLabel.text = [NSString stringWithFormat:@"Version %@",[[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"]];
-}
-
 -(void)viewWillAppear:(BOOL)animated
 {
-    
+    [super viewWillAppear:animated];
+
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
-
     
-    self.username.text = self.password.text = AmIBeingDebugged()? @"wilho2" : @"";
+    self.username.text = AmIBeingDebugged()? @"chaamu" : @"";
+    self.password.text = AmIBeingDebugged()? @"cham" : @"";
     
     [self setBgImage];
-    [super viewWillAppear:animated];
     self.hiddenView.alpha = 0.0;
     self.mgrnLogo.alpha = 1.0;
     self.mgrnLogo.center = self.hiddenView.center;
@@ -75,7 +69,6 @@
         [self performSegueWithIdentifier:@"settings" sender:self];
         return;
     }
-    
     [self animationPartOne];
 }
 
@@ -222,7 +215,7 @@
     [userDefault setValue:session.kco forKey:KeyKCO];
     [userDefault synchronize];
     
-    M1XRequestHeader *header = [GRNM1XHeader GetHeader];
+    M1XRequestHeader *header = [GRNM1XHeader Header];
     M1X *m1x = [[M1X alloc] init];
     m1x.delegate = self;
     [m1x FetchServiceConnectionDetailsForAppName:GRNAppName withHeader:header];
@@ -293,7 +286,7 @@
 
 -(void)initialSetup
 {
-    [SDN removeExpiredSDNinMOC:[[CoreDataManager sharedInstance] managedObjectContext]];
+    [SDN removeExpiredSDNinMOC:[CoreDataManager moc]];
     if (!AmIBeingDebugged()) [CoreDataManager removeAllContracts];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:nil forKey:KeyImage1];

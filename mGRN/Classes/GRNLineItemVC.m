@@ -144,7 +144,7 @@ static float KeyboardHeight;
         GRNReasonTableVC *rtv = (GRNReasonTableVC*)tableView;
         [self.resonView removeFromSuperview];
         [self.reasonButton setTitle:[[rtv selectedReason] codeDescription] forState:UIControlStateNormal];
-        self.selectedItem.exception = [[rtv selectedReason] code]; //TODO: Confirm this is the right place to put it
+        self.selectedItem.exception = [[rtv selectedReason] code];
     }
 }
 
@@ -190,7 +190,7 @@ static float KeyboardHeight;
     //Set Reason
     RejectionReasons *reason = [GRNReasonTableVC ReasonForCode:self.selectedItem.exception];
     [self.reasonButton setTitle:reason == nil? @"No Reason" : reason.codeDescription forState:UIControlStateNormal];
-    WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+    WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode inMOC:[CoreDataManager moc]];
     [self.wbsButton setTitle:wbs.codeDescription.length? wbs.codeDescription : WBSCodeText forState:UIControlStateNormal];
         
     double delivered = [self.selectedItem.quantityDelivered doubleValue];
@@ -394,7 +394,7 @@ static float KeyboardHeight;
     @try {
         if ([textField isEqual:self.sdnTextField])
         {
-            if (![SDN doesSDNExist:textField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
+            if (![SDN doesSDNExist:textField.text inMOC:[CoreDataManager moc]])
             {
                 self.grn.supplierReference = textField.text;
             }
@@ -419,7 +419,7 @@ static float KeyboardHeight;
 {
     if ([textField isEqual:self.sdnTextField])
     {
-        if (![SDN doesSDNExist:textField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
+        if (![SDN doesSDNExist:textField.text inMOC:[CoreDataManager moc]])
         {
             self.grn.supplierReference = textField.text;
         }
@@ -465,7 +465,7 @@ static float KeyboardHeight;
 {
     if ([segue.identifier isEqualToString:@"next"])
     {
-        [[CoreDataManager sharedInstance].managedObjectContext save:nil];
+        [[CoreDataManager moc] save:nil];
         GRNCompleteGRNVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
         vc.grnDict = self.grnDict;
@@ -590,7 +590,7 @@ static float KeyboardHeight;
     }
     else if (buttonIndex != alertView.cancelButtonIndex)
     {
-        NSManagedObjectContext *moc = [CoreDataManager sharedInstance].managedObjectContext;
+        NSManagedObjectContext *moc = [CoreDataManager moc];
         for (GRNItem *i in self.grn.lineItems)
         {
             [moc deleteObject:i];
@@ -628,7 +628,7 @@ static float KeyboardHeight;
         [errorString appendFormat:@"Please specify quantity delivered for atleast one order item.\n"];
     }
     
-    if ([SDN doesSDNExist:self.sdnTextField.text inMOC:[[CoreDataManager sharedInstance] managedObjectContext]])
+    if ([SDN doesSDNExist:self.sdnTextField.text inMOC:[CoreDataManager moc]])
     {
         [errorString appendFormat:@"A GRN with this Service Delivery Number has already been submitted. Please enter a different SDN.\n"];
     }
@@ -685,7 +685,7 @@ static float KeyboardHeight;
 //    self.selectedItem.quantityRejected = [NSNumber numberWithInt:[self.quantityRejected.text intValue]];
 //    self.selectedItem.quantityDelivered = [NSNumber numberWithInt:[self.quantityDelivered.text intValue]];
 //    self.selectedItem.serialNumber = self.serialNumber.text;
-//    [[[CoreDataManager sharedInstance] managedObjectContext] save:nil];
+//    [[CoreDataManager moc] save:nil];
 //
 //    [self checkItem];
 //}

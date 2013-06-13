@@ -411,7 +411,7 @@
     if ([segue.identifier isEqualToString:@"createGRN"])
     {
         GRN *grn = [GRN grnForPurchaseOrder:self.orderItemTableView.purchaseOrder
-                     inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext
+                     inManagedObjectContext:[CoreDataManager moc]
                                       error:nil];
         GRNLineItemVC *vc = segue.destinationViewController;
         vc.grn = grn;

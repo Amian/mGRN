@@ -34,14 +34,14 @@
     if (_contract != contract)
     {
         _contract = contract;
-        self.dataArray = [WBS fetchWBSCodesForContractNumber:contract.number inMOC:[CoreDataManager sharedInstance].managedObjectContext];
+        self.dataArray = [WBS fetchWBSCodesForContractNumber:contract.number inMOC:[CoreDataManager moc]];
         if (!self.dataArray.count)
         {
             M1XmGRNService *service = [[M1XmGRNService alloc] init];
             service.delegate = self;
             NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
             kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
-            [service GetWBSWithHeader:[GRNM1XHeader GetHeader]
+            [service GetWBSWithHeader:[GRNM1XHeader Header]
                        contractNumber:contract.number
                                   kco:kco];
         }
@@ -97,7 +97,7 @@
     {
         [result addObject:[WBS insertWBSCodesWithData:wbs
                                           forContract:self.contract
-                               inManagedObjectContext:[CoreDataManager sharedInstance].managedObjectContext
+                               inManagedObjectContext:[CoreDataManager moc]
                                                 error:nil]];
     }
     self.dataArray = [result copy];
