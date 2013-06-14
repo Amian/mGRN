@@ -12,15 +12,23 @@
 #import "GRNM1XHeader.h"
 #import "RejectionReasons+Management.h"
 #import "SDN+Management.h"
+#import "GRN+Management.h"
+#import "GRNAppDelegate.h"
+
+#define DefaultSubmissionTimeInterval 5.0;
 
 @interface CoreDataManager() <M1XmGRNDelegate>
 @property (nonatomic, strong) GRN *grn;
 @property float timeInterval;
 @property UIBackgroundTaskIdentifier bgTask;
+@property (nonatomic, strong) NSOperationQueue *backgroundDataQueue;
+@property (nonatomic, strong) NSOperationQueue *submissionQueue;
+@property BOOL dataIsBeingRemoved;
 @end
 
 @implementation CoreDataManager
-@synthesize managedObjectContext, grn = _grn, processing = _processing, timeInterval = _timeInterval, bgTask;
+@synthesize managedObjectContext, grn = _grn, processing = _processing, timeInterval = _timeInterval, bgTask, backgroundDataQueue = _backgroundDataQueue, submissionQueue = _submissionQueue, dataIsBeingRemoved = _dataIsBeingRemoved;
+
 static CoreDataManager *sharedInstance = nil;
 
 // Get the shared instance and create it if necessary.
@@ -38,7 +46,8 @@ static CoreDataManager *sharedInstance = nil;
     
     if (self)
     {
-        self.timeInterval = 60.0;
+        self.timeInterval = DefaultSubmissionTimeInterval;
+        self.dataIsBeingRemoved = NO;
     }
     
     return self;
@@ -56,59 +65,111 @@ static CoreDataManager *sharedInstance = nil;
 
 +(void)removeAllContracts
 {
-    NSManagedObjectContext *context = [CoreDataManager moc];
-    [Contract removeAllContractsInManagedObjectContext:context];
-    [PurchaseOrder removeAllPurchaseOrdersInManagedObjectContext:context];
-    [PurchaseOrderItem removeAllPurchaseOrdersItemsInManagedObjectContext:context];
-    [WBS removeAllWBSInManagedObjectContext:context];
-    [RejectionReasons removeAllRejectionReasonsInMOC:context];
+    [[CoreDataManager sharedInstance] setDataIsBeingRemoved:YES];
+    NSOperationQueue *myQueue = [CoreDataManager backgroundDataQueue];
+    [myQueue cancelAllOperations];
+    [myQueue addOperationWithBlock:^{
+        NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
+        [Contract removeAllContractsInManagedObjectContext:context];
+        [PurchaseOrder removeAllPurchaseOrdersInManagedObjectContext:context];
+        [PurchaseOrderItem removeAllPurchaseOrdersItemsInManagedObjectContext:context];
+        [WBS removeAllWBSInManagedObjectContext:context];
+        [RejectionReasons removeAllRejectionReasonsInMOC:context];
+        [[CoreDataManager sharedInstance] setDataIsBeingRemoved:NO];
+    }];
 }
 
 -(void)submitGRN
 {
-    self.processing = NO;
-    BOOL tryAgain = NO;
-    if ([self connectedToInternet])
+    NSLog(@"Submit GRN Called");
+    NSArray *submittedGRN = [GRN fetchSubmittedGRNInMOC:[CoreDataManager NewManagedObjectContext]];
+    if (submittedGRN.count)
     {
-        NSArray *submittedGRN = [GRN fetchSubmittedGRNInMOC:self.managedObjectContext];
-        for (GRN *grn in submittedGRN)
+        if ([self connectedToInternet])
         {
-            BOOL result = [self submit:grn];
-            tryAgain = tryAgain? YES : !result;
+            NSOperationQueue *myQueue = self.submissionQueue;
+            [myQueue addOperationWithBlock:^{
+                NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
+                NSArray *allGRNs = [GRN fetchSubmittedGRNInMOC:context];
+                for (GRN *grn in allGRNs)
+                {
+                    if (![self connectedToInternet]) break;
+                    [self submit:grn];
+                }
+                if ([[GRN fetchSubmittedGRNInMOC:context] count])
+                {
+                    self.timeInterval = self.timeInterval *2;
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        [self performSelector:@selector(submitGRN)
+                                   withObject:nil
+                                   afterDelay:self.timeInterval];
+                        NSLog(@"Repeat after time= %f",self.timeInterval);
+                    }];
+                }
+                else
+                {
+                    self.timeInterval = DefaultSubmissionTimeInterval;
+                }
+            }];
+        }
+        else
+        {
+            self.timeInterval = self.timeInterval *2;
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [self performSelector:@selector(submitGRN)
+                           withObject:nil
+                           afterDelay:self.timeInterval];
+                NSLog(@"Repeat after time= %f",self.timeInterval);
+            }];
         }
     }
     else
     {
-        tryAgain = YES;
-    }
-    if (tryAgain)
-    {
-        self.timeInterval = self.timeInterval *2;
-        NSTimer* t = [NSTimer scheduledTimerWithTimeInterval:self.timeInterval target:self  selector:@selector(submitGRN) userInfo:nil repeats:NO];
-        
-        [[NSRunLoop currentRunLoop] addTimer:t forMode:NSDefaultRunLoopMode];
-        
-        [[NSRunLoop currentRunLoop] run];
-    }
-    else
-    {
-        self.timeInterval = 60.0;
+        self.timeInterval = DefaultSubmissionTimeInterval;
     }
 }
 
+//-(void)submitGRN
+//{
+//    self.processing = NO;
+//    BOOL tryAgain = NO;
+//    if ([self connectedToInternet])
+//    {
+//        NSArray *submittedGRN = [GRN fetchSubmittedGRNInMOC:self.managedObjectContext];
+//        for (GRN *grn in submittedGRN)
+//        {
+//            BOOL result = [self submit:grn];
+//            tryAgain = tryAgain? YES : !result;
+//        }
+//    }
+//    else
+//    {
+//        tryAgain = YES;
+//    }
+//    if (tryAgain)
+//    {
+//        self.timeInterval = self.timeInterval *2;
+//        NSTimer* t = [NSTimer scheduledTimerWithTimeInterval:self.timeInterval target:self  selector:@selector(submitGRN) userInfo:nil repeats:NO];
+//
+//        [[NSRunLoop currentRunLoop] addTimer:t forMode:NSDefaultRunLoopMode];
+//
+//        [[NSRunLoop currentRunLoop] run];
+//    }
+//    else
+//    {
+//        self.timeInterval = 60.0;
+//    }
+//}
+
 - (BOOL)submit:(GRN*)newGRN
 {
-    
-    
-    
     self.grn = newGRN;
-    [self.managedObjectContext save:nil];
     M1XmGRNService *service = [[M1XmGRNService alloc] init];
     //    service.delegate = self;
     NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
     @try
     {
-    kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
+        kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
     }
     @catch (NSException *ex)
     {
@@ -131,7 +192,7 @@ static CoreDataManager *sharedInstance = nil;
     for (GRNItem *item in newGRN.lineItems)
     {
         M1XLineItems *newItem = [[M1XLineItems alloc] init];
-        newItem.exception = item.exception;
+        newItem.exception = item.exception.length? item.exception : @"0";
         newItem.item = item.itemNumber;
         newItem.notes = item.notes;
         newItem.quantityDelivered = [NSString stringWithFormat:@"%i",[item.quantityDelivered intValue]];
@@ -148,8 +209,11 @@ static CoreDataManager *sharedInstance = nil;
                                                           kco:kco];
     if (result.header.success)
     {
-        [self.managedObjectContext deleteObject:self.grn];
-        [self.managedObjectContext save:nil];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
+            [context deleteObject:[GRN fetchGRNWithSDN:newGRN.supplierReference inMOC:context]];
+            [context save:nil];
+        }];
     }
     return result.header.success;
 }
@@ -163,15 +227,6 @@ static CoreDataManager *sharedInstance = nil;
     [NSURLConnection sendSynchronousRequest:request returningResponse:&response error: NULL];
     
     return ([response statusCode]==200)?YES:NO;
-}
-
-+(void)clearAllDataOnLogout
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,
-                                             (unsigned long)NULL), ^(void)
-                   {
-                       [CoreDataManager removeAllContracts];
-                   });
 }
 
 //+(void)getAllDataInBG
@@ -211,47 +266,88 @@ static CoreDataManager *sharedInstance = nil;
 //                   });
 //}
 
-//-(void)getAllDataInBG
-//{
-//    
-//    UIApplication *app = [UIApplication sharedApplication];
-//    
-//    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
-//        [app endBackgroundTask:bgTask];
-//        bgTask = UIBackgroundTaskInvalid;
-//    }];
-//    
-//    NSManagedObjectContext *moc =  [CoreDataManager moc];
-//    
-//    //Get All contracts
-//    NSArray *allContracts = [Contract fetchAllContractsInManagedObjectContext:moc];
-//    NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
-//    kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
-//    M1XmGRNService *service = [[M1XmGRNService alloc] init];
-//    service.delegate = self;
-//    
-//    for (Contract *contract in allContracts)
+-(void)getAllDataInBG
+{
+//    if (self.dataIsBeingRemoved)
 //    {
-//        if (!contract.purchaseOrders.count)
-//        {
-//            //Get PO
-//            M1XResponse *response = [service SynchronousGetPurchaseOrdersWithHeader:[GRNM1XHeader GetHeader]
-//                                                                     contractNumber:contract.number
-//                                                                                kco:kco
-//                                                                   includeLineItems:YES];
-//            NSArray *poArray = [response.body objectForKey:@"purchaseOrders"];
-//            for (NSDictionary *dict in poArray)
-//            {
-//                [PurchaseOrder insertPurchaseOrderWithData:dict
-//                                               forContract:contract
-//                                    inManagedObjectContext:moc
-//                                                     error:nil];
-//                
-//            }
-//        }
+//        [self performSelector:@selector(getAllDataInBG) withObject:nil afterDelay:2.0];
+//        return;
 //    }
-//}
+//    else if ([[CoreDataManager moc] save:nil])
+//    {
+//        [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                 selector:@selector(contextDidSave:)
+//                                                     name:NSManagedObjectContextDidSaveNotification
+//                                                   object:nil];
+//        [self.managedObjectContext save:nil];
+//    }
+}
+
+//-(void)contextDidSave:(NSNotification*)notification
+//{
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:nil];
 //
+//    NSOperationQueue *myQueue = [CoreDataManager backgroundDataQueue];
+//    
+//    if (self.dataIsBeingRemoved)
+//    {
+//        [self performSelector:@selector(getAllDataInBG) withObject:nil afterDelay:2.0];
+//        return;
+//    }
+//    
+//    [myQueue addOperationWithBlock:^{
+//        @try
+//        {
+//            NSManagedObjectContext *moc =  [CoreDataManager moc];
+//            [moc mergeChangesFromContextDidSaveNotification:notification];
+//            //Get All contracts
+//            NSArray *allContracts = [Contract fetchAllContractsInManagedObjectContext:moc];
+//            
+//            if (!allContracts.count)
+//            {
+//                [self performSelector:@selector(getAllDataInBG) withObject:nil afterDelay:10.0];
+//                return;
+//            }
+//            
+//            NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
+//            kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
+//            M1XmGRNService *service = [[M1XmGRNService alloc] init];
+//            for (Contract *contract in allContracts)
+//            {
+//                if (self.dataIsBeingRemoved) break;
+//                if (!contract.purchaseOrders.count)
+//                {
+//                    //Get PO
+//                    M1XResponse *response = [service SynchronousGetPurchaseOrdersWithHeader:[GRNM1XHeader Header]
+//                                                                             contractNumber:contract.number
+//                                                                                        kco:kco
+//                                                                           includeLineItems:YES];
+//                    NSArray *poArray = [response.body objectForKey:@"purchaseOrders"];
+//                    for (NSDictionary *dict in poArray)
+//                    {
+//                        if (self.dataIsBeingRemoved)
+//                        {
+//                            NSLog(@"Terminate.");
+//                            break;
+//                        }
+//                        [PurchaseOrder insertPurchaseOrderWithData:dict
+//                                                       forContract:contract
+//                                            inManagedObjectContext:moc
+//                                                             error:nil];
+//                    }
+//                }
+//            }
+//            NSLog(@"Finished getting all data from API");
+//        }
+//        @catch (NSException *ex)
+//        {
+//            //This happens if we attempt to remove all data while data is being fetched from API
+//            //Not an issue as after getting new data this method will be called again
+//            NSLog(@"Could not get all data from API");
+//        }
+//    }];
+//}
+////
 //-(void)onAPIRequestSuccess:(NSDictionary *)contracts
 //{
 //    NSArray *poArray = [contracts objectForKey:@"purchaseOrders"];
@@ -269,8 +365,54 @@ static CoreDataManager *sharedInstance = nil;
     return [CoreDataManager sharedInstance].managedObjectContext;
 }
 
-+(void)removeAllSDNs
++(void)removeAllData
 {
-    [SDN removeAllSDNsinMOC:[CoreDataManager moc]];
+    [[CoreDataManager sharedInstance] setDataIsBeingRemoved:YES];
+    NSOperationQueue *myQueue = [CoreDataManager backgroundDataQueue];
+    [myQueue cancelAllOperations];
+    [myQueue addOperationWithBlock:^{
+        NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
+        [Contract removeAllContractsInManagedObjectContext:context];
+        [PurchaseOrder removeAllPurchaseOrdersInManagedObjectContext:context];
+        [PurchaseOrderItem removeAllPurchaseOrdersItemsInManagedObjectContext:context];
+        [WBS removeAllWBSInManagedObjectContext:context];
+        [RejectionReasons removeAllRejectionReasonsInMOC:context];
+        [SDN removeAllSDNsinMOC:context];
+        [GRN removeAllObjectsInManagedObjectContext:context];
+        [[CoreDataManager sharedInstance] setDataIsBeingRemoved:NO];
+    }];
+}
+
++(NSManagedObjectContext*)NewManagedObjectContext
+{
+    GRNAppDelegate *delegate = (GRNAppDelegate*)[UIApplication sharedApplication].delegate;
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc] init];
+    [context setPersistentStoreCoordinator: [delegate persistentStoreCoordinator]];
+    return context;
+}
+
++(NSOperationQueue*)backgroundDataQueue
+{
+    return [CoreDataManager sharedInstance].backgroundDataQueue;
+}
+
+-(NSOperationQueue*)backgroundDataQueue
+{
+    if (!_backgroundDataQueue)
+    {
+        _backgroundDataQueue = [[NSOperationQueue alloc] init];
+        [_backgroundDataQueue setName:@"BackgroundDataQueue"];
+    }
+    return _backgroundDataQueue;
+}
+
+-(NSOperationQueue*)submissionQueue
+{
+    if (!_submissionQueue)
+    {
+        _submissionQueue = [[NSOperationQueue alloc] init];
+        [_submissionQueue setName:@"SubmissionQueue"];
+    }
+    return _submissionQueue;
 }
 @end

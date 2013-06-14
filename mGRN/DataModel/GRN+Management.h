@@ -18,5 +18,6 @@
 + (GRN *)grnForPurchaseOrder:(PurchaseOrder *)purchaseOrder inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
 +(void)removeAllObjectsInManagedObjectContext:(NSManagedObjectContext*)context;
 +(NSArray*)fetchSubmittedGRNInMOC:(NSManagedObjectContext*)moc;
++(GRN*)fetchGRNWithSDN:(NSString*)sdn inMOC:(NSManagedObjectContext*)moc;
 
 @end

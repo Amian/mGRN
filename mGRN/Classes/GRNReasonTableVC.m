@@ -70,12 +70,6 @@
     return [self.dataArray objectAtIndex:[self indexPathForSelectedRow].row];
 }
 
--(RejectionReasons*)selectedCode
-{
-    NSArray *codes = [NSArray arrayWithObjects:@"", @"DA", @"FR", @"QA", @"QR", nil];
-    return [codes objectAtIndex:[self indexPathForSelectedRow].row];
-}
-
 +(RejectionReasons*)ReasonForCode:(NSString*)code
 {
     return [RejectionReasons fetchReasonWithCode:code inMOC:[CoreDataManager moc]];

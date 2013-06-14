@@ -66,11 +66,7 @@
 
 -(NSArray*)getDataArray
 {
-    return [self.purchaseOrder.lineItems allObjects];
-    //    NSArray *array = [PurchaseOrderItem fetchPurchaseOrdersItemsForOrderNumber:self.purchaseOrder.orderNumber
-    //                                                                         inMOC:[CoreDataManager moc]];
-    //    //    [self.myDelegate tableDidEndLoadingData:self];
-    //    return array;
+    return [[self.purchaseOrder.lineItems allObjects] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"itemNumber" ascending:YES]]];
 }
 
 -(void)setPurchaseOrder:(PurchaseOrder *)purchaseOrder

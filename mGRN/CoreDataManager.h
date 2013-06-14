@@ -18,8 +18,8 @@
 @property BOOL processing;
 + (CoreDataManager*)sharedInstance;
 +(void)removeAllContracts;
++(void)removeAllData;
  -(void)submitGRN;
-+(void)clearAllDataOnLogout;
-+(void)removeAllSDNs;
 +(NSManagedObjectContext*)moc;
+-(void)getAllDataInBG;
 @end

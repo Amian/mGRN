@@ -90,6 +90,7 @@
         [contractObjectArray addObject:c];
     }
     self.dataArray = [self getDataArray];
+    [[CoreDataManager sharedInstance] performSelector:@selector(getAllDataInBG) withObject:nil afterDelay:2.0];
     [self reloadData];
     [self.myDelegate tableDidEndLoadingData:self];
 }

@@ -294,6 +294,7 @@
     [defaults setValue:nil forKey:KeyImage3];
     [defaults setValue:nil forKey:KeySignature];
     [defaults synchronize];
+    [[CoreDataManager sharedInstance] submitGRN];
 }
 
 -(void)setBgImage

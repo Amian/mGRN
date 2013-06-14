@@ -138,6 +138,7 @@ static float KeyboardHeight;
         WBS *wbs = [((GRNWbsTableView*)tableView).dataArray objectAtIndex:indexPath.row];
         [self.wbsButton setTitle:wbs.codeDescription forState:UIControlStateNormal];
         self.selectedItem.wbsCode = wbs.code;
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
     else if ([tableView isKindOfClass:[GRNReasonTableVC class]])
     {
@@ -145,6 +146,7 @@ static float KeyboardHeight;
         [self.resonView removeFromSuperview];
         [self.reasonButton setTitle:[[rtv selectedReason] codeDescription] forState:UIControlStateNormal];
         self.selectedItem.exception = [[rtv selectedReason] code];
+        [rtv deselectRowAtIndexPath:indexPath animated:NO];
     }
 }
 
@@ -152,9 +154,11 @@ static float KeyboardHeight;
 {
     if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
     {
+        GRNItem *item = [self itemForPurchaseOrderItem:[self.itemTableView.dataArray objectAtIndex:indexPath.row]];
+        
         [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
                          withRowAnimation:UITableViewRowAnimationNone];
-        NSString *error = [self checkItem];
+        NSString *error = [self checkItem:item];
         if (error.length)
         {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:error
@@ -187,96 +191,23 @@ static float KeyboardHeight;
     self.descriptionLabel.text = item.itemDescription;
     self.expected.text = [NSString stringWithFormat:@"EA (%.02f expected)",[item.quantityBalance doubleValue]];
     
-    //Set Reason
-    RejectionReasons *reason = [GRNReasonTableVC ReasonForCode:self.selectedItem.exception];
-    [self.reasonButton setTitle:reason == nil? @"No Reason" : reason.codeDescription forState:UIControlStateNormal];
     WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode inMOC:[CoreDataManager moc]];
     [self.wbsButton setTitle:wbs.codeDescription.length? wbs.codeDescription : WBSCodeText forState:UIControlStateNormal];
-        
+    
+    //Set Delivered and rejected quantities rounded to 2 decimal places
     double delivered = [self.selectedItem.quantityDelivered doubleValue];
     double rejected = [self.selectedItem.quantityRejected doubleValue];
     
     self.quantityDelivered.text = delivered > 0.0? [NSString stringWithFormat:@"%.02f",delivered] : @"";
     self.quantityRejected.text = rejected > 0.0? [NSString stringWithFormat:@"%.02f",rejected] : @"";
-
-    //    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-//    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-//    [formatter setMinimumFractionDigits:2];
-//    [formatter setMaximumFractionDigits:2];
-//    [formatter setRoundingMode:NSNumberFormatterRoundDown];
     
-    //Set quantity delivered
-//    if ([self.selectedItem.quantityDelivered doubleValue] == 0.0)
-//    {
-//        self.quantityDelivered.text = @"";
-//    }
-//    else
-//    {
-//        NSString *quantityString = [NSString stringWithFormat:@"%f",[self.selectedItem.quantityDelivered doubleValue]];
-//
-//        //Trim following zeros
-//        NSInteger i = [quantityString length] - 1;
-//        while (i >= 0
-//               && [quantityString characterAtIndex:i] == '0'
-//               && [quantityString characterAtIndex:i - 2 ] != '.') {
-//            i--;
-//        }
-//        quantityString = [quantityString substringToIndex:i+1];
+    //Set Reason: If either rejected quantity is null or rejection code is null show "No Reason" as title
+    RejectionReasons *reason = [GRNReasonTableVC ReasonForCode:self.selectedItem.exception];
+    [self.reasonButton setTitle:reason == nil || rejected == 0.0 ? @"No Reason" : reason.codeDescription forState:UIControlStateNormal];
     
-//        NSArray *stringArray = [quantityString componentsSeparatedByString:@"."];
-//        
-//        if (stringArray.count < 2 || [[stringArray objectAtIndex:1] length] < 2)
-//        {
-//            quantityString = [NSString stringWithFormat:@"%.02f",[self.selectedItem.quantityDelivered doubleValue]];
-//        }
-//        else
-//        {
-//            //Trim followng zeroes
-//            int i = [quantityString length];
-//            while (i >= 0 && )
-//            {
-//                i--;
-//            }
-//            
-//        }
-        
-        
-        
-//        [quantityString substringToIndex:i];
-//        self.quantityDelivered.text = quantityString;
-//        float realValue = [self.selectedItem.quantityDelivered doubleValue];
-//        float formattedValue = [[formatter stringFromNumber:self.selectedItem. ] doubleValue];
-//        if (realValue > formattedValue)
-//        {
-//            self.quantityDelivered.text = [NSString stringWithFormat:@"%g",realValue];
-//        }
-//        else
-//        {
-//            self.quantityDelivered.text = [NSString stringWithFormat:@"%.02f",formattedValue];
-//        }
-//    }
-//    
-//    //Set quantity rejected
-//    if ([self.selectedItem.quantityRejected doubleValue] == 0.0)
-//    {
-//        self.quantityRejected.text = @"";
-//    }
-//    else
-//    {
-//        float realValue = [self.selectedItem.quantityRejected doubleValue];
-//        float formattedValue = [[formatter stringFromNumber:self.selectedItem.quantityRejected] doubleValue];
-//        if (realVa??lue > formattedValue)
-//        {
-//            self.quantityRejected.text = [NSString stringWithFormat:@"%g",realValue];
-//        }
-//        else
-//        {
-//            self.quantityRejected.text = [NSString stringWithFormat:@"%.02f",formattedValue];
-//        }
-//        
-//    }
-
     self.note.text = self.selectedItem.notes;
+    
+    //Show or hide serial number
     if ([item.plant boolValue])
     {
         self.serialNumber.hidden = NO;
@@ -328,8 +259,6 @@ static float KeyboardHeight;
 
 -(void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    //    if (self.view.frame.origin.y != 0) return;
-    
     BOOL moveView = NO;
     if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
     {
@@ -389,6 +318,7 @@ static float KeyboardHeight;
     return YES;
 }
 
+
 -(void)textFieldDidEndEditing:(UITextField *)textField
 {
     @try {
@@ -410,7 +340,7 @@ static float KeyboardHeight;
         }
     }
     @catch (NSException *exception) {
-        
+        //This happens when we go back and there is no grn
     }
     
 }
@@ -540,38 +470,38 @@ static float KeyboardHeight;
     [alert show];
     
 }
-
-- (IBAction)doneSearching:(id)sender
-{
-    self.searchTextField.text = @"";
-    [self.searchTextField resignFirstResponder];
-    self.searchBar.hidden = YES;
-}
-- (IBAction)search:(id)sender
-{
-    if (self.searchBar.hidden)
-    {
-        self.searchBar.hidden = NO;
-        [self.searchTextField becomeFirstResponder];
-        
-        CGRect frame = self.searchBar.frame;
-        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height;
-        self.searchBar.frame = frame;
-        
-        //animate
-        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height - KeyboardHeight;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        self.searchBar.frame = frame;
-        [UIView commitAnimations];
-    }
-    else
-    {
-        self.searchTextField.text = @"";
-        self.searchBar.hidden = YES;
-        [self.searchTextField resignFirstResponder];
-    }
-}
+//
+//- (IBAction)doneSearching:(id)sender
+//{
+//    self.searchTextField.text = @"";
+//    [self.searchTextField resignFirstResponder];
+//    self.searchBar.hidden = YES;
+//}
+//- (IBAction)search:(id)sender
+//{
+//    if (self.searchBar.hidden)
+//    {
+//        self.searchBar.hidden = NO;
+//        [self.searchTextField becomeFirstResponder];
+//        
+//        CGRect frame = self.searchBar.frame;
+//        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height;
+//        self.searchBar.frame = frame;
+//        
+//        //animate
+//        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height - KeyboardHeight;
+//        [UIView beginAnimations:nil context:nil];
+//        [UIView setAnimationDuration:0.3];
+//        self.searchBar.frame = frame;
+//        [UIView commitAnimations];
+//    }
+//    else
+//    {
+//        self.searchTextField.text = @"";
+//        self.searchBar.hidden = YES;
+//        [self.searchTextField resignFirstResponder];
+//    }
+//}
 - (IBAction)refresh:(id)sender
 {
     [self.itemTableView doneSearching];
@@ -613,7 +543,7 @@ static float KeyboardHeight;
 -(NSString*)checkAllData
 {
     //First check current item then check SDN
-    NSMutableString *errorString = [[self checkItem] mutableCopy];
+    NSMutableString *errorString = [[self checkItem:self.selectedItem] mutableCopy];
     
     if (![self stripedTextLength:self.sdnTextField.text])
     {
@@ -641,7 +571,7 @@ static float KeyboardHeight;
     return [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length;
 }
 
--(NSString*)checkItem
+-(NSString*)checkItem:(GRNItem*)item
 {
     NSMutableString *errorString = [NSMutableString string];
     if ([self stripedTextLength:self.quantityDelivered.text] && [self.quantityDelivered.text doubleValue] != 0.0)
@@ -660,34 +590,38 @@ static float KeyboardHeight;
     {
         [errorString appendFormat:@"Rejected ￼quantity for item must not exceed the quantity ￼delivered.\n"];
     }
-    else if ([self.quantityRejected.text doubleValue] > 0 && self.selectedItem.exception.length == 0)
+    else if ([self.quantityRejected.text doubleValue] > 0 && item.exception.length == 0)
     {
         [errorString appendFormat:@"Please select a rejection reason.\n"];
     }
-    
-    if ([self.quantityDelivered.text doubleValue] > [((PurchaseOrderItem*)self.itemTableView.selectedObject).quantityBalance doubleValue] && [self.grn.purchaseOrder.quantityError doubleValue] == 1)
+    else if ([self.quantityRejected.text doubleValue] == 0)
     {
-        [errorString appendFormat:@"Quantity delivered cannot exceed quantity balance.\n"];
+        item.exception = @"";
+        [[CoreDataManager moc] save:nil];
     }
     
-    if (!errorString)
+    double quantityBalance = [[[self purchaseOrderItemForGRNItem:item] quantityBalance] doubleValue];
+    
+    if ([self.quantityDelivered.text doubleValue] > quantityBalance && [self.grn.purchaseOrder.quantityError doubleValue] == 1)
     {
-        //[self saveAndCheckCurrentItem];
+        [errorString appendFormat:@"Quantity delivered cannot exceed quantity balance.\n"];
     }
     
     return errorString;
 }
 
 //TODO: Implement This
-//-(void)saveAndCheckCurrentItem
+//-(void)saveItem
 //{
 //    self.selectedItem.notes = self.note.text;
-//    self.selectedItem.quantityRejected = [NSNumber numberWithInt:[self.quantityRejected.text intValue]];
-//    self.selectedItem.quantityDelivered = [NSNumber numberWithInt:[self.quantityDelivered.text intValue]];
+//    self.selectedItem.quantityRejected = [NSNumber numberWithDouble:[self.quantityRejected.text doubleValue]];
+//    self.selectedItem.quantityDelivered = [NSNumber numberWithDouble:[self.quantityDelivered.text doubleValue]];
 //    self.selectedItem.serialNumber = self.serialNumber.text;
+//    
+//    //If quantity rejected is 0 make sure the reason code is also zero
+//    if ([self.quantityRejected.text doubleValue]) self.selectedItem.exception = @"0";
+//    
 //    [[CoreDataManager moc] save:nil];
-//
-//    [self checkItem];
 //}
 
 #pragma mark - Orientation Adjustments

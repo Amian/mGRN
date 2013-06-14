@@ -399,7 +399,7 @@
 {
     if (buttonIndex != alertView.cancelButtonIndex)
     {
-        [CoreDataManager clearAllDataOnLogout];
+        [CoreDataManager removeAllContracts];
         [self dismissModalViewControllerAnimated:YES];
     }
 }

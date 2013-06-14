@@ -40,7 +40,7 @@
 {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     if (![[userDefault objectForKey:KeyDomainName] length] ||
-        ![userDefault objectForKey:KeySystemURI])
+        ![[userDefault objectForKey:KeySystemURI] length])
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Please enter correct details to proceed"
                                                         message:nil
@@ -77,21 +77,31 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([self.popupHeading.text hasPrefix:@"Master"])
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning"
-                                                        message:@"If you change MasterHost all your buffered data will be deleted. Are you sure you wnat to change it?"
-                                                       delegate:self
-                                              cancelButtonTitle:@"NO"
-                                              otherButtonTitles:@"YES",nil];
-        [alert show];
-
+        
+        if ([self.popUpTextField.text isEqualToString:[defaults objectForKey:KeySystemURI]])
+        {
+            self.popUpView.hidden = YES;
+            [self.popUpTextField resignFirstResponder];
+            
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning"
+                                                            message:@"If you change MasterHost all your buffered data will be deleted. Are you sure you wnat to change it?"
+                                                           delegate:self
+                                                  cancelButtonTitle:@"NO"
+                                                  otherButtonTitles:@"YES",nil];
+            [alert show];
+            
+        }
     }
     else if ([self.popupHeading.text hasPrefix:@"Domain"])
     {
         [defaults setValue:self.popUpTextField.text forKey:KeyDomainName];
         self.domainLabel.text = self.popUpTextField.text;
-    self.popUpView.hidden = YES;
-    [self.popUpTextField resignFirstResponder];
-    [defaults synchronize];
+        self.popUpView.hidden = YES;
+        [self.popUpTextField resignFirstResponder];
+        [defaults synchronize];
     }
 }
 
@@ -137,7 +147,11 @@
         self.popUpView.hidden = YES;
         [self.popUpTextField resignFirstResponder];
         [defaults synchronize];
-        [CoreDataManager removeAllSDNs];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 
+                                             (unsigned long)NULL), ^(void) 
+    {
+        [CoreDataManager removeAllData];
+    });
     }
 }
 @end

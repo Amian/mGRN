@@ -105,10 +105,23 @@
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRN"];
     NSError *fetchError = nil;
     NSArray *matches = [context executeFetchRequest:request error:&fetchError];
-    for (id o in matches)
+    for (GRN *o in matches)
     {
+        for (GRNItem *i in o.lineItems)
+        {
+            [context deleteObject:i];
+        }
         [context deleteObject:o];
     }
     [context save:nil];
+}
+
++(GRN*)fetchGRNWithSDN:(NSString*)sdn inMOC:(NSManagedObjectContext*)moc
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"GRN"];
+    request.predicate = [NSPredicate predicateWithFormat:@"supplierReference = %@", sdn];
+    NSError *fetchError = nil;
+    NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
+    return [matches lastObject];
 }
 @end

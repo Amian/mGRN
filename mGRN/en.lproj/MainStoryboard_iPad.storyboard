@@ -419,7 +419,7 @@
             <objects>
                 <viewController storyboardIdentifier="OrderDetailVC" id="yBb-kj-pff" customClass="GRNOrderDetailsVC" sceneMemberID="viewController">
                     <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U29-q2-3sq">
-                        <rect key="frame" x="0.0" y="20" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="rWl-cJ-9sr" userLabel="Container">
@@ -1298,7 +1298,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="M3 (0 expected)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bwC-Wq-olR">
-                                        <rect key="frame" x="419" y="111" width="247" height="27"/>
+                                        <rect key="frame" x="363" y="111" width="247" height="27"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1326,7 +1326,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0.00" minimumFontSize="17" id="ni9-NU-czV" customClass="BorderedTextField">
-                                        <rect key="frame" x="208" y="154" width="200" height="41"/>
+                                        <rect key="frame" x="208" y="154" width="145" height="41"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1336,12 +1336,13 @@
                                             <outlet property="delegate" destination="heY-hr-AD0" id="63P-12-d02"/>
                                         </connections>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="eDw-Gf-Em8">
-                                        <rect key="frame" x="416" y="154" width="250" height="41"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="tailTruncation" id="eDw-Gf-Em8">
+                                        <rect key="frame" x="361" y="154" width="305" height="41"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.078431372550000003" green="0.6588235294" blue="0.99607843139999996" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="30" maxY="0.0"/>
                                         <inset key="imageEdgeInsets" minX="200" minY="10" maxX="10" maxY="10"/>
                                         <state key="normal" title="No Reason" backgroundImage="arrow_button.png">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1371,7 +1372,7 @@
                                         </connections>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="0.00" minimumFontSize="17" id="iC7-zr-Weu" customClass="BorderedTextField">
-                                        <rect key="frame" x="208" y="104" width="200" height="41"/>
+                                        <rect key="frame" x="208" y="104" width="145" height="41"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1822,7 +1823,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="y6h-bZ-zD3"/>
-        <segue reference="36I-fv-6hI"/>
+        <segue reference="ssd-Y5-iTe"/>
         <segue reference="Hq8-6i-vvq"/>
     </inferredMetricsTieBreakers>
 </document>
