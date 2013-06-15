@@ -112,7 +112,7 @@
     NSArray *array = [PurchaseOrder fetchPurchaseOrdersForContractNumber:self.contract.number
                                                                    inMOC:[CoreDataManager moc]];
     //    [self.myDelegate tableDidEndLoadingData:self];
-    self.errorLabel.hidden = array.count > 0? YES : NO;
+//    self.errorLabel.hidden = array.count > 0? YES : NO;
     return array;
 }
 
@@ -150,7 +150,7 @@
 
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
-    NSLog(@"response = %@",orderData);
+//    NSLog(@"response = %@",orderData);
     NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *orders = [orderData objectForKey:@"purchaseOrders"];

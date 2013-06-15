@@ -33,9 +33,6 @@
 
 @property (nonatomic,strong) NSDictionary *grnDict;
 
-@property (strong, nonatomic) IBOutlet UIToolbar *searchBar;
-@property (strong, nonatomic) IBOutlet UITextField *searchTextField;
-
 @property (strong, nonatomic) IBOutlet UILabel *serialNumberLabel;
 @property (strong, nonatomic) IBOutlet UITextField *serialNumber;
 @property (strong, nonatomic) IBOutlet UILabel *wbsCodeLabel;

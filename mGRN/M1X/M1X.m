@@ -152,7 +152,7 @@ RequestState;
     requestor.request.body = [NSDictionary dictionaryWithObject:appName forKey:M1XSystemService_NewSession_body_appName];
     [requestor send];
     self.requestState = RequestStateSession;
-    NSLog(@"request = %@",requestor.request);
+//    NSLog(@"request = %@",requestor.request);
     
 }
 
@@ -165,7 +165,7 @@ RequestState;
     requestor.request.body = [NSDictionary dictionaryWithObject:appName forKey:M1XSystemService_NewSession_body_appName];
     [requestor send];
     self.requestState = RequestStateService;
-    NSLog(@"request = %@",requestor.request);
+//    NSLog(@"request = %@",requestor.request);
 }
 
 @end

@@ -73,7 +73,7 @@
 
 -(void)onAPIRequestSuccess:(NSDictionary *)contractData requestType:(RequestType)requestType
 {
-    NSLog(@"response = %@",contractData);
+//    NSLog(@"response = %@",contractData);
     NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *contracts = [contractData objectForKey:@"contracts"];

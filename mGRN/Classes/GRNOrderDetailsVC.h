@@ -29,7 +29,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *navViewOrder;
 
 @property (strong, nonatomic) IBOutlet UITextField *searchTextField;
-@property (strong, nonatomic) IBOutlet UIToolbar *searchBar;
 
 @property BOOL returnedAfterSubmission;
 - (IBAction)logout:(id)sender;

@@ -200,6 +200,12 @@ static CoreDataManager *sharedInstance = nil;
 
 -(void)getAllDataInBG
 {
+//    [(GRNAppDelegate*)[[UIApplication sharedApplication] delegate] saveContext];
+//    NSError *error;
+//    if (![self.managedObjectContext save:&error])
+//    {
+//        NSLog(@"er = %@",error);
+//    }
     
     NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     moc.parentContext = self.managedObjectContext;

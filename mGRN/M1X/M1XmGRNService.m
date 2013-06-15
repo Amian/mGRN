@@ -98,7 +98,7 @@
     {
         
     }
-    NSLog(@"request = %@",requestor.request);
+//    NSLog(@"request = %@",requestor.request);
 }
 
 - (void)GetPurchaseOrdersWithHeader:(M1XRequestHeader *)header contractNumber:(NSString*)contractnumber kco:(NSString*)kco includeLineItems:(BOOL)includeLineItems
@@ -192,7 +192,7 @@
                                kco,@"kco",
                                nil];
     M1XResponse *result = [M1XRequestor sendSyncronousRequest:request withURL:url];
-    NSLog(@"order number = %@",[body objectForKey:@"orderNumber"]);
+//    NSLog(@"order number = %@",[body objectForKey:@"orderNumber"]);
     return result;
 }
 

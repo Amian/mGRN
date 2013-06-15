@@ -40,28 +40,12 @@
 @end
 
 @implementation GRNCompleteGRNVC
-@synthesize grn = _grn, image1, image2, image3, popVC = _popVC, grnDict, fakeSignature, loadingView, grnDisplayed;
+@synthesize grn = _grn, image1, image2, image3, popVC = _popVC, fakeSignature, loadingView, grnDisplayed;
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [self checkOrientation];
     [self refreshImageView];
-//    [self.signatureView setNeedsDisplay];
-//    CGRect frame = self.signatureView.superview.frame;
-//    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
-//    {
-//    frame.origin = CGPointMake(268.0, 359.0);
-//    }
-//    else
-//    {
-//        frame.origin = CGPointMake(201.0, 499.0);
-//    }
-//    self.signatureView.superview.frame = frame;
-}
-
--(void)viewDidLoad
-{
-    [super viewDidLoad];
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -208,7 +192,7 @@
 -(void)onAPIRequestFailure:(M1XResponse *)response
 {
     [self.navigationController popToRootViewControllerAnimated:YES];
-    NSLog(@"submit failure response = %@",response);
+//    NSLog(@"submit failure response = %@",response);
 }
 
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
@@ -219,7 +203,7 @@
     //Refresh Purchase orders
     
     [self.navigationController popToRootViewControllerAnimated:YES];
-    NSLog(@"submit response = %@",orderData);
+//    NSLog(@"submit response = %@",orderData);
 }
 
 - (IBAction)takePhoto:(id)sender

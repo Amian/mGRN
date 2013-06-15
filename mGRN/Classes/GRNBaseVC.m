@@ -156,7 +156,6 @@
 {
     CGFloat KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
 
-    NSLog(@"%@",[info object]);
     if (self.scrollView.contentOffset.y == 0.0)
     [self.scrollView setContentOffset:CGPointMake(0.0, KeyboardHeight) animated:YES];
 }

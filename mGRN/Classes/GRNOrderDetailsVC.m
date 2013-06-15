@@ -121,7 +121,6 @@
     [self setNavPurchaseOrders:nil];
     [self setNavViewOrder:nil];
     [self setSearchTextField:nil];
-    [self setSearchBar:nil];
     [self setInfoLabel:nil];
     [self setInfoView:nil];
     [self setSearchView:nil];
@@ -139,10 +138,7 @@
             break;
         case PurchaseOrders:
             [self moveContainerToTheRight];
-            if (self.purchaseOrderTableView.dataArray.count == 0)
-            {
-                self.purchaseOrderTableView.errorLabel.hidden = NO;
-            }
+            self.purchaseOrderTableView.errorLabel.hidden = self.purchaseOrderTableView.dataArray.count == 0? NO : YES;
             break;
         case ViewOrder:
             [self moveContainerToTheLeft];
@@ -199,10 +195,8 @@
             [self.purchaseOrderTableView doneSearching];
             [self moveContainerToTheRight];
             
-            if (self.purchaseOrderTableView.dataArray.count == 0)
-            {
-                self.purchaseOrderTableView.errorLabel.hidden = NO;
-            }
+            self.purchaseOrderTableView.errorLabel.hidden = self.purchaseOrderTableView.dataArray.count == 0? NO : YES;
+
             break;
         case ViewOrder:
             
@@ -374,12 +368,12 @@
     self.infoLabel.text = info;
     self.infoView.frame = self.view.bounds;
     [self.view addSubview:self.infoView];
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-//                                                        message:info
-//                                                       delegate:nil
-//                                              cancelButtonTitle:@"OK"
-//                                              otherButtonTitles:nil];
-//    [alert show];
+    //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+    //                                                        message:info
+    //                                                       delegate:nil
+    //                                              cancelButtonTitle:@"OK"
+    //                                              otherButtonTitles:nil];
+    //    [alert show];
 }
 - (IBAction)removeInfoView:(UIButton*)sender
 {
@@ -390,7 +384,6 @@
 {
     self.searchTextField.text = @"";
     [self.searchTextField resignFirstResponder];
-    self.searchBar.hidden = YES;
 }
 
 #pragma mark - Alert View Delegate

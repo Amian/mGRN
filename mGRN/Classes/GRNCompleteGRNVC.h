@@ -22,10 +22,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *takePhotoButton;
 @property (strong, nonatomic) IBOutlet UIButton *dateButton;
 
-@property (nonatomic, strong) UIImage *signatureImage;
-
-@property (nonatomic, strong) NSDictionary *grnDict;
-
 //Containers
 @property (strong, nonatomic) IBOutlet UIView *photoAndSignContainer;
 @property (strong, nonatomic) IBOutlet UIView *dateAndNoteContainer;

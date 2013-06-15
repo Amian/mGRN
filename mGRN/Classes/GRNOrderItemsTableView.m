@@ -102,7 +102,7 @@
 
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
-    NSLog(@"response = %@",orderData);
+//    NSLog(@"response = %@",orderData);
     NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *items = [[orderData objectForKey:@"purchaseOrder"] objectForKey:@"lineItems"];

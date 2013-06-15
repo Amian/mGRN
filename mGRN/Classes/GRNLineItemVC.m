@@ -53,7 +53,6 @@ static float KeyboardHeight;
         self.wbsTable.contract = self.grn.purchaseOrder.contract;
     }
     self.orderNameLabel.text = [NSString stringWithFormat:@"Order Items for %@",self.grn.purchaseOrder.orderNumber];
-    self.searchBar.hidden = YES;
     self.grnDict = [NSDictionary dictionary];
     [super viewDidLoad];
     self.itemTableView.grnItems = [self.grn.lineItems allObjects];
@@ -110,8 +109,6 @@ static float KeyboardHeight;
     [self setReasonButton:nil];
     [self setWbsButton:nil];
     [self setWbsTable:nil];
-    [self setSearchBar:nil];
-    [self setSearchTextField:nil];
     [self setSerialNumber:nil];
     [self setSerialNumberLabel:nil];
     [self setWbsCodeLabel:nil];
@@ -267,7 +264,7 @@ static float KeyboardHeight;
             moveView = YES;
         }
     }
-    else if (![textField isEqual:self.sdnTextField] && ![textField isEqual:self.searchTextField])
+    else if (![textField isEqual:self.sdnTextField])
     {
         moveView = YES;
     }
@@ -287,7 +284,6 @@ static float KeyboardHeight;
     }
     else if ([textField isEqual:self.quantityDelivered])
     {
-        NSLog(@"||%i||%f||%f||%f ",self.quantityConfirmed,[newString doubleValue],[((PurchaseOrderItem*)self.itemTableView.selectedObject).quantityBalance doubleValue],[self.grn.purchaseOrder.quantityError doubleValue]);
         if (!self.quantityConfirmed &&
             [newString doubleValue] > [((PurchaseOrderItem*)self.itemTableView.selectedObject).quantityBalance doubleValue] &&
             [self.grn.purchaseOrder.quantityError doubleValue] == 2)
@@ -306,10 +302,6 @@ static float KeyboardHeight;
         {
             self.selectedItem.quantityDelivered = [NSNumber numberWithDouble:[newString doubleValue]];
         }
-    }
-    else if ([textField isEqual:self.searchTextField])
-    {
-        [self.itemTableView searchForString:newString];
     }
     else if ([textField isEqual:self.serialNumber])
     {
@@ -398,7 +390,6 @@ static float KeyboardHeight;
         [[CoreDataManager moc] save:nil];
         GRNCompleteGRNVC *vc = segue.destinationViewController;
         vc.grn = self.grn;
-        vc.grnDict = self.grnDict;
     }
 }
 

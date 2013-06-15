@@ -64,7 +64,7 @@ state = _state;
     [self reloadData];
     if ([self.myDelegate respondsToSelector:@selector(failedToGetData)])
         [self.myDelegate failedToGetData];
-    NSLog(@"Faliure response = %@",response);
+//    NSLog(@"Faliure response = %@",response);
 }
 
 -(NSArray*)getDataArray
