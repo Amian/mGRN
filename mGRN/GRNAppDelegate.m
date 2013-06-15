@@ -22,7 +22,7 @@
 {
     CoreDataManager *cdm = [CoreDataManager sharedInstance];
     cdm.managedObjectContext = self.managedObjectContext;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_mocDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_mocDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
     return YES;
 }
 
@@ -55,7 +55,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    [CoreDataManager removeAllContracts];
+    [CoreDataManager removeData:NO];
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
@@ -157,25 +157,25 @@
 }
 
 
-- (void)_mocDidSaveNotification:(NSNotification *)notification
-{
-    NSManagedObjectContext *savedContext = [notification object];
-    
-    // ignore change notifications for the main MOC
-    if (_managedObjectContext == savedContext)
-    {
-        return;
-    }
-    
-    if (_managedObjectContext.persistentStoreCoordinator != savedContext.persistentStoreCoordinator)
-    {
-        // that's another database
-        return;
-    }
-    
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [_managedObjectContext mergeChangesFromContextDidSaveNotification:notification];
-    });
-}
+//- (void)_mocDidSaveNotification:(NSNotification *)notification
+//{
+//    NSManagedObjectContext *savedContext = [notification object];
+//    
+//    // ignore change notifications for the main MOC
+//    if (_managedObjectContext == savedContext)
+//    {
+//        return;
+//    }
+//    
+//    if (_managedObjectContext.persistentStoreCoordinator != savedContext.persistentStoreCoordinator)
+//    {
+//        // that's another database
+//        return;
+//    }
+//    
+//    dispatch_sync(dispatch_get_main_queue(), ^{
+//        [_managedObjectContext mergeChangesFromContextDidSaveNotification:notification];
+//    });
+//}
 
 @end

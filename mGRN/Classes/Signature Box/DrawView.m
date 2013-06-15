@@ -50,15 +50,6 @@
         self.path = CGPathCreateMutable();
     CGContextAddPath(context, self.path);
     CGContextDrawPath(context, kCGPathStroke);
-    
-//    [self.dottedLayer removeFromSuperlayer];
-//    self.dottedLayer = [CALayer layer];
-//    self.dottedLayer.backgroundColor = [UIColor clearColor].CGColor;
-//    self.dottedLayer.borderColor = [[UIColor colorWithPatternImage:[UIImage imageNamed:@"dashed_white.png"]] CGColor];
-//    self.dottedLayer.borderWidth = 1.0;
-//    self.dottedLayer.frame = CGRectMake(0.0, self.bounds.size.height*8.0/10.0, self.bounds.size.width, 1.0);
-//    [self.layer addSublayer:self.dottedLayer];
-
 }
 
 -(CGPoint)midPoint:(CGPoint)p1 and:(CGPoint) p2
