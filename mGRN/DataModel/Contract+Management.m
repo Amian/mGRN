@@ -72,4 +72,16 @@
     [context save:nil];
 }
 
++(int)contractCountInMOC:(NSManagedObjectContext*)moc
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:@"Contract" inManagedObjectContext:moc]];
+    [request setIncludesSubentities:NO];
+    NSError *err;
+    NSUInteger count = [moc countForFetchRequest:request error:&err];
+    if(count == NSNotFound) {
+        //Handle error
+    }
+    return count;
+}
 @end

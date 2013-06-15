@@ -80,7 +80,7 @@
     NSMutableArray *contractObjectArray = [NSMutableArray array];
     if (contracts.count)
     {
-        [CoreDataManager removeAllContracts];
+        [CoreDataManager removeData:NO];
     }
     for (NSDictionary *dict in contracts)
     {
@@ -90,7 +90,7 @@
         [contractObjectArray addObject:c];
     }
     self.dataArray = [self getDataArray];
-    [[CoreDataManager sharedInstance] performSelector:@selector(getAllDataInBG) withObject:nil afterDelay:2.0];
+    [[CoreDataManager sharedInstance] getAllDataInBG];
     [self reloadData];
     [self.myDelegate tableDidEndLoadingData:self];
 }

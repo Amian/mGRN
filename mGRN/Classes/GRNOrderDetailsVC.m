@@ -399,7 +399,7 @@
 {
     if (buttonIndex != alertView.cancelButtonIndex)
     {
-        [CoreDataManager removeAllContracts];
+        [CoreDataManager removeData:NO];
         [self dismissModalViewControllerAnimated:YES];
     }
 }

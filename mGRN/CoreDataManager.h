@@ -22,4 +22,6 @@
  -(void)submitGRN;
 +(NSManagedObjectContext*)moc;
 -(void)getAllDataInBG;
++(void)removeData:(BOOL)allData;
+
 @end

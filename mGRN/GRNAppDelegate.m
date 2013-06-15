@@ -22,6 +22,7 @@
 {
     CoreDataManager *cdm = [CoreDataManager sharedInstance];
     cdm.managedObjectContext = self.managedObjectContext;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_mocDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
     return YES;
 }
 
@@ -85,7 +86,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     return _managedObjectContext;
@@ -146,12 +147,35 @@
     return _persistentStoreCoordinator;
 }
 
+
 #pragma mark - Application's Documents directory
 
 // Returns the URL to the application's Documents directory.
 - (NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+
+- (void)_mocDidSaveNotification:(NSNotification *)notification
+{
+    NSManagedObjectContext *savedContext = [notification object];
+    
+    // ignore change notifications for the main MOC
+    if (_managedObjectContext == savedContext)
+    {
+        return;
+    }
+    
+    if (_managedObjectContext.persistentStoreCoordinator != savedContext.persistentStoreCoordinator)
+    {
+        // that's another database
+        return;
+    }
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [_managedObjectContext mergeChangesFromContextDidSaveNotification:notification];
+    });
 }
 
 @end

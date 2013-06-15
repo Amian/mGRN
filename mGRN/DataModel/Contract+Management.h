@@ -18,4 +18,5 @@
 + (Contract *)insertContractWithData:(NSDictionary *)contractData inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error;
 +(NSArray*)fetchAllContractsInManagedObjectContext:(NSManagedObjectContext*)context;
 +(void)removeAllContractsInManagedObjectContext:(NSManagedObjectContext*)context;
++(int)contractCountInMOC:(NSManagedObjectContext*)moc;
 @end

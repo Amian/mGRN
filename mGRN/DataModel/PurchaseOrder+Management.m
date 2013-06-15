@@ -92,14 +92,26 @@
     [context save:nil];
 }
 
-+(NSArray*)fetchPurchaseOrdersWithQuantityErrorinMOC:(NSManagedObjectContext*)moc
-{
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"PurchaseOrderItem"];
-    request.predicate = [NSPredicate predicateWithFormat:@"plant > 0"];
-    
-    NSError *fetchError = nil;
-    NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
-    return matches? matches : [NSArray array];
-}
+//+(NSArray*)fetchPurchaseOrdersWithQuantityErrorinMOC:(NSManagedObjectContext*)moc
+//{
+//    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"PurchaseOrderItem"];
+//    request.predicate = [NSPredicate predicateWithFormat:@"plant > 0"];
+//    
+//    NSError *fetchError = nil;
+//    NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
+//    return matches? matches : [NSArray array];
+//}
 
++(int)poCountInMOC:(NSManagedObjectContext*)moc
+{
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:@"PurchaseOrder" inManagedObjectContext:moc]];
+    [request setIncludesSubentities:NO];
+    NSError *err;
+    NSUInteger count = [moc countForFetchRequest:request error:&err];
+    if(count == NSNotFound) {
+        //Handle error
+    }
+    return count;
+}
 @end

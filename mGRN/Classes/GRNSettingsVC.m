@@ -140,18 +140,15 @@
 {
     if (buttonIndex != alertView.cancelButtonIndex)
     {
+        self.popUpView.hidden = YES;
+        [self.popUpTextField resignFirstResponder];
+
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *uri = [self.popUpTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
         [defaults setValue:uri forKey:KeySystemURI];
         self.masterHostLabel.text = self.popUpTextField.text;
-        self.popUpView.hidden = YES;
-        [self.popUpTextField resignFirstResponder];
         [defaults synchronize];
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 
-                                             (unsigned long)NULL), ^(void) 
-    {
-        [CoreDataManager removeAllData];
-    });
+        [CoreDataManager removeData:YES];
     }
 }
 @end

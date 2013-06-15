@@ -13,15 +13,9 @@
 - (void)main {
     // a lengthy operation
     @autoreleasepool {
-        for (int i = 0 ; i < 10000 ; i++) {
-            
-            // is this operation cancelled?
-            if (self.isCancelled)
-                break;
-            
+        for (int i = 0 ; i < 100000000 ; i++) {
             NSLog(@"%f", sqrt(i));
         }
     }
 }
-
 @end

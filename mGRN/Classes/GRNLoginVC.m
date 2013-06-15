@@ -104,7 +104,10 @@
     
     self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
     [self.view addSubview:self.loadingView];
-    [self createNewSession];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self createNewSession];
+    }];
 }
 
 -(void)createNewSession
@@ -207,7 +210,6 @@
 
 -(void)onNewSessionSuccess:(M1XSession *)session
 {
-    [self.loadingView removeFromSuperview];
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault setValue:session.userId forKey:KeyUserID];
     [userDefault setValue:session.sessionEndDT forKey:KeySessionEndDate];
@@ -244,6 +246,7 @@
     [self.username resignFirstResponder];
     [self.password resignFirstResponder];
     [self performSegueWithIdentifier:@"login" sender:nil];
+    [self.loadingView removeFromSuperview];
 }
 
 -(void)onNewSessionFailure:(M1XResponse *)response exceptionType:(M1xException)exception
@@ -287,7 +290,7 @@
 -(void)initialSetup
 {
     [SDN removeExpiredSDNinMOC:[CoreDataManager moc]];
-    if (!AmIBeingDebugged()) [CoreDataManager removeAllContracts];
+    /*if (!AmIBeingDebugged())*/ [CoreDataManager removeData:NO];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:nil forKey:KeyImage1];
     [defaults setValue:nil forKey:KeyImage2];
