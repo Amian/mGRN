@@ -90,7 +90,7 @@
         [contractObjectArray addObject:c];
     }
     self.dataArray = [self getDataArray];
-    [[CoreDataManager sharedInstance] getAllDataInBG];
+//    [[CoreDataManager sharedInstance] getAllDataInBG];
     [self reloadData];
     [self.myDelegate tableDidEndLoadingData:self];
 }

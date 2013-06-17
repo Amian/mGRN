@@ -161,7 +161,7 @@ static CoreDataManager *sharedInstance = nil;
     for (GRNItem *item in newGRN.lineItems)
     {
         M1XLineItems *newItem = [[M1XLineItems alloc] init];
-        newItem.exception = item.exception.length? item.exception : @"0";
+        newItem.exception = item.exception.length? item.exception : @"";
         newItem.item = item.itemNumber;
         newItem.notes = item.notes;
         newItem.quantityDelivered = [NSString stringWithFormat:@"%i",[item.quantityDelivered intValue]];
