@@ -55,7 +55,6 @@
 //                NSLog(@"Created POI %@ for %@", purchaseOrderItem.itemNumber, purchaseOrder.orderNumber);
             }
             [purchaseOrder addLineItemsObject:purchaseOrderItem];
-            [context save:nil];
         }
     }
     return purchaseOrderItem;
@@ -82,6 +81,5 @@
     {
         [context deleteObject:o];
     }
-    [context save:nil];
 }
 @end

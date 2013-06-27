@@ -48,7 +48,6 @@
     grnItem.exception = @"";
     
     [grn addLineItemsObject:grnItem];
-    [context save:nil];
     //            NSLog(@"Created GRN %@ for %@", grn.supplierReference, purchaseOrderItem.purchaseOrder.orderNumber);
     return grnItem;
 }
@@ -81,7 +80,6 @@
     {
         [context deleteObject:o];
     }
-    [context save:nil];
 }
 
 @end

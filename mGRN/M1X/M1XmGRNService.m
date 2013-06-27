@@ -192,7 +192,7 @@
                                kco,@"kco",
                                nil];
     M1XResponse *result = [M1XRequestor sendSyncronousRequest:request withURL:url];
-//    NSLog(@"order number = %@",[body objectForKey:@"orderNumber"]);
+    NSLog(@"Submitting GRN with body: %@",request.body);
     return result;
 }
 

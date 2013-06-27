@@ -113,9 +113,15 @@
                                     inManagedObjectContext:context
                                                      error:&error];
     }
+    [context save:nil];
     self.dataArray = [self getDataArray];
     [self reloadData];
     [self.myDelegate tableDidEndLoadingData:self];
+}
+
+-(void)onAPIRequestFailure:(M1XResponse *)response
+{
+    [self.myDelegate failedToGetData:self];
 }
 
 -(int)numberOfSectionsInTableView:(UITableView *)tableView

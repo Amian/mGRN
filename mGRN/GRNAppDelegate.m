@@ -22,6 +22,7 @@
 {
     CoreDataManager *cdm = [CoreDataManager sharedInstance];
     cdm.managedObjectContext = self.managedObjectContext;
+    [[CoreDataManager sharedInstance] submitAnyGrnsAwaitingSubmittion];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_mocDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:nil];
     return YES;
 }

@@ -62,8 +62,8 @@ state = _state;
     //If communication failed, use cached data
     self.dataArray = [self getDataArray];
     [self reloadData];
-    if ([self.myDelegate respondsToSelector:@selector(failedToGetData)])
-        [self.myDelegate failedToGetData];
+    if ([self.myDelegate respondsToSelector:@selector(failedToGetData:)])
+        [self.myDelegate failedToGetData:self];
 //    NSLog(@"Faliure response = %@",response);
 }
 
@@ -97,7 +97,6 @@ state = _state;
     [super reloadData];
     self.hidden = NO;
     self.alpha = 1.0;
-//    [self.myDelegate tableDidEndLoadingData:self];
 }
 
 -(id)selectedObject

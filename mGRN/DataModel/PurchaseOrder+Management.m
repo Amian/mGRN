@@ -61,7 +61,6 @@
                                                                  error:nil];
                 }
                 
-                [context save:nil];
                 //                NSLog(@"created PO %@: %@", purchaseOrder.orderNumber, purchaseOrder.orderDescription);
             }
         }
@@ -89,7 +88,6 @@
     {
         [context deleteObject:o];
     }
-    [context save:nil];
 }
 
 //+(NSArray*)fetchPurchaseOrdersWithQuantityErrorinMOC:(NSManagedObjectContext*)moc

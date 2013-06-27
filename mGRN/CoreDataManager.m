@@ -15,19 +15,27 @@
 #import "GRN+Management.h"
 #import "GRNAppDelegate.h"
 
-#define DefaultSubmissionTimeInterval 5.0;
+#import "Reachability.h"
+
+#define DefaultSubmissionTimeInterval AmIBeingDebugged()? 60.0 : 60.0;
 
 @interface CoreDataManager() <M1XmGRNDelegate>
+{
+    BOOL alreadyWaitingForInternetConnection;
+    BOOL alreadyProcessingGrns;
+}
 @property float timeInterval;
 @property (nonatomic, strong) NSOperationQueue *submissionQueue;
 @property BOOL dataIsBeingRemoved;
+@property (nonatomic, strong) Reachability *internetReach;
 @end
 
 @implementation CoreDataManager
 @synthesize managedObjectContext,
 timeInterval = _timeInterval,
 submissionQueue = _submissionQueue,
-dataIsBeingRemoved = _dataIsBeingRemoved;
+dataIsBeingRemoved = _dataIsBeingRemoved,
+internetReach = _internetReach;
 
 static CoreDataManager *sharedInstance = nil;
 
@@ -48,6 +56,8 @@ static CoreDataManager *sharedInstance = nil;
     {
         self.timeInterval = DefaultSubmissionTimeInterval;
         self.dataIsBeingRemoved = NO;
+        self.internetReach = [Reachability reachabilityForInternetConnection];
+        [self.internetReach startNotifier];
     }
     
     return self;
@@ -63,6 +73,7 @@ static CoreDataManager *sharedInstance = nil;
 - (id)copyWithZone:(NSZone *)zone {
     return self;
 }
+
 
 
 +(void)removeData:(BOOL)allData
@@ -81,54 +92,180 @@ static CoreDataManager *sharedInstance = nil;
     }
 }
 
--(void)submitGRN
+//-(void)submitGRN
+//{
+//
+//
+//    NSArray *submittedGRN = [GRN fetchSubmittedGRNInMOC:[CoreDataManager NewManagedObjectContext]];
+//    if (submittedGRN.count)
+//    {
+//        NSLog(@"Attempting to submit GRNs");
+//        if ([self connectedToInternet])
+//        {
+//            NSOperationQueue *myQueue = self.submissionQueue;
+//            [myQueue addOperationWithBlock:^{
+//                NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
+//                NSArray *allGRNs = [GRN fetchSubmittedGRNInMOC:context];
+//                for (GRN *grn in allGRNs)
+//                {
+//                    if (![self connectedToInternet]) break;
+//                    [self submit:grn];
+//                }
+//                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//                    if ([[GRN fetchSubmittedGRNInMOC:[CoreDataManager moc]] count])
+//                    {
+//                        self.timeInterval = self.timeInterval *2;
+//                        [self performSelector:@selector(submitGRN)
+//                                   withObject:nil
+//                                   afterDelay:self.timeInterval];
+//                        NSLog(@"Try to submit GRNs again after time= %f",self.timeInterval);
+//                    }
+//                    else
+//                    {
+//                        self.timeInterval = DefaultSubmissionTimeInterval;
+//                    }
+//                }];
+//            }];
+//        }
+//        else
+//        {
+//            self.timeInterval = self.timeInterval *2;
+//            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//                [self performSelector:@selector(submitGRN)
+//                           withObject:nil
+//                           afterDelay:self.timeInterval];
+//                NSLog(@"Try to submit GRNs again after time= %f",self.timeInterval);
+//            }];
+//        }
+//    }
+//    else
+//    {
+//        self.timeInterval = DefaultSubmissionTimeInterval;
+//    }
+//}
+
+
+
+
++(NSManagedObjectContext*)moc
 {
-    NSLog(@"Submit GRN Called");
-    NSArray *submittedGRN = [GRN fetchSubmittedGRNInMOC:[CoreDataManager NewManagedObjectContext]];
-    if (submittedGRN.count)
+    return [CoreDataManager sharedInstance].managedObjectContext;
+}
+
++(NSManagedObjectContext*)NewManagedObjectContext
+{
+    GRNAppDelegate *delegate = (GRNAppDelegate*)[UIApplication sharedApplication].delegate;
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc] init];
+    [context setPersistentStoreCoordinator: [delegate persistentStoreCoordinator]];
+    return context;
+}
+
+-(NSOperationQueue*)submissionQueue
+{
+    if (!_submissionQueue)
     {
-        if ([self connectedToInternet])
+        _submissionQueue = [[NSOperationQueue alloc] init];
+        [_submissionQueue setName:@"SubmissionQueue"];
+    }
+    return _submissionQueue;
+}
+
+#pragma mark - GRN Submission
+
+-(void)submitAnyGrnsAwaitingSubmittion
+{
+    if ([self areThereAnyGrnAwaitingSubmission])
+    {
+        if ([self internetConnectionIsAvailable])
         {
-            NSOperationQueue *myQueue = self.submissionQueue;
-            [myQueue addOperationWithBlock:^{
-                NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
-                NSArray *allGRNs = [GRN fetchSubmittedGRNInMOC:context];
-                for (GRN *grn in allGRNs)
-                {
-                    if (![self connectedToInternet]) break;
-                    [self submit:grn];
-                }
-                if ([[GRN fetchSubmittedGRNInMOC:context] count])
-                {
-                    self.timeInterval = self.timeInterval *2;
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                        [self performSelector:@selector(submitGRN)
-                                   withObject:nil
-                                   afterDelay:self.timeInterval];
-                        NSLog(@"Repeat after time= %f",self.timeInterval);
-                    }];
-                }
-                else
-                {
-                    self.timeInterval = DefaultSubmissionTimeInterval;
-                }
-            }];
+            [self submitGrns];
         }
-        else
+        else if (!alreadyWaitingForInternetConnection)
         {
-            self.timeInterval = self.timeInterval *2;
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [self performSelector:@selector(submitGRN)
-                           withObject:nil
-                           afterDelay:self.timeInterval];
-                NSLog(@"Repeat after time= %f",self.timeInterval);
-            }];
+            //Be notified when connection becomes available
+            [[NSNotificationCenter defaultCenter] addObserver: self
+                                                     selector: @selector(reachabilityChanged:)
+                                                         name: kReachabilityChangedNotification
+                                                       object: nil];
+            alreadyWaitingForInternetConnection = YES;
         }
     }
     else
     {
         self.timeInterval = DefaultSubmissionTimeInterval;
     }
+}
+
+-(BOOL)areThereAnyGrnAwaitingSubmission
+{
+    return [GRN CountGrnAwaitingSubmissionInMOC:self.managedObjectContext] > 0? YES : NO;
+}
+
+-(BOOL)internetConnectionIsAvailable
+{
+    return [self.internetReach currentReachabilityStatus] == 0? NO : YES;
+}
+
+- (void) reachabilityChanged: (NSNotification* )note
+{
+    Reachability* curReach = [note object];
+    NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+    
+    NetworkStatus netStatus = [curReach currentReachabilityStatus];
+    switch (netStatus)
+    {
+        case ReachableViaWWAN:
+        case ReachableViaWiFi:
+        {
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+            alreadyWaitingForInternetConnection = NO;
+            [self submitGrns];
+            break;
+        }
+        case NotReachable:
+        {
+            
+            break;
+        }
+    }
+}
+
+-(void)submitGrns
+{
+    alreadyProcessingGrns = YES;
+    NSOperationQueue *myQueue = self.submissionQueue;
+    [myQueue addOperationWithBlock:^{
+        NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
+        NSArray *allGRNs = [GRN fetchSubmittedGRNInMOC:context];
+        for (GRN *grn in allGRNs)
+        {
+            if (![self internetConnectionIsAvailable]) break;
+            bool success = [self submit:grn];
+            if (!success)
+            {
+                //This happens in case of an m1xException.
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    self.timeInterval = self.timeInterval *2;
+                    [self performSelector:@selector(submitAnyGrnsAwaitingSubmittion)
+                               withObject:nil
+                               afterDelay:self.timeInterval];
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                        
+                        [self.managedObjectContext save:nil];
+                        alreadyProcessingGrns = NO;
+                    }];
+                    NSLog(@"Try to submit GRNs again after time= %f",self.timeInterval);
+                }];
+                return;
+            }
+        }
+        //In case any grns were submitted while queue was busy check for grns again
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self.managedObjectContext save:nil];
+            alreadyProcessingGrns = NO;
+            [self submitAnyGrnsAwaitingSubmittion];
+        }];
+    }];
 }
 
 - (BOOL)submit:(GRN*)newGRN
@@ -176,159 +313,32 @@ static CoreDataManager *sharedInstance = nil;
                                                           grn:grn
                                                     lineItems:items
                                                           kco:kco];
+    bool returnValue = result.header.success;
     if (result.header.success)
     {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NSManagedObjectContext *context = [CoreDataManager NewManagedObjectContext];
-            [context deleteObject:[GRN fetchGRNWithSDN:newGRN.supplierReference inMOC:context]];
-            [context save:nil];
+            @try {
+                NSManagedObjectContext *context = [CoreDataManager moc];
+                [context deleteObject:[context objectWithID:[newGRN objectID]]];
+            }
+            @catch (NSException *exception) {
+                NSLog(@"Already deleted");
+                //Already deleted
+            }
         }];
     }
-    return result.header.success;
-}
-
-- (BOOL)connectedToInternet
-{
-    NSURL *url=[NSURL URLWithString:@"http://www.google.com"];
-    NSMutableURLRequest *request=[NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"HEAD"];
-    NSHTTPURLResponse *response;
-    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error: NULL];
-    
-    return ([response statusCode]==200)?YES:NO;
-}
-
--(void)getAllDataInBG
-{
-//    [(GRNAppDelegate*)[[UIApplication sharedApplication] delegate] saveContext];
-//    NSError *error;
-//    if (![self.managedObjectContext save:&error])
-//    {
-//        NSLog(@"er = %@",error);
-//    }
-    
-    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    moc.parentContext = self.managedObjectContext;
-
-    NSLog(@"main = %i, bg = %i",[PurchaseOrder poCountInMOC:self.managedObjectContext],[PurchaseOrder poCountInMOC:moc]);
-    
-    [moc performBlock:^{
-        
-        @try
-        {
-            NSLog(@"main = %i, bg = %i",[PurchaseOrder poCountInMOC:self.managedObjectContext],[PurchaseOrder poCountInMOC:moc]);
-
-            self.dataIsBeingRemoved = NO;
-            NSLog(@"Getting Data");
-            NSManagedObjectContext *moc =  [CoreDataManager NewManagedObjectContext];
-
-            //check if operation needs to be cancelled
-            if (self.dataIsBeingRemoved) [NSException raise:@"Data is being removed" format:@""];
-
-            NSArray *allContracts = [Contract fetchAllContractsInManagedObjectContext:moc];
-
-            NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
-            kco = [kco componentsSeparatedByString:@","].count > 0? [[kco componentsSeparatedByString:@","] objectAtIndex:0] : @"";
-            M1XmGRNService *service = [[M1XmGRNService alloc] init];
-
-            for (Contract *contract in allContracts)
-            {
-                if (self.dataIsBeingRemoved) [NSException raise:@"Data is being removed" format:@""];
-                if (!contract.purchaseOrders.count)
-                {
-                    //Get PO
-                    M1XResponse *response = [service SynchronousGetPurchaseOrdersWithHeader:[GRNM1XHeader Header]
-                                                                             contractNumber:contract.number
-                                                                                        kco:kco
-                                                                           includeLineItems:YES];
-                    NSArray *poArray = [response.body objectForKey:@"purchaseOrders"];
-                    for (NSDictionary *dict in poArray)
-                    {
-                        if (self.dataIsBeingRemoved) [NSException raise:@"Data is being removed" format:@""];
-                        [PurchaseOrder insertPurchaseOrderWithData:dict
-                                                       forContract:contract
-                                            inManagedObjectContext:moc
-                                                             error:nil];
-                    }
-//                    NSLog(@"Got PO for contract  = %@",contract.name);
-                }
-                else
-                {
-                    for (PurchaseOrder *po in contract.purchaseOrders)
-                    {
-                        if (self.dataIsBeingRemoved) [NSException raise:@"Data is being removed" format:@""];
-                        if (!po.lineItems.count)
-                        {
-                            M1XResponse *response = [service SynchronousGetPurchaseOrdersDetailsWithHeader:[GRNM1XHeader Header]
-                                                                                            contractNumber:contract.number
-                                                                                                       kco:kco
-                                                                                       purchaseOrderNumber:po.orderNumber];
-                            NSArray *items = [[response.body objectForKey:@"purchaseOrder"] objectForKey:@"lineItems"];
-                            for (NSDictionary *dict in items)
-                            {
-                                if (self.dataIsBeingRemoved) [NSException raise:@"Data is being removed" format:@""];
-                                [PurchaseOrderItem insertPurchaseOrderItemWithData:dict
-                                                                  forPurchaseOrder:po
-                                                            inManagedObjectContext:moc
-                                                                             error:nil];
-//                                NSLog(@"Line items added for contract no = %@, name = %@",contract.number, contract.name);
-                            }
-
-                        }
-                    }
-                }
-            }
-//            NSLog(@"Finished getting all data from API");
-        }
-        @catch (NSException *ex)
-        {
-            //This happens if we attempt to remove all data while data is being fetched from API
-            //Not an issue as after getting new data this method will be called again
-//            NSLog(@"Could not get all data from API, ex = %@",ex);
-            self.dataIsBeingRemoved = NO;
-        }
-        
-        // push to parent
-        NSError *error;
-        if (![moc save:&error])
-        {
-            // handle error
-        }
-        
-        // save parent to disk asynchronously
-        [self.managedObjectContext performBlock:^{
-            NSError *error;
-            if (![self.managedObjectContext save:&error])
-            {
-                // handle error
-            }
-        }];
-    }];
-    
-
-}
-
-+(NSManagedObjectContext*)moc
-{
-    return [CoreDataManager sharedInstance].managedObjectContext;
-}
-
-+(NSManagedObjectContext*)NewManagedObjectContext
-{
-    GRNAppDelegate *delegate = (GRNAppDelegate*)[UIApplication sharedApplication].delegate;
-    NSManagedObjectContext *context = [[NSManagedObjectContext alloc] init];
-    [context setPersistentStoreCoordinator: [delegate persistentStoreCoordinator]];
-    return context;
-}
-
--(NSOperationQueue*)submissionQueue
-{
-    if (!_submissionQueue)
+    else
     {
-        _submissionQueue = [[NSOperationQueue alloc] init];
-        [_submissionQueue setName:@"SubmissionQueue"];
+        //Check if it is m1x exception or coins exception
+        if (result.header.exception && [result.header.exception.source rangeOfString:@"Coin"].location != NSNotFound)
+        {
+            //If it is a coins exception ignore
+            returnValue = YES;
+        }
     }
-    return _submissionQueue;
+    NSLog(@"Response header = %@",result.header.description);
+    NSLog(@"Response body = %@",result.body);
+    return result.header.success;
 }
 
 @end

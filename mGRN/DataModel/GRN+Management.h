@@ -19,5 +19,6 @@
 +(void)removeAllObjectsInManagedObjectContext:(NSManagedObjectContext*)context;
 +(NSArray*)fetchSubmittedGRNInMOC:(NSManagedObjectContext*)moc;
 +(GRN*)fetchGRNWithSDN:(NSString*)sdn inMOC:(NSManagedObjectContext*)moc;
++(int)CountGrnAwaitingSubmissionInMOC:(NSManagedObjectContext*)moc;
 
 @end

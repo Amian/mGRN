@@ -146,6 +146,9 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *uri = [self.popUpTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
         [defaults setValue:uri forKey:KeySystemURI];
+        [defaults setValue:nil forKey:KeyUserID];
+        [defaults setValue:nil forKey:KeyPassword];
+        [defaults setValue:nil forKey:KeyTransactionID];
         self.masterHostLabel.text = self.popUpTextField.text;
         [defaults synchronize];
         [CoreDataManager removeData:YES];

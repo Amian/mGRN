@@ -89,10 +89,15 @@
                                                  error:&error];
         [contractObjectArray addObject:c];
     }
+    [context save:nil];
     self.dataArray = [self getDataArray];
-//    [[CoreDataManager sharedInstance] getAllDataInBG];
     [self reloadData];
     [self.myDelegate tableDidEndLoadingData:self];
+}
+
+-(void)onAPIRequestFailure:(M1XResponse *)response
+{
+    [self.myDelegate failedToGetData:self];
 }
 
 -(void)searchForString:(NSString*)searchString

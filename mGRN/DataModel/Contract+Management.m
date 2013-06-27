@@ -7,6 +7,7 @@
 //
 
 #import "Contract+Management.h"
+#import "WBS+Management.h"
 
 @implementation Contract (Management)
 
@@ -43,7 +44,15 @@
                 contract.number = [[contractData valueForKey:M1XContract_Number] description];
                 contract.name = [[contractData valueForKey:M1XContract_Name] description];
                 contract.useWBS = [NSNumber numberWithBool:[[[contractData valueForKey:M1XContract_UseWBS] description] boolValue]];
-                [context save:nil];
+                
+                NSArray *wbsArray = [contractData valueForKey:M1XContract_WBSCodes];
+                for (NSDictionary *dict in wbsArray)
+                {
+                    [WBS insertWBSCodesWithData:dict
+                                    forContract:contract
+                         inManagedObjectContext:context
+                                          error:nil];
+                }
 //                NSLog(@"Create contract %@: %@", contract.number, contract.name);
             }
         }
@@ -69,7 +78,6 @@
     {
         [context deleteObject:o];
     }
-    [context save:nil];
 }
 
 +(int)contractCountInMOC:(NSManagedObjectContext*)moc

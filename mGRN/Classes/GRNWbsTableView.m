@@ -93,13 +93,15 @@
 {
     NSArray *wbsData = [contracts objectForKey:@"wbsCodes"];
     NSMutableArray *result = [NSMutableArray array];
+    NSManagedObjectContext *context = [CoreDataManager moc];
     for (NSDictionary *wbs in wbsData)
     {
         [result addObject:[WBS insertWBSCodesWithData:wbs
                                           forContract:self.contract
-                               inManagedObjectContext:[CoreDataManager moc]
+                               inManagedObjectContext:context
                                                 error:nil]];
     }
+    [context save:nil];
     self.dataArray = [result copy];
     [self reloadData];
 }

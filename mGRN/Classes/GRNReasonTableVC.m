@@ -88,11 +88,13 @@
 -(void)onAPIRequestSuccess:(NSDictionary *)response requestType:(RequestType)requestType
 {
     NSArray *reasons = [response objectForKey:@"reasons"];
+    NSManagedObjectContext *context = [CoreDataManager moc];
     for (NSDictionary *r in reasons)
     {
         [RejectionReasons insertRejectionReasonsWithDictionary:r inMOC:[CoreDataManager moc]];
     }
-    self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:[CoreDataManager moc]];
+    self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:context];
+    [context save:nil];
     [self reloadData];
 }
 

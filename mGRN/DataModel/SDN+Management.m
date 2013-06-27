@@ -15,7 +15,6 @@
     SDN *newSDN = [NSEntityDescription insertNewObjectForEntityForName:@"SDN" inManagedObjectContext:moc];
     newSDN.expiryDate = [NSDate date];
     newSDN.value = sdn;
-    [moc save:nil];
 }
 
 +(BOOL)doesSDNExist:(NSString*)sdn inMOC:(NSManagedObjectContext*)moc

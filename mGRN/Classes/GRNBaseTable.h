@@ -14,7 +14,7 @@
 @protocol MyTableDelegate <NSObject>
 -(void)tableWillGetDataFromAPI;
 -(void)tableDidEndLoadingData:(UITableView*)table;
--(void)failedToGetData;
+-(void)failedToGetData:(UITableView*)tableView;
 @end
 
 typedef enum

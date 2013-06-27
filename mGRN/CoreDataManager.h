@@ -16,9 +16,8 @@
 @interface CoreDataManager : NSObject <M1XmGRNDelegate>
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 + (CoreDataManager*)sharedInstance;
- -(void)submitGRN;
+-(void)submitAnyGrnsAwaitingSubmittion;
 +(NSManagedObjectContext*)moc;
--(void)getAllDataInBG;
 +(void)removeData:(BOOL)allData;
 
 @end

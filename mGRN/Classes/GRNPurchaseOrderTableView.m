@@ -111,8 +111,6 @@
     self.state = TableStateNormal;
     NSArray *array = [PurchaseOrder fetchPurchaseOrdersForContractNumber:self.contract.number
                                                                    inMOC:[CoreDataManager moc]];
-    //    [self.myDelegate tableDidEndLoadingData:self];
-//    self.errorLabel.hidden = array.count > 0? YES : NO;
     return array;
 }
 
@@ -161,9 +159,15 @@
                             inManagedObjectContext:context
                                              error:&error];
     }
+    [context save:nil];
     self.dataArray = [self getDataArray];
     [self reloadData];
     [self.myDelegate tableDidEndLoadingData:self];
+}
+
+-(void)onAPIRequestFailure:(M1XResponse *)response
+{
+    [self.myDelegate failedToGetData:self];
 }
 
 -(void)searchForString:(NSString*)searchString

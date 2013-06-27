@@ -20,14 +20,13 @@
     {
         [context deleteObject:o];
     }
-    [context save:nil];
 }
 
 +(NSArray*)fetchWBSCodesForContractNumber:(NSString*)contractNumber inMOC:(NSManagedObjectContext*)moc
 {
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"WBS"];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES]];
-//    request.predicate = [NSPredicate predicateWithFormat:@"contract.number = %@", contractNumber];
+    request.predicate = [NSPredicate predicateWithFormat:@"contract.number = %@", contractNumber];
     
     NSError *fetchError = nil;
     NSArray *matches = [moc executeFetchRequest:request error:&fetchError];
@@ -83,7 +82,6 @@
                 wbsCode.codeDescription = [[[wbsData valueForKey:M1XWBS_Description] description] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             }
             [contract addWbsCodesObject:wbsCode];
-            [context save:nil];
         }
     }
     return wbsCode;
