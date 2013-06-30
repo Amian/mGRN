@@ -40,11 +40,11 @@
     grnItem.itemNumber = purchaseOrderItem.itemNumber;
     grnItem.notes = nil;
     grnItem.exception = nil;
-    grnItem.quantityDelivered = purchaseOrderItem.quantityBalance;
+    grnItem.quantityDelivered = [NSNumber numberWithInt:0];//purchaseOrderItem.quantityBalance;
     grnItem.quantityRejected = [NSNumber numberWithInt:0];
     grnItem.serialNumber = nil;
     grnItem.uoq = purchaseOrderItem.uoq;
-    grnItem.wbsCode = purchaseOrderItem.wbsCode;
+    grnItem.wbsCode = @""; //purchaseOrderItem.wbsCode;
     grnItem.exception = @"";
     
     [grn addLineItemsObject:grnItem];

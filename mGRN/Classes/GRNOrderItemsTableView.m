@@ -16,7 +16,7 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.delegate = self;
+        //self.delegate = self;
         self.grnItems = NULL;
     }
     return self;
@@ -93,6 +93,11 @@
 
 -(void)getDataFromAPI
 {
+    if (self.sessionExpired)
+    {
+        [self.myDelegate failedToGetData:self];
+        return;
+    }
     [super getDataFromAPI];
     [self.service GetPurchaseOrdersDetailsWithHeader:[GRNM1XHeader Header]
                                       contractNumber:self.purchaseOrder.contract.number

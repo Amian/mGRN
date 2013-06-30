@@ -32,6 +32,7 @@ typedef enum
 @property (nonatomic, strong) M1XmGRNService *service;
 @property (readonly) NSString *kco;
 @property BOOL reloading;
+@property (nonatomic) BOOL sessionExpired;
 -(NSArray*)getDataArray;
 -(void)getDataFromAPI;
 -(id)selectedObject;

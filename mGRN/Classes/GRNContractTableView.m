@@ -67,6 +67,11 @@
 
 -(void)getDataFromAPI
 {
+    if (self.sessionExpired)
+    {
+        [self.myDelegate failedToGetData:self];
+        return;
+    }
     [super getDataFromAPI];
     [self.service GetContractsWithHeader:[GRNM1XHeader Header] kco:self.kco includeWBS:NO];
 }

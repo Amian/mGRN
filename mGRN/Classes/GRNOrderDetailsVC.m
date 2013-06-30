@@ -19,13 +19,12 @@
 #import "GRN+Management.h"
 
 @interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate, UITextFieldDelegate>
-{
-}
 @property (nonatomic, strong) M1XmGRNService *service;
+@property (readonly) BOOL sessionExpired;
 @end
 
 @implementation GRNOrderDetailsVC
-@synthesize service = _service, status = _status, returnedAfterSubmission;
+@synthesize service = _service, status = _status, returnedAfterSubmission, sessionExpired = _sessionExpired;
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
@@ -69,6 +68,31 @@
     [self.navViewOrder setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
     
     self.navContract.selected = YES;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionHasExpired) name:SessionExpiryNotification object:nil];
+
+}
+
+-(void)sessionHasExpired
+{
+    _sessionExpired = YES;
+    self.contractsTableView.sessionExpired = YES;
+    self.purchaseOrderTableView.sessionExpired = YES;
+    self.orderItemTableView.sessionExpired = YES;
+}
+
+-(BOOL)sessionExpired
+{
+    if (_sessionExpired)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Session Expired"
+                                                        message:SessionExpiryText
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    return _sessionExpired;
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -265,6 +289,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]]) return;
     [cell setBackgroundColor:GRNLightBlueColour];
     cell.textLabel.backgroundColor = [UIColor clearColor];
     cell.detailTextLabel.backgroundColor = [UIColor clearColor];
@@ -294,10 +319,15 @@
         self.orderItemTableView.purchaseOrder = [self.purchaseOrderTableView selectedObject];
         [self.purchaseOrderTableView rowSelected];
     }
+    else if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
+    {
+        [self performSegueWithIdentifier:@"createGRN" sender:self];
+    }
 }
 
 -(float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([tableView isKindOfClass:[GRNOrderItemsTableView class]]) return 44.0;
     CGFloat height = 0.0;
     if ([tableView isKindOfClass:[GRNPurchaseOrderTableView class]])
     {
@@ -334,6 +364,7 @@
 }
 - (IBAction)reload:(id)sender
 {
+    if (self.sessionExpired) return;
     [self.contractsTableView getDataFromAPI];
     self.purchaseOrderTableView.hidden = YES;
     self.orderDetailView.hidden = YES;
@@ -408,6 +439,7 @@
 {
     if ([segue.identifier isEqualToString:@"createGRN"])
     {
+
         GRN *grn = [GRN grnForPurchaseOrder:self.orderItemTableView.purchaseOrder
                      inManagedObjectContext:[CoreDataManager moc]
                                       error:nil];
@@ -415,6 +447,15 @@
         vc.grn = grn;
         vc.selectedIndexPath = self.orderItemTableView.indexPathForSelectedRow;
     }
+}
+
+-(BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ([identifier isEqualToString:@"createGRN"])
+    {
+        if (self.sessionExpired) return NO;
+    }
+    return YES;
 }
 
 #pragma mark - MyTableDelegate

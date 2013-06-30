@@ -62,6 +62,7 @@
 }
 
 - (void)viewDidUnload {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:SessionExpiryText object:nil];
     [self setComments:nil];
     [self setSignatureView:nil];
     [self setPhotoView:nil];

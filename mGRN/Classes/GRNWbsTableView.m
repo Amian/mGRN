@@ -67,7 +67,7 @@
         WBS *wbs = [self.dataArray objectAtIndex:indexPath.row];
         
 //        cell.textLabel.text = wbs.code;
-        cell.textLabel.text = wbs.codeDescription;
+        cell.textLabel.text = [NSString stringWithFormat:@"%@: %@",wbs.code,wbs.codeDescription];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
     }

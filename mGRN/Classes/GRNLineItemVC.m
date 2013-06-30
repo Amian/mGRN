@@ -73,14 +73,10 @@ static float KeyboardHeight;
         self.viewBelowWbsCode.frame = frame;
     }
     
-    if (self.selectedIndexPath)
-    {
-        [self performSelector:@selector(selectRow:) withObject:self.selectedIndexPath afterDelay:0.1];
-    }
-    else
-    {
-        [self performSelector:@selector(selectRow:) withObject:[NSIndexPath indexPathForRow:0 inSection:0] afterDelay:0.1];
-    }
+    if (!self.selectedIndexPath)
+        self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    
+    [self performSelector:@selector(selectRow:) withObject:self.selectedIndexPath afterDelay:0.1];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -126,14 +122,17 @@ static float KeyboardHeight;
 {
     if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
     {
+        self.selectedIndexPath = indexPath;
         self.quantityConfirmed = NO;
-        [self displaySelectedItem];
+        [self selectCorrectValuesForItemAtIndexPath:indexPath];
+        [self selectRow:indexPath];
     }
     else if ([tableView isKindOfClass:[GRNWbsTableView class]])
     {
         [self.wbsView removeFromSuperview];
         WBS *wbs = [((GRNWbsTableView*)tableView).dataArray objectAtIndex:indexPath.row];
-        [self.wbsButton setTitle:wbs.codeDescription forState:UIControlStateNormal];
+        NSString *wbsCode = [NSString stringWithFormat:@"%@: %@",wbs.code,wbs.codeDescription];
+        [self.wbsButton setTitle:wbsCode forState:UIControlStateNormal];
         self.selectedItem.wbsCode = wbs.code;
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
     }
@@ -173,26 +172,53 @@ static float KeyboardHeight;
 -(void)selectRow:(NSIndexPath*)indexPath
 {
     [self.itemTableView beginUpdates];
-    [self.itemTableView selectRowAtIndexPath:indexPath
-                                    animated:YES
-                              scrollPosition:UITableViewScrollPositionNone];
+    [self selectCorrectValuesForItemAtIndexPath:indexPath];
+    [self.itemTableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                              withRowAnimation:UITableViewRowAnimationNone];
     [self.itemTableView endUpdates];
-    self.selectedIndexPath = nil;
+    [self performSelector:@selector(selectRowAgain:) withObject:indexPath afterDelay:0.1];
+}
+
+-(void)selectRowAgain:(NSIndexPath*)indexPath
+{
+    [self.itemTableView beginUpdates];
+    [self.itemTableView selectRowAtIndexPath:indexPath
+                                    animated:NO
+                              scrollPosition:UITableViewScrollPositionNone];
     [self displaySelectedItem];
+    [self.itemTableView endUpdates];
+}
+
+-(void)selectCorrectValuesForItemAtIndexPath:(NSIndexPath*)indexPath
+{
+    PurchaseOrderItem *item = [self.itemTableView.dataArray objectAtIndex:indexPath.row];
+    GRNItem *grnItem = [self itemForPurchaseOrderItem:item];
+    
+    if ([self.grn.purchaseOrder.contract.useWBS boolValue] && !grnItem.wbsCode.length)
+    {
+        WBS *wbs = [WBS fetchWBSWithCode:item.wbsCode inMOC:[CoreDataManager moc]];
+        grnItem.wbsCode = wbs.code;
+    }
+    if ([grnItem.quantityDelivered doubleValue] <= 0.0)
+    {
+        grnItem.quantityDelivered = item.quantityBalance;
+    }
 }
 
 -(void)displaySelectedItem
 {
     PurchaseOrderItem *item = self.itemTableView.selectedObject;
+    NSLog(@"index = %i",[self.itemTableView.dataArray indexOfObject:item]);
     self.itemLabel.text = item.itemNumber;
     self.descriptionLabel.text = item.itemDescription;
     self.expected.text = [NSString stringWithFormat:@"EA (%.02f expected)",[item.quantityBalance doubleValue]];
     
-    WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode inMOC:[CoreDataManager moc]];
-    [self.wbsButton setTitle:wbs.codeDescription.length? wbs.codeDescription : WBSCodeText forState:UIControlStateNormal];
+    WBS *wbs = [WBS fetchWBSWithCode:self.selectedItem.wbsCode.length? self.selectedItem.wbsCode : item.wbsCode inMOC:[CoreDataManager moc]];
+    NSString *wbsCode = wbs.code.length? [NSString stringWithFormat:@"%@: %@",wbs.code,wbs.codeDescription] : WBSCodeText;
+    [self.wbsButton setTitle:wbsCode forState:UIControlStateNormal];
     
     //Set Delivered and rejected quantities rounded to 2 decimal places
-    double delivered = [self.selectedItem.quantityDelivered doubleValue];
+    double delivered = [self.selectedItem.quantityDelivered doubleValue] > 0? [self.selectedItem.quantityDelivered doubleValue] : [item.quantityBalance doubleValue];
     double rejected = [self.selectedItem.quantityRejected doubleValue];
     
     self.quantityDelivered.text = delivered > 0.0? [NSString stringWithFormat:@"%.02f",delivered] : @"";
@@ -368,6 +394,14 @@ static float KeyboardHeight;
     
     if ([identifier isEqualToString:@"next"])
     {
+        
+        NSLog(@"items:\n");
+        for (GRNItem *item in self.grn.lineItems)
+        {
+            NSLog(@"%@",[item description]);
+        }
+        
+        
         NSString *error = [self checkAllData];
         if (error.length)
         {
@@ -410,7 +444,7 @@ static float KeyboardHeight;
 
 -(void)onKeyboardShow:(NSNotification *)notification
 {
-//    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
+    //    CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue]; //height of keyboard
     KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
     
 }
@@ -424,10 +458,14 @@ static float KeyboardHeight;
     {
         PurchaseOrderItem *poi = [self purchaseOrderItemForGRNItem:li];
         li.quantityDelivered = accept? poi.quantityBalance : [NSNumber numberWithInt:0];
+        li.wbsCode = accept? poi.wbsCode : @"";
+        li.exception = @"";
+        li.quantityRejected = [NSNumber numberWithInt:0];
     }
     [sender setTitle:accept? @"Clear All" : @"Accept All" forState:UIControlStateNormal];
-    [self.itemTableView reloadData];
-    [self displaySelectedItem];
+    [self.itemTableView reloadRowsAtIndexPaths:[self.itemTableView indexPathsForVisibleRows]
+                     withRowAnimation:UITableViewRowAnimationNone];
+    [self performSelector:@selector(selectRow:) withObject:self.selectedIndexPath afterDelay:0.1];
 }
 
 - (IBAction)wbsCodes:(UIButton*)button
@@ -474,11 +512,11 @@ static float KeyboardHeight;
 //    {
 //        self.searchBar.hidden = NO;
 //        [self.searchTextField becomeFirstResponder];
-//        
+//
 //        CGRect frame = self.searchBar.frame;
 //        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height;
 //        self.searchBar.frame = frame;
-//        
+//
 //        //animate
 //        frame.origin.y = self.view.frame.size.height - self.searchBar.frame.size.height - KeyboardHeight;
 //        [UIView beginAnimations:nil context:nil];
@@ -608,10 +646,10 @@ static float KeyboardHeight;
 //    self.selectedItem.quantityRejected = [NSNumber numberWithDouble:[self.quantityRejected.text doubleValue]];
 //    self.selectedItem.quantityDelivered = [NSNumber numberWithDouble:[self.quantityDelivered.text doubleValue]];
 //    self.selectedItem.serialNumber = self.serialNumber.text;
-//    
+//
 //    //If quantity rejected is 0 make sure the reason code is also zero
 //    if ([self.quantityRejected.text doubleValue]) self.selectedItem.exception = @"0";
-//    
+//
 //    [[CoreDataManager moc] save:nil];
 //}
 

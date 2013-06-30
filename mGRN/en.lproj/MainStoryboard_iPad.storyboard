@@ -697,6 +697,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" red="0.98979591840000003" green="0.0" blue="0.010740281779999999" alpha="1" colorSpace="calibratedRGB"/>
                                     <connections>
+                                        <outlet property="delegate" destination="yBb-kj-pff" id="KlL-e2-SVd"/>
                                         <outlet property="myDelegate" destination="yBb-kj-pff" id="5Y9-AC-IOg"/>
                                     </connections>
                                 </tableView>
@@ -1257,7 +1258,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.078431372550000003" green="0.6588235294" blue="0.99607843139999996" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <state key="normal" title="Clear All">
+                                        <state key="normal" title="Accept All">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -1850,6 +1851,11 @@
         <class className="GRNCompleteGRNVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNCompleteGRNVC.h"/>
             <relationships>
+                <relationship kind="action" name="saveSignature:" candidateClass="UIButton"/>
+                <relationship kind="action" name="showDatePicker:" candidateClass="UIButton"/>
+                <relationship kind="action" name="signAgain:" candidateClass="UIButton"/>
+                <relationship kind="action" name="submit:"/>
+                <relationship kind="action" name="takePhoto:"/>
                 <relationship kind="outlet" name="comments" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="dateAndNoteContainer" candidateClass="UIView"/>
                 <relationship kind="outlet" name="dateButton" candidateClass="UIButton"/>
@@ -1867,7 +1873,13 @@
         <class className="GRNLineItemVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNLineItemVC.h"/>
             <relationships>
+                <relationship kind="action" name="Reason:" candidateClass="UIButton"/>
+                <relationship kind="action" name="acceptOrClear:" candidateClass="UIButton"/>
                 <relationship kind="action" name="back:"/>
+                <relationship kind="action" name="dismissReason:"/>
+                <relationship kind="action" name="dismissWBS:"/>
+                <relationship kind="action" name="refresh:"/>
+                <relationship kind="action" name="wbsCodes:" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="descriptionLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="detailContainer" candidateClass="UIView"/>
                 <relationship kind="outlet" name="expected" candidateClass="UILabel"/>
@@ -1904,8 +1916,15 @@
         <class className="GRNOrderDetailsVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNOrderDetailsVC.h"/>
             <relationships>
+                <relationship kind="action" name="contract:"/>
+                <relationship kind="action" name="doneSearching:"/>
                 <relationship kind="action" name="logout:"/>
+                <relationship kind="action" name="purchaseOrders:"/>
+                <relationship kind="action" name="reload:"/>
                 <relationship kind="action" name="removeInfoView:" candidateClass="UIButton"/>
+                <relationship kind="action" name="search:"/>
+                <relationship kind="action" name="showInfo:"/>
+                <relationship kind="action" name="viewDetails:"/>
                 <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
                 <relationship kind="outlet" name="contractsTableView" candidateClass="GRNContractTableView"/>
                 <relationship kind="outlet" name="infoLabel" candidateClass="UILabel"/>
@@ -1934,7 +1953,11 @@
         <class className="GRNSettingsVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/GRNSettingsVC.h"/>
             <relationships>
+                <relationship kind="action" name="back:"/>
                 <relationship kind="action" name="closePopup:"/>
+                <relationship kind="action" name="ok:"/>
+                <relationship kind="action" name="showDomainPopup:"/>
+                <relationship kind="action" name="showMasterHostPopup:"/>
                 <relationship kind="outlet" name="bgImageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="cancelButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="domainLabel" candidateClass="UILabel"/>
@@ -1952,6 +1975,7 @@
         <class className="PhotoPreviewVC" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/PhotoPreviewVC.h"/>
             <relationships>
+                <relationship kind="action" name="close:"/>
                 <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
             </relationships>
         </class>
@@ -1969,7 +1993,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="Hq8-6i-vvq"/>
-        <segue reference="ssd-Y5-iTe"/>
+        <segue reference="36I-fv-6hI"/>
         <segue reference="y6h-bZ-zD3"/>
     </inferredMetricsTieBreakers>
 </document>

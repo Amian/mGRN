@@ -25,7 +25,6 @@
     //Notify if scroll view offset needs to be changed
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeScrollViewOffset:) name:ChangeScrollViewContentOffsetNotification object:nil];
     
-    
     //Notify when keyboard appears
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -34,7 +33,7 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
     NSDate *expiryDate = [formatter dateFromString:[defaults objectForKey:KeySessionEndDate]];
-    NSTimeInterval i = [expiryDate timeIntervalSinceDate:[NSDate date]];
+    NSTimeInterval i = 18.0 * 3600.0; //18 hours
     NSTimeInterval warning = [expiryDate timeIntervalSinceDate:[NSDate date]] - (10.0*60.0);
 
     [self performSelector:@selector(sessionWarining)
@@ -65,6 +64,7 @@
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillUnload];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ChangeScrollViewContentOffsetNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -132,7 +132,7 @@
 
 -(void)sessionWarining
 {
-    self.warningAlert = [[UIAlertView alloc] initWithTitle:@"You session is about to expire. You will be automatically logged out in 10 minutes."
+    self.warningAlert = [[UIAlertView alloc] initWithTitle:@"You session will expire in 10 minutes. Please log out and log in again to continue using the application."
                                                     message:nil
                                                    delegate:nil
                                           cancelButtonTitle:@"OK"
@@ -142,9 +142,10 @@
 
 -(void)sessionExpired
 {
-    [self dismissModalViewControllerAnimated:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SessionExpiryNotification
+                                                        object:nil];
     [self.warningAlert removeFromSuperview];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Session Expired"
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:SessionExpiryText
                                                         message:nil
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
@@ -159,4 +160,5 @@
     if (self.scrollView.contentOffset.y == 0.0)
     [self.scrollView setContentOffset:CGPointMake(0.0, KeyboardHeight) animated:YES];
 }
+
 @end

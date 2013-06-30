@@ -139,11 +139,16 @@
 
 -(void)getDataFromAPI
 {
+    if (self.sessionExpired)
+    {
+        [self.myDelegate failedToGetData:self];
+        return;
+    }
     [super getDataFromAPI];
     [self.service GetPurchaseOrdersWithHeader:[GRNM1XHeader Header]
                                contractNumber:self.contract.number
                                           kco:self.kco
-                             includeLineItems:NO];
+                             includeLineItems:YES];
 }
 
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType

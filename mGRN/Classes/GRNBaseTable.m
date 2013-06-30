@@ -17,7 +17,8 @@ service = _service,
 reloading = _reloading,
 myDelegate = _myDelegate,
 selectedIndex = _selectedIndex,
-state = _state;
+state = _state,
+sessionExpired = _sessionExpired;
 
 -(M1XmGRNService*)service
 {
@@ -125,5 +126,19 @@ state = _state;
 {
     self.dataArray = [self getDataArray];
     [self reloadData];
+}
+
+-(BOOL)sessionExpired
+{
+    if (_sessionExpired)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Session Expired"
+                                                        message:SessionExpiryText
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+return _sessionExpired;
 }
 @end
