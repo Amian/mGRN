@@ -13,4 +13,5 @@
 @interface GRNPurchaseOrderTableView : GRNBaseTable
 @property (nonatomic, strong) Contract *contract;
 @property (nonatomic, strong) UILabel *errorLabel;
+-(void)selectPOWithNumber:(NSString*)number;
 @end

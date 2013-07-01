@@ -27,5 +27,6 @@
 @property (strong, nonatomic) IBOutlet UIView *dateAndNoteContainer;
 @property (strong, nonatomic) IBOutlet UIButton *signButton;
 
+- (IBAction)dismissKeyboard:(id)sender;
 
 @end

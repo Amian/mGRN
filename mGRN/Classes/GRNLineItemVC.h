@@ -46,4 +46,5 @@
 @property (strong, nonatomic) IBOutlet UIView *tableandSDNContainer;
 @property (strong, nonatomic) IBOutlet UIView *detailContainer;
 
+- (IBAction)dismissKeyboard:(id)sender;
 @end

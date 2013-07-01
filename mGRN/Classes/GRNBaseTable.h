@@ -39,4 +39,5 @@ typedef enum
 -(void)rowSelected;
 -(void)searchForString:(NSString*)searchString;
 -(void)doneSearching;
+-(void)clearAllSelectionVariables;
 @end

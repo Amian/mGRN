@@ -7,6 +7,8 @@
 //
 
 #import "GRNBaseTable.h"
+#import "GRNContractTableView.h"
+#import "GRNPurchaseOrderTableView.h"
 
 @interface GRNBaseTable()
 @end
@@ -103,6 +105,20 @@ sessionExpired = _sessionExpired;
 -(id)selectedObject
 {
     NSLog(@"class = %@, count = %i",NSStringFromClass([self class]),self.dataArray.count);
+    
+    if ([self isKindOfClass:[GRNContractTableView class]] ||
+        [self isKindOfClass:[GRNPurchaseOrderTableView class]])
+    {
+        if (self.selectedIndex)
+        {
+        return [self.dataArray objectAtIndex:self.selectedIndex.section];
+        }
+        else
+        {
+            return nil;
+        }
+    }
+    
     return [self.dataArray objectAtIndex:self.indexPathForSelectedRow.section];
 }
 
@@ -141,4 +157,5 @@ sessionExpired = _sessionExpired;
     }
 return _sessionExpired;
 }
+
 @end

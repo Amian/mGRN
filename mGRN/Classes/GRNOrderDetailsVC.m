@@ -17,10 +17,15 @@
 #import "GRNLineItemVC.h"
 #import "GRNBaseTable.h"
 #import "GRN+Management.h"
+#import "PurchaseOrder.h"
+#import "NSObject+Blocks.h"
 
 @interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 @property (nonatomic, strong) M1XmGRNService *service;
 @property (readonly) BOOL sessionExpired;
+@property BOOL reloading;
+@property (nonatomic, strong) NSString *selectedContractNumber;
+@property (nonatomic, strong) NSString *selectedPurchaseOrderName;
 @end
 
 @implementation GRNOrderDetailsVC
@@ -70,7 +75,7 @@
     self.navContract.selected = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionHasExpired) name:SessionExpiryNotification object:nil];
-
+    
 }
 
 -(void)sessionHasExpired
@@ -224,7 +229,7 @@
             [self moveContainerToTheRight];
             
             self.purchaseOrderTableView.errorLabel.hidden = self.purchaseOrderTableView.dataArray.count == 0? NO : YES;
-
+            
             break;
             
         case ViewOrder:
@@ -296,6 +301,7 @@
     
     GRNBaseTable *table = (GRNBaseTable*)tableView;
     //if selection is on and the row is now selected reduce alpha
+    NSLog(@"state = %i, %i, %i",table.state, indexPath.section, table.selectedIndex.section);
     if (table.state == TableStateSelected && indexPath.section != table.selectedIndex.section)
     {
         cell.alpha = 0.4;
@@ -309,15 +315,15 @@
         self.purchaseOrderTableView.state = TableStateNormal;
         //        self.purchaseOrderTableView.contract = nil; //To clear the table
         self.loadingView.hidden = NO;
-        self.purchaseOrderTableView.contract = [self.contractsTableView selectedObject];
         [self.contractsTableView rowSelected];
+        self.purchaseOrderTableView.contract = [self.contractsTableView selectedObject];
     }
     else if ([tableView isKindOfClass:[GRNPurchaseOrderTableView class]])
     {
         //        self.orderItemTableView.purchaseOrder = nil; //To clear the table
         self.loadingView.hidden = NO;
-        self.orderItemTableView.purchaseOrder = [self.purchaseOrderTableView selectedObject];
         [self.purchaseOrderTableView rowSelected];
+        self.orderItemTableView.purchaseOrder = [self.purchaseOrderTableView selectedObject];
     }
     else if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
     {
@@ -365,6 +371,15 @@
 - (IBAction)reload:(id)sender
 {
     if (self.sessionExpired) return;
+    self.reloading = YES;
+    if (self.contractsTableView.state == TableStateSelected)
+    {
+    self.selectedContractNumber = ((Contract*)[self.contractsTableView selectedObject]).number;
+    }
+    if (self.purchaseOrderTableView.state == TableStateSelected)
+    {
+        self.selectedPurchaseOrderName = ((PurchaseOrder*)[self.purchaseOrderTableView selectedObject]).orderNumber;
+    }
     [self.contractsTableView getDataFromAPI];
     self.purchaseOrderTableView.hidden = YES;
     self.orderDetailView.hidden = YES;
@@ -439,7 +454,7 @@
 {
     if ([segue.identifier isEqualToString:@"createGRN"])
     {
-
+        
         GRN *grn = [GRN grnForPurchaseOrder:self.orderItemTableView.purchaseOrder
                      inManagedObjectContext:[CoreDataManager moc]
                                       error:nil];
@@ -462,19 +477,73 @@
 
 -(void)tableDidEndLoadingData:(UITableView *)tableView
 {
-    if ([tableView isKindOfClass:[GRNContractTableView class]])
+    //TODO:
+    if (self.reloading)
     {
-        [self tablecontainerDelegateChangedStatusTo:Contracts];
+        if ([tableView isKindOfClass:[GRNContractTableView class]])
+        {
+            if (!self.selectedContractNumber.length){
+                [self tablecontainerDelegateChangedStatusTo:Contracts];
+                self.reloading = NO;
+                self.loadingView.hidden = YES;
+                return;
+            }
+            
+            self.purchaseOrderTableView.state = TableStateNormal;
+            self.loadingView.hidden = NO;
+            [self.contractsTableView selectContractWithNumber:self.selectedContractNumber];
+            [self.contractsTableView rowSelected];
+            [self performBlock:^{
+                [self.contractsTableView scrollToRowAtIndexPath:self.contractsTableView.selectedIndex
+                                               atScrollPosition:UITableViewScrollPositionMiddle
+                                                       animated:NO];
+            } afterDelay:0.1];
+            
+            self.selectedContractNumber = nil;
+            self.purchaseOrderTableView.contract = [self.contractsTableView selectedObject];
+            //TODO: REmove
+            //self.reloading = NO;
+        }
+        else if ([tableView isKindOfClass:[GRNPurchaseOrderTableView class]])
+        {
+            if (!self.selectedPurchaseOrderName.length){
+                [self tablecontainerDelegateChangedStatusTo:PurchaseOrders];
+                self.reloading = NO;
+                self.loadingView.hidden = YES;
+                return;
+            }
+            else
+            {
+                [self.purchaseOrderTableView selectPOWithNumber:self.selectedPurchaseOrderName];
+                [self.purchaseOrderTableView rowSelected];
+                [self performBlock:^{
+                [self.purchaseOrderTableView scrollToRowAtIndexPath:self.purchaseOrderTableView.selectedIndex
+                                               atScrollPosition:UITableViewScrollPositionMiddle
+                                                       animated:NO];
+                } afterDelay:0.1];
+                self.selectedPurchaseOrderName = nil;
+                self.reloading = NO;
+                self.orderItemTableView.purchaseOrder = [self.purchaseOrderTableView selectedObject];
+            }
+        }
     }
-    else if ([tableView isKindOfClass:[GRNPurchaseOrderTableView class]])
+    else
     {
-        [self tablecontainerDelegateChangedStatusTo:PurchaseOrders];
+        
+        if ([tableView isKindOfClass:[GRNContractTableView class]])
+        {
+            [self tablecontainerDelegateChangedStatusTo:Contracts];
+        }
+        else if ([tableView isKindOfClass:[GRNPurchaseOrderTableView class]])
+        {
+            [self tablecontainerDelegateChangedStatusTo:PurchaseOrders];
+        }
+        else if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
+        {
+            [self tablecontainerDelegateChangedStatusTo:ViewOrder];
+        }
+        self.loadingView.hidden = YES;
     }
-    else if ([tableView isKindOfClass:[GRNOrderItemsTableView class]])
-    {
-        [self tablecontainerDelegateChangedStatusTo:ViewOrder];
-    }
-    self.loadingView.hidden = YES;
     [tableView setContentOffset:CGPointMake(0, 0) animated:NO];
 }
 
@@ -523,6 +592,7 @@
 
 -(void)failedToGetData:(UITableView *)tableView
 {
+    self.reloading = NO;
     if ([tableView isKindOfClass:[GRNContractTableView class]])
     {
         [self moveContainerToTheRight];

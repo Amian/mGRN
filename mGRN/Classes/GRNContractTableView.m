@@ -60,7 +60,6 @@
 
 -(NSArray*)getDataArray
 {
-    self.state = TableStateNormal;
     NSArray *array = [Contract fetchAllContractsInManagedObjectContext:[CoreDataManager moc]];
     return array;
 }
@@ -78,7 +77,7 @@
 
 -(void)onAPIRequestSuccess:(NSDictionary *)contractData requestType:(RequestType)requestType
 {
-//    NSLog(@"response = %@",contractData);
+    //    NSLog(@"response = %@",contractData);
     NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *contracts = [contractData objectForKey:@"contracts"];
@@ -119,4 +118,14 @@
     [self reloadData];
 }
 
-@end
+-(void)selectContractWithNumber:(NSString*)number
+{
+    NSPredicate *p = [NSPredicate predicateWithFormat:@"number LIKE %@",number];
+    Contract *c = [[self.dataArray filteredArrayUsingPredicate:p] lastObject];
+    if (c)
+    {
+        NSIndexPath *index = [NSIndexPath indexPathForRow:0  inSection:[self.dataArray indexOfObject:c]];
+        [self selectRowAtIndexPath:index animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
+}
+    @end

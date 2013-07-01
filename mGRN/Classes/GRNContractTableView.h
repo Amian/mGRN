@@ -10,4 +10,5 @@
 #import "GRNBaseTable.h"
 
 @interface GRNContractTableView : GRNBaseTable
+-(void)selectContractWithNumber:(NSString*)number;
 @end

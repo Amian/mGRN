@@ -188,4 +188,15 @@
     }
     [self reloadData];
 }
+
+-(void)selectPOWithNumber:(NSString*)number
+{
+    NSPredicate *p = [NSPredicate predicateWithFormat:@"orderNumber LIKE %@",number];
+    PurchaseOrder *c = [[self.dataArray filteredArrayUsingPredicate:p] lastObject];
+    if (c)
+    {
+        NSIndexPath *index = [NSIndexPath indexPathForRow:0  inSection:[self.dataArray indexOfObject:c]];
+        [self selectRowAtIndexPath:index animated:NO scrollPosition:UITableViewScrollPositionNone];
+    }
+}
 @end

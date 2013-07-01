@@ -700,4 +700,21 @@ static float KeyboardHeight;
     frame.size.height = 550.0;
     self.detailContainer.frame = frame;
 }
+- (IBAction)dismissKeyboard:(id)sender
+{
+    [self findAndResignFirstResponder:self.view];
+}
+
+- (BOOL)findAndResignFirstResponder:(UIView*)view
+{
+    if (view.isFirstResponder) {
+        [view resignFirstResponder];
+        return YES;
+    }
+    for (UIView *subView in view.subviews) {
+        if ([self findAndResignFirstResponder:subView])
+            return YES;
+    }
+    return NO;
+}
 @end
