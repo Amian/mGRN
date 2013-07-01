@@ -177,4 +177,16 @@
 //    });
 //}
 
+-(NSString*)sessionExpiryText
+{
+    if (self.creatingGRN)
+    {
+        return SessionExpiryDuringGRNText;
+    }
+    else
+    {
+        return SessionExpiryText;
+    }
+}
+
 @end

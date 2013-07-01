@@ -11,7 +11,10 @@
 #import "CoreDataManager.h"
 #import "M1XmGRNService.h"
 #import "GRNM1XHeader.h"
+#import "LoadingView.h"
+
 @interface GRNReasonTableVC()<M1XmGRNDelegate>
+@property (nonatomic, strong) UIView *loadingView;
 @end
 
 @implementation GRNReasonTableVC
@@ -77,6 +80,8 @@
 
 -(void)getReasonsFromAPI
 {
+    self.loadingView = [LoadingView loadingViewWithFrame:self.frame];
+    [self addSubview:self.loadingView];
     M1XmGRNService *service = [[M1XmGRNService alloc] init];
     service.delegate = self;
     NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
@@ -95,12 +100,13 @@
     }
     self.dataArray = [RejectionReasons getAllRejectionReasonsInMOC:context];
     [context save:nil];
+    [self.loadingView removeFromSuperview];
     [self reloadData];
 }
 
 -(void)onAPIRequestFailure:(M1XResponse *)response
 {
-    
+    [self.loadingView removeFromSuperview];
 }
 
 @end

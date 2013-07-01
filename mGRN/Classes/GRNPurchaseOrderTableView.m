@@ -108,7 +108,7 @@
 
 -(NSArray*)getDataArray
 {
-    self.state = TableStateNormal;
+    //self.state = TableStateNormal;
     NSArray *array = [PurchaseOrder fetchPurchaseOrdersForContractNumber:self.contract.number
                                                                    inMOC:[CoreDataManager moc]];
     return array;

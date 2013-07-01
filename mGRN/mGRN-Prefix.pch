@@ -51,10 +51,12 @@
 #define KeySignature @"s1"
 
 #define ChangeScrollViewContentOffsetNotification @"ChangeScrollViewContentOffsetNotification"
+#define ChangeScrollViewBackToNormal @"ChangeScrollViewBackToNormal"
 
 #define SessionExpiryNotification @"SessionExpiryNotification"
 
-#define SessionExpiryText @"Your session has expired. Please log out and log in again to continue using the application."
+#define SessionExpiryText @"Your session has timed out. Please logout and login again."
+#define SessionExpiryDuringGRNText @"Your session has timed out. Please finish your GRN, logout and login again."
 
 #include <assert.h>
 #include <stdbool.h>

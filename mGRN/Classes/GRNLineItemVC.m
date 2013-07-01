@@ -15,7 +15,7 @@
 #import "GRNReasonTableVC.h"
 #import "SDN+Management.h"
 #import "RejectionReasons+Management.h"
-
+#import "GRNAppDelegate.h"
 
 #define WBSCodeText @"Select WBS Code"
 #define TableHeight 323.0
@@ -48,6 +48,8 @@ static float KeyboardHeight;
 
 -(void)viewDidLoad
 {
+    [(GRNAppDelegate*)[UIApplication sharedApplication].delegate setCreatingGRN:YES];
+
     if ([self.grn.purchaseOrder.contract.useWBS boolValue])
     {
         self.wbsTable.contract = self.grn.purchaseOrder.contract;
@@ -702,7 +704,10 @@ static float KeyboardHeight;
 }
 - (IBAction)dismissKeyboard:(id)sender
 {
-    [self findAndResignFirstResponder:self.view];
+    [self.quantityDelivered resignFirstResponder];
+    [self.quantityRejected resignFirstResponder];
+    [self.note resignFirstResponder];
+    [self.serialNumber resignFirstResponder];
 }
 
 - (BOOL)findAndResignFirstResponder:(UIView*)view

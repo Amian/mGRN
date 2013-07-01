@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "GRNBaseVC.h"
+#import "GRNAppDelegate.h"
 
 @interface GRNBaseVC ()
 {
@@ -21,14 +22,7 @@
 @synthesize warningAlert;
 
 -(void)viewDidLoad
-{
-    //Notify if scroll view offset needs to be changed
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeScrollViewOffset:) name:ChangeScrollViewContentOffsetNotification object:nil];
-    
-    //Notify when keyboard appears
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
-    
+{   
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
@@ -49,6 +43,17 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [self setScrollViewSize];
+    //Notify if scroll view offset needs to be changed
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setScrollViewSize) name:ChangeScrollViewContentOffsetNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeScrollViewOffset:) name:ChangeScrollViewBackToNormal object:nil];
+    
+    //Notify when keyboard appears
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(onKeyboardShow:) name:UIKeyboardWillShowNotification object:nil];
+
+    
     [super viewDidAppear:animated];
 }
 
@@ -66,6 +71,7 @@
     [super viewWillUnload];
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ChangeScrollViewContentOffsetNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:ChangeScrollViewBackToNormal object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 }
@@ -145,7 +151,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:SessionExpiryNotification
                                                         object:nil];
     [self.warningAlert removeFromSuperview];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:SessionExpiryText
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[(GRNAppDelegate*)[UIApplication sharedApplication].delegate sessionExpiryText]
                                                         message:nil
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
@@ -161,4 +167,10 @@
     [self.scrollView setContentOffset:CGPointMake(0.0, KeyboardHeight) animated:YES];
 }
 
+-(void)adjustScrollView
+{   
+    self.view.bounds = self.view.superview.bounds;
+    self.scrollView.frame = self.view.bounds;
+    self.scrollView.contentSize = self.view.bounds.size;
+}
 @end

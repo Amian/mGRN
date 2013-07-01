@@ -12,12 +12,14 @@
 #import "M1XmGRNService.h"
 #import "GRNM1XHeader.h"
 #import "Contract.h"
+#import "LoadingView.h"
 
 @interface GRNWbsTableView()<M1XmGRNDelegate>
+@property (nonatomic, strong) UIView *loadingView;
 @end
 
 @implementation GRNWbsTableView
-@synthesize contract = _contract;
+@synthesize contract = _contract, loadingView;
 
 -(id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -37,6 +39,8 @@
         self.dataArray = [WBS fetchWBSCodesForContractNumber:contract.number inMOC:[CoreDataManager moc]];
         if (!self.dataArray.count)
         {
+            self.loadingView = [LoadingView loadingViewWithFrame:self.frame];
+            [self addSubview:self.loadingView];
             M1XmGRNService *service = [[M1XmGRNService alloc] init];
             service.delegate = self;
             NSString *kco = [[NSUserDefaults standardUserDefaults] objectForKey:KeyKCO];
@@ -86,7 +90,7 @@
 
 -(void)onAPIRequestFailure:(M1XResponse *)response
 {
-    
+    [self.loadingView removeFromSuperview];
 }
 
 -(void)onAPIRequestSuccess:(NSDictionary *)contracts requestType:(RequestType)requestType
@@ -103,6 +107,7 @@
     }
     [context save:nil];
     self.dataArray = [result copy];
+    [self.loadingView removeFromSuperview];
     [self reloadData];
 }
 

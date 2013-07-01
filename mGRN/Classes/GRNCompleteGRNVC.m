@@ -20,6 +20,7 @@
 #import "LoadingView.h"
 #import "GRNOrderDetailsVC.h"
 #import "SDN+Management.h"
+#import "NSObject+Blocks.h"
 
 #define SignTagSave 0
 #define SignTagSignAgain 1
@@ -598,7 +599,7 @@
 
 - (IBAction)dismissKeyboard:(id)sender
 {
-    [self findAndResignFirstResponder:self.view];
+    [self.comments resignFirstResponder];
 }
 
 - (BOOL)findAndResignFirstResponder:(UIView*)view

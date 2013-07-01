@@ -19,6 +19,7 @@
 #import "GRN+Management.h"
 #import "PurchaseOrder.h"
 #import "NSObject+Blocks.h"
+#import "GRNAppDelegate.h"
 
 @interface GRNOrderDetailsVC () <UITableViewDelegate, M1XmGRNDelegate, MyTableDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 @property (nonatomic, strong) M1XmGRNService *service;
@@ -102,6 +103,9 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
+    [(GRNAppDelegate*)[UIApplication sharedApplication].delegate setCreatingGRN:NO];
+    
+    
     [super viewWillAppear:animated];
     if (!self.tablesView.superview)
     {
@@ -184,7 +188,8 @@
 -(void)tablecontainerDelegateChangedStatusTo:(TableNavigationStatus)newStatus
 {
     self.status = newStatus;
-    [self doneSearching:nil];
+    [self.searchTextField resignFirstResponder];
+    //[self doneSearching:nil];
     switch (newStatus)
     {
         case Contracts:
@@ -394,10 +399,27 @@
     }
     else
     {
+        self.reloading = YES;
+        if (self.contractsTableView.state == TableStateSelected)
+        {
+            self.selectedContractNumber = ((Contract*)[self.contractsTableView selectedObject]).number;
+        }
+        if (self.purchaseOrderTableView.state == TableStateSelected)
+        {
+            self.selectedPurchaseOrderName = ((PurchaseOrder*)[self.purchaseOrderTableView selectedObject]).orderNumber;
+        }
+
+        
+        [self.contractsTableView searchForString:nil];
+        [self.purchaseOrderTableView searchForString:nil];
+        [self.orderItemTableView searchForString:nil];
+        
+        [self tableDidEndLoadingData:self.contractsTableView];
+        [self tableDidEndLoadingData:self.purchaseOrderTableView];
+        
         self.searchTextField.text = @"";
-        self.searchView.hidden = YES;
         [self.searchTextField resignFirstResponder];
-        [self tablecontainerDelegateChangedStatusTo:self.status];
+        self.searchView.hidden = YES;
     }
 }
 
@@ -432,7 +454,7 @@
 }
 
 - (IBAction)doneSearching:(id)sender
-{
+{   
     self.searchTextField.text = @"";
     [self.searchTextField resignFirstResponder];
 }
@@ -545,6 +567,11 @@
         self.loadingView.hidden = YES;
     }
     [tableView setContentOffset:CGPointMake(0, 0) animated:NO];
+}
+
+-(void)dataReloaded
+{
+    
 }
 
 -(void)tableWillGetDataFromAPI
