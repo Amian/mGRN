@@ -18,7 +18,7 @@
 
 #define LoginBoxTag 101
 
-@interface GRNLoginVC() <M1XDelegate>
+@interface GRNLoginVC() <M1XDelegate, UITextFieldDelegate>
 {
     BOOL animationInProgress;
     CGPoint originalCenter;
@@ -101,7 +101,6 @@
             [self earthquake:self.hiddenView];
         return;
     }
-    
     self.loadingView = [LoadingView loadingViewWithFrame:self.view.bounds];
     [self.view addSubview:self.loadingView];
     
@@ -349,4 +348,19 @@
     }
 }
 
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    if ([textField isEqual:self.username])
+    {
+        [self.password becomeFirstResponder];
+    }
+    else if ([textField isEqual:self.password])
+    {
+        if (self.username.text.length || self.password.text.length)
+        {
+            [self login];
+        }
+    }
+    return YES;
+}
 @end

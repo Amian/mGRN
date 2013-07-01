@@ -597,6 +597,11 @@
 
 #pragma  mark - Text Field Delegate
 
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    return YES;
+}
+
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
