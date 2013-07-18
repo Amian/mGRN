@@ -1,0 +1,30 @@
+dependencies: \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/CoreDataManager.m \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/CoreDataManager.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/WBS+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/ManagedObjects/WBS.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/PurchaseOrder+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/Contract+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/ManagedObjects/Contract.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/ManagedObjects/PurchaseOrder.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/PurchaseOrderItem+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/ManagedObjects/PurchaseOrderItem.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XmGRNService.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XRequestor/M1XRequestor.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XRequestor/M1XRequest.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XRequestor/M1XRequestHeader.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XRequestor/M1XResponse.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XRequestor/M1XResponseHeader.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XRequestor/M1XResponseHeaderException.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/M1X/M1XRequestor/M1XRequestorDelegate.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/GRN+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/ManagedObjects/GRN.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/GRNItem+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/ManagedObjects/GRNItem.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/Classes/GRNM1XHeader.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/RejectionReasons+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/RejectionReasons.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/SDN+Management.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/DataModel/SDN.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/GRNAppDelegate.h \
+  /Users/Anum/Library/Developer/Pervasic/mGRN/mGRN/Reachability/Reachability.h

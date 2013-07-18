@@ -1,0 +1,1 @@
+/Users/Anum/Library/Developer/Pervasic/mGRN/DerivedData/mGRN/Build/Intermediates/ArchiveIntermediates/mGRN/InstallationBuildProductsLocation/Applications/mGRN.app
