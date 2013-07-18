@@ -719,11 +719,26 @@ static float KeyboardHeight;
         li.wbsCode = accept? poi.wbsCode : @"";
         li.exception = @"";
         li.quantityRejected = [NSNumber numberWithInt:0];
+        li.notes = @"";
     }
     [sender setTitle:accept? @"Clear All" : @"Accept All" forState:UIControlStateNormal];
     [self.itemTableView reloadRowsAtIndexPaths:[self.itemTableView indexPathsForVisibleRows]
                               withRowAnimation:UITableViewRowAnimationNone];
     [self performSelector:@selector(selectRowAfterClearAllOrAcceptAll) withObject:nil afterDelay:0.1];
+    
+    if (accept)
+    {
+        [self performSelector:@selector(displaySelectedItem) withObject:nil afterDelay:0.2];
+    }
+    else
+    {
+        self.quantityDelivered.text = @"";
+        self.quantityRejected.text = @"";
+        [self.reasonButton setTitle:@"No Reason" forState:UIControlStateNormal];
+        [self.wbsButton setTitle:WBSCodeText forState:UIControlStateNormal];
+        self.serialNumber.text = @"";
+        self.note.text = @"";
+    }
 }
 
 
@@ -734,7 +749,6 @@ static float KeyboardHeight;
                                     animated:NO
                               scrollPosition:UITableViewScrollPositionNone];
     [self.itemTableView endUpdates];
-    [self performSelector:@selector(displaySelectedItem) withObject:nil afterDelay:0.1];
 }
 
 @end
