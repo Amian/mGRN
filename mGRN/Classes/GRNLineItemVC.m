@@ -453,22 +453,6 @@ static float KeyboardHeight;
 
 #pragma mark - IBActions
 
-- (IBAction)acceptOrClear:(UIButton*)sender
-{
-    BOOL accept = [sender.titleLabel.text hasPrefix:@"Accept"];
-    for (GRNItem *li in self.grn.lineItems)
-    {
-        PurchaseOrderItem *poi = [self purchaseOrderItemForGRNItem:li];
-        li.quantityDelivered = accept? poi.quantityBalance : [NSNumber numberWithInt:0];
-        li.wbsCode = accept? poi.wbsCode : @"";
-        li.exception = @"";
-        li.quantityRejected = [NSNumber numberWithInt:0];
-    }
-    [sender setTitle:accept? @"Clear All" : @"Accept All" forState:UIControlStateNormal];
-    [self.itemTableView reloadRowsAtIndexPaths:[self.itemTableView indexPathsForVisibleRows]
-                     withRowAnimation:UITableViewRowAnimationNone];
-    [self performSelector:@selector(selectRow:) withObject:self.selectedIndexPath afterDelay:0.1];
-}
 
 - (IBAction)wbsCodes:(UIButton*)button
 {
@@ -722,4 +706,35 @@ static float KeyboardHeight;
     }
     return NO;
 }
+
+#pragma mark - Alternate functionality for clear all
+
+- (IBAction)acceptOrClear:(UIButton*)sender
+{
+    BOOL accept = [sender.titleLabel.text hasPrefix:@"Accept"];
+    for (GRNItem *li in self.grn.lineItems)
+    {
+        PurchaseOrderItem *poi = [self purchaseOrderItemForGRNItem:li];
+        li.quantityDelivered = accept? poi.quantityBalance : [NSNumber numberWithInt:0];
+        li.wbsCode = accept? poi.wbsCode : @"";
+        li.exception = @"";
+        li.quantityRejected = [NSNumber numberWithInt:0];
+    }
+    [sender setTitle:accept? @"Clear All" : @"Accept All" forState:UIControlStateNormal];
+    [self.itemTableView reloadRowsAtIndexPaths:[self.itemTableView indexPathsForVisibleRows]
+                              withRowAnimation:UITableViewRowAnimationNone];
+    [self performSelector:@selector(selectRowAfterClearAllOrAcceptAll) withObject:nil afterDelay:0.1];
+}
+
+
+-(void)selectRowAfterClearAllOrAcceptAll
+{
+    [self.itemTableView beginUpdates];
+    [self.itemTableView selectRowAtIndexPath:self.selectedIndexPath
+                                    animated:NO
+                              scrollPosition:UITableViewScrollPositionNone];
+    [self.itemTableView endUpdates];
+    [self performSelector:@selector(displaySelectedItem) withObject:nil afterDelay:0.1];
+}
+
 @end

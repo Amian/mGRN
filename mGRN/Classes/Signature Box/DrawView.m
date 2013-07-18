@@ -68,11 +68,11 @@
     self.previousPoint1 = [touch previousLocationInView:self];
     self.previousPoint2 = [touch previousLocationInView:self];
     self.currentPoint = [touch locationInView:self];
-    CGRect rect = CGRectMake(self.currentPoint.x - 0.5,
-                             self.currentPoint.y - 0.5,
-                             1.0, 1.0);
-    CGPathAddEllipseInRect(self.path, NULL, rect);
-    [self setNeedsDisplay];
+    //CGRect rect = CGRectMake(self.currentPoint.x - 0.5,
+    //                         self.currentPoint.y - 0.5,
+    //                         1.0, 1.0);
+    //CGPathAddEllipseInRect(self.path, NULL, rect);
+    //[self setNeedsDisplay];
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
