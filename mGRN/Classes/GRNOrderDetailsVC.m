@@ -230,6 +230,7 @@
             self.purchaseOrderTableView.hidden = NO;
             self.orderDetailView.hidden = YES;
             
+            self.purchaseOrderTableView.state = TableStateNormal;
             [self.purchaseOrderTableView doneSearching];
             [self moveContainerToTheRight];
             
@@ -415,7 +416,9 @@
         [self.orderItemTableView searchForString:nil];
         
         [self tableDidEndLoadingData:self.contractsTableView];
-        [self tableDidEndLoadingData:self.purchaseOrderTableView];
+        
+//        if (self.purchaseOrderTableView.hidden == NO)
+//            [self tableDidEndLoadingData:self.purchaseOrderTableView];
         
         self.searchTextField.text = @"";
         [self.searchTextField resignFirstResponder];

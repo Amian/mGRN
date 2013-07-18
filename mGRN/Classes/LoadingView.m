@@ -16,6 +16,7 @@
     baseView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.5];
     
     UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 200.0, 200.0)];
+    loadingView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     loadingView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.75];
     loadingView.center = baseView.center;
     loadingView.layer.cornerRadius = 35.0;
