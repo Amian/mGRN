@@ -121,6 +121,7 @@
 {
     if (keyboardVisible)
     {
+        NSLog(@"visible");
     CGFloat KeyboardHeight = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])? 352.0 : 264.0;
     CGRect frame = self.scrollView.frame;
     frame.size.height = self.view.bounds.size.height-KeyboardHeight;
@@ -130,6 +131,7 @@
     }
     else
     {
+        NSLog(@"NOT visible");
         self.scrollView.frame = self.view.bounds;
         self.container.frame = self.view.bounds;
         self.scrollView.contentSize = self.view.bounds.size;

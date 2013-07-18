@@ -100,7 +100,12 @@
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     cell.indentationLevel = 1;
-    [cell.contentView addSubview:[self cellContentViewWithFrame:cell.contentView.frame purchaseOrder:[self.dataArray objectAtIndex:indexPath.section] indexPath:indexPath]];
+    @try {
+        [cell.contentView addSubview:[self cellContentViewWithFrame:cell.contentView.frame purchaseOrder:[self.dataArray objectAtIndex:indexPath.section] indexPath:indexPath]];
+    }
+    @catch (NSException *exception) {
+        //TODO:
+    }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
@@ -154,6 +159,8 @@
 -(void)onAPIRequestSuccess:(NSDictionary *)orderData requestType:(RequestType)requestType
 {
 //    NSLog(@"response = %@",orderData);
+    @try
+    {
     NSManagedObjectContext *context = [CoreDataManager moc];
     NSError *error = NULL;
     NSArray *orders = [orderData objectForKey:@"purchaseOrders"];
@@ -168,6 +175,10 @@
     self.dataArray = [self getDataArray];
     [self reloadData];
     [self.myDelegate tableDidEndLoadingData:self];
+    }
+    @catch (NSException *exception) {
+        //TODO:
+    }
 }
 
 -(void)onAPIRequestFailure:(M1XResponse *)response

@@ -112,10 +112,10 @@
     self.comments.text = self.grn.notes;
     
     //Remove data from nsuserdefaults
-    [defaults removeObjectForKey:KeyImage1];
-    [defaults removeObjectForKey:KeyImage2];
-    [defaults removeObjectForKey:KeyImage3];
-    [defaults removeObjectForKey:KeySignature];
+    [defaults setObject:nil forKey:KeyImage1];
+    [defaults setObject:nil forKey:KeyImage2];
+    [defaults setObject:nil forKey:KeyImage3];
+    [defaults setObject:nil forKey:KeySignature];
     [defaults synchronize];
     
     self.grnDisplayed = YES;

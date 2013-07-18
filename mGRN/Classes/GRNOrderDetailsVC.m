@@ -39,17 +39,24 @@
 
 -(void)checkOrientation
 {
-    CGRect frame = self.containerView.frame;
-    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+    @try
     {
-        frame.size.width = 1300.0;
+        CGRect frame = self.containerView.frame;
+        if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+        {
+            frame.size.width = 1300.0;
+        }
+        else
+        {
+            frame.size.width = 1125.0;
+        }
+        self.containerView.frame = frame;
+        [self refreshView];
     }
-    else
+    @catch (NSException *e)
     {
-        frame.size.width = 1125.0;
+        NSLog(@"%@",e.description);
     }
-    self.containerView.frame = frame;
-    [self refreshView];
 }
 
 - (void)viewDidLoad
@@ -175,7 +182,7 @@
             [self moveContainerToTheRight];
             self.purchaseOrderTableView.hidden = NO;
             self.orderDetailView.hidden = YES;
-            self.purchaseOrderTableView.errorLabel.hidden = self.purchaseOrderTableView.dataArray.count == 0? NO : YES;
+            //            self.purchaseOrderTableView.errorLabel.hidden = self.purchaseOrderTableView.dataArray.count == 0? NO : YES;
             break;
         case ViewOrder:
             [self moveContainerToTheLeft];
@@ -380,7 +387,7 @@
     self.reloading = YES;
     if (self.contractsTableView.state == TableStateSelected)
     {
-    self.selectedContractNumber = ((Contract*)[self.contractsTableView selectedObject]).number;
+        self.selectedContractNumber = ((Contract*)[self.contractsTableView selectedObject]).number;
     }
     if (self.purchaseOrderTableView.state == TableStateSelected)
     {
@@ -409,7 +416,7 @@
         {
             self.selectedPurchaseOrderName = ((PurchaseOrder*)[self.purchaseOrderTableView selectedObject]).orderNumber;
         }
-
+        
         
         [self.contractsTableView searchForString:nil];
         [self.purchaseOrderTableView searchForString:nil];
@@ -417,8 +424,8 @@
         
         [self tableDidEndLoadingData:self.contractsTableView];
         
-//        if (self.purchaseOrderTableView.hidden == NO)
-//            [self tableDidEndLoadingData:self.purchaseOrderTableView];
+        //        if (self.purchaseOrderTableView.hidden == NO)
+        //            [self tableDidEndLoadingData:self.purchaseOrderTableView];
         
         self.searchTextField.text = @"";
         [self.searchTextField resignFirstResponder];
@@ -457,7 +464,7 @@
 }
 
 - (IBAction)doneSearching:(id)sender
-{   
+{
     self.searchTextField.text = @"";
     [self.searchTextField resignFirstResponder];
 }
@@ -542,9 +549,9 @@
                 [self.purchaseOrderTableView selectPOWithNumber:self.selectedPurchaseOrderName];
                 [self.purchaseOrderTableView rowSelected];
                 [self performBlock:^{
-                [self.purchaseOrderTableView scrollToRowAtIndexPath:self.purchaseOrderTableView.selectedIndex
-                                               atScrollPosition:UITableViewScrollPositionMiddle
-                                                       animated:NO];
+                    [self.purchaseOrderTableView scrollToRowAtIndexPath:self.purchaseOrderTableView.selectedIndex
+                                                       atScrollPosition:UITableViewScrollPositionMiddle
+                                                               animated:NO];
                 } afterDelay:0.1];
                 self.selectedPurchaseOrderName = nil;
                 self.reloading = NO;
