@@ -237,6 +237,7 @@ static float KeyboardHeight;
     {
         self.serialNumber.hidden = NO;
         self.serialNumberLabel.hidden = NO;
+        self.serialNumber.text = self.selectedItem.serialNumber.length? self.selectedItem.serialNumber : @"";
     }
     else
     {
@@ -333,7 +334,7 @@ static float KeyboardHeight;
     }
     else if ([textField isEqual:self.serialNumber])
     {
-        self.selectedItem.serialNumber = textField.text;
+        self.selectedItem.serialNumber = newString;
     }
     return YES;
 }
@@ -560,18 +561,32 @@ static float KeyboardHeight;
     //First check current item then check SDN
     NSMutableString *errorString = [[self checkItem:self.selectedItem] mutableCopy];
     
+    if (!errorString.length)
+    {
+        //Check all line items
+        for (GRNItem *lineItem in self.grn.lineItems)
+        {
+            if ([lineItem.quantityRejected doubleValue] > [lineItem.quantityDelivered doubleValue])
+            {
+                [errorString appendFormat:@"Rejected ￼quantity for item must not exceed the quantity ￼delivered.\n"];
+                break;
+            }
+        }
+    }
+    
+    
     if (![self stripedTextLength:self.sdnTextField.text])
     {
         [errorString appendFormat:@"Please enter a valid Supplier Reference Number (SDN).\n"];
     }
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"quantityDelivered > 0"];
-    NSArray *itemsAdded = [[self.grn.lineItems filteredSetUsingPredicate:predicate] allObjects];
-    
-    if (!itemsAdded.count)
-    {
-        [errorString appendFormat:@"Please specify quantity delivered for atleast one order item.\n"];
-    }
+//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"quantityDelivered > 0"];
+//    NSArray *itemsAdded = [[self.grn.lineItems filteredSetUsingPredicate:predicate] allObjects];
+//    
+//    if (!itemsAdded.count)
+//    {
+//        [errorString appendFormat:@"Please specify quantity delivered for atleast one order item.\n"];
+//    }
     
     if ([SDN doesSDNExist:self.sdnTextField.text inMOC:[CoreDataManager moc]])
     {
@@ -716,10 +731,10 @@ static float KeyboardHeight;
     {
         PurchaseOrderItem *poi = [self purchaseOrderItemForGRNItem:li];
         li.quantityDelivered = accept? poi.quantityBalance : [NSNumber numberWithInt:0];
-        li.wbsCode = accept? poi.wbsCode : @"";
-        li.exception = @"";
-        li.quantityRejected = [NSNumber numberWithInt:0];
-        li.notes = @"";
+//        li.wbsCode = accept? poi.wbsCode : @"";
+//        li.exception = @"";
+//        li.quantityRejected = [NSNumber numberWithInt:0];
+//        li.notes = @"";
     }
     [sender setTitle:accept? @"Clear All" : @"Accept All" forState:UIControlStateNormal];
     [self.itemTableView reloadRowsAtIndexPaths:[self.itemTableView indexPathsForVisibleRows]
@@ -733,11 +748,11 @@ static float KeyboardHeight;
     else
     {
         self.quantityDelivered.text = @"";
-        self.quantityRejected.text = @"";
-        [self.reasonButton setTitle:@"No Reason" forState:UIControlStateNormal];
-        [self.wbsButton setTitle:WBSCodeText forState:UIControlStateNormal];
-        self.serialNumber.text = @"";
-        self.note.text = @"";
+//        self.quantityRejected.text = @"";
+//        [self.reasonButton setTitle:@"No Reason" forState:UIControlStateNormal];
+//        [self.wbsButton setTitle:WBSCodeText forState:UIControlStateNormal];
+//        self.serialNumber.text = @"";
+//        self.note.text = @"";
     }
 }
 
